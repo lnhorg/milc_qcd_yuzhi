@@ -167,37 +167,57 @@ int update()  {
     printf("update: No room for sumvec\n"); 
       terminate(1);
   }
-  
+
   /* refresh the momenta */
   ranmom();
-  
+#ifdef HAVE_U1
+  ranmom_u1();
+#endif
+
   /* generate a pseudofermion configuration only at start*/
   // NOTE used to clear xxx here.  May want to clear all solutions for reversibility
   iphi=0;
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
   n = fermion_links_get_n_naiks(fn_links);
+//printf("update_rhmc fermion_links_get_n_naiks %d\n", n);
 #else
   n = 1;
 #endif
   for( inaik=0; inaik<n; inaik++ ) {
     for( jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
+#ifdef HAVE_U1
+      /* can be improved by checking whether the charge is changed */
+      current_charge_u1 = 1.0 * pseudo_charges[iphi];
+      u1phase_on(current_charge_u1, u1_A);
+      invalidate_fermion_links(fn_links);
+#endif
       restore_fermion_links_from_site(fn_links, prec_gr[iphi]);
       fn = get_fm_links(fn_links);
       grsource_imp_rhmc( F_OFFSET(phi[iphi]), &(rparam[iphi].GR), EVEN,
 			 multi_x, sumvec, rsqmin_gr[iphi], niter_gr[iphi],
-			 prec_gr[iphi], fn[inaik], inaik, 
+			 prec_gr[iphi], fn[inaik], inaik,
 			 rparam[iphi].naik_term_epsilon);
       iphi++;
+#ifdef HAVE_U1
+      /* Unapply the U(1) field phases */
+      u1phase_off();
+      invalidate_fermion_links(fn_links);
+#endif
+
     }
   }
-  
+
   /* find action */
   startaction=d_action_rhmc(multi_x,sumvec);
 #ifdef HMC
   /* copy link field to old_link */
   gauge_field_copy( F_OFFSET(link[0]), F_OFFSET(old_link[0]));
+#ifdef HAVE_U1
+    /* copy the U1 phase to old_u1_A; */
+    u1_A_copy_field_to_field(u1_A, old_u1_A);
 #endif
-  
+#endif
+
   switch(int_alg){
     case INT_LEAPFROG:
       /* do "steps" microcanonical steps"  */
@@ -539,6 +559,10 @@ int update()  {
   if( exp( (double)(startaction-endaction) ) < xrandom ){
     if(steps > 0)
       gauge_field_copy( F_OFFSET(old_link[0]), F_OFFSET(link[0]) );
+#ifdef HAVE_U1
+    /* copy the U1 phase to old_u1_A */
+    u1_A_copy_field_to_field(old_u1_A, u1_A);
+#endif
 #ifdef FN
     invalidate_fermion_links(fn_links);
 #endif

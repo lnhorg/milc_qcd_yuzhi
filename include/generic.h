@@ -513,9 +513,13 @@ void set_qss_op_offset(quark_source_sink_op *qss_op, int r0[]);
 
 /* rand_gauge.c */
 void rand_gauge(field_offset G);
+/* rand_gauge_u1.c */
+void rand_gauge_u1(complex *G, complex *tlink_u1);
+void rand_gauge_u1_A(Real *G, Real *tu1_A);
 
 /* ranmom.c */
 void ranmom( void );
+void ranmom_u1( void );
 
 /* remap standard I/O */
 int remap_stdio_from_args(int argc, char *argv[]);

@@ -33,19 +33,19 @@ main( int argc, char **argv )
   int prompt;
   int s_iters, avs_iters, avbcorr_iters;
   double dtime, dclock();
-  
+
   initialize_machine(&argc,&argv);
 
   /* Remap standard I/O */
   if(remap_stdio_from_args(argc, argv) == 1)terminate(1);
-  
+
   g_sync();
   /* set up */
   prompt = setup();
 
   /* loop over input sets */
   while( readin(prompt) == 0) {
-    
+
     /* perform warmup trajectories */
 #ifdef MILC_GLOBAL_DEBUG
     global_current_time_step = 0;
@@ -56,12 +56,12 @@ main( int argc, char **argv )
       update();
     }
     node0_printf("WARMUPS COMPLETED\n"); fflush(stdout);
-    
+
     /* perform measuring trajectories, reunitarizing and measuring 	*/
     meascount=0;		/* number of measurements 		*/
     avs_iters = avbcorr_iters = 0;
 
-    for( traj_done=0; traj_done < trajecs; traj_done++ ){ 
+    for( traj_done=0; traj_done < trajecs; traj_done++ ){
 #ifdef MILC_GLOBAL_DEBUG
 #ifdef HISQ_REUNITARIZATION_DEBUG
   {
@@ -82,15 +82,18 @@ main( int argc, char **argv )
 
       /* measure every "propinterval" trajectories */
       if( (traj_done%propinterval)==(propinterval-1) ){
-	
+
 	/* call gauge_variable fermion_variable measuring routines */
 	/* results are printed in output file */
 	rephase(OFF);
 	g_measure( );
 	rephase(ON);
+#ifdef HAVE_U1
+	g_measure_nc_u1( );
+#endif
 #ifdef MILC_GLOBAL_DEBUG
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
-        g_measure_plaq( );
+        //g_measure_plaq( );
 #endif
 #ifdef MEASURE_AND_TUNE_HISQ
         g_measure_tune( );
@@ -100,9 +103,9 @@ main( int argc, char **argv )
 
 	/**************************************************************/
 	/* Compute chiral condensate and related quantities           */
-	
+
 	/* Make fermion links if not already done */
-	
+
 	restore_fermion_links_from_site(fn_links, par_buf.prec_pbp);
 	for(i = 0; i < par_buf.num_pbp_masses; i++){
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
@@ -110,8 +113,16 @@ main( int argc, char **argv )
 #else
 	  naik_index = 0;
 #endif
- 	  f_meas_imp_field( par_buf.npbp_reps, &par_buf.qic_pbp[i], 
+ 	  f_meas_imp_field( par_buf.npbp_reps, &par_buf.qic_pbp[i],
  			    par_buf.ksp_pbp[i].mass, naik_index, fn_links);
+#ifdef HAVE_U1
+    /* for (j = 0; j < n_charges_uniq; j++) {
+     *   f_meas_imp_field_su3_u1(par_buf.npbp_reps, &par_buf.qic_pbp[i],
+     *                           par_buf.ksp_pbp[i].mass, naik_index, fn_links,
+     *                           fn_links_u1, charges_uniq[j]);
+     * }
+     */
+#endif
 
 #ifdef D_CHEM_POT
 	  Deriv_O6_field( par_buf.npbp_reps, &par_buf.qic_pbp[i],
@@ -124,13 +135,13 @@ main( int argc, char **argv )
 	fflush(stdout);
       }
     }	/* end loop over trajectories */
-    
+
     node0_printf("RUNNING COMPLETED\n"); fflush(stdout);
     if(meascount>0)  {
       node0_printf("average cg iters for step= %e\n",
 		   (double)avs_iters/meascount);
     }
-    
+
     dtime += dclock();
     if(this_node==0){
       printf("Time = %e seconds\n",dtime);
@@ -141,7 +152,7 @@ main( int argc, char **argv )
 #ifdef HYPISQ_SVD_COUNTER
       printf("hypisq_svd_counter = %d\n",hypisq_svd_counter);
 #endif
-      
+
 #ifdef HISQ_FORCE_FILTER_COUNTER
       printf("hisq_force_filter_counter = %d\n",hisq_force_filter_counter);
 #endif
@@ -150,13 +161,19 @@ main( int argc, char **argv )
 #endif
     }
     fflush(stdout);
-    
+
     /* save lattice if requested */
     if( saveflag != FORGET ){
       rephase( OFF );
       save_lattice( saveflag, savefile, stringLFN );
       rephase( ON );
     }
+#ifdef HAVE_U1
+    /* save U(1) lattice if requested */
+    if (save_u1flag != FORGET) {
+        save_u1_lattice(save_u1flag, save_u1file);
+    }
+#endif
 
     /* Destroy fermion links (created in readin() */
 
@@ -170,6 +187,16 @@ main( int argc, char **argv )
     fn_links = NULL;
   }
 
+
+#ifdef HAVE_U1
+#ifdef HMC
+    destroy_r_array_field(old_u1_A, 4);
+    old_u1_A = NULL;
+#endif
+    destroy_r_array_field(u1_A, 4);
+    u1_A = NULL;
+#endif
+
 #ifdef HAVE_QUDA
   qudaFinalize();
 #endif
@@ -177,8 +204,7 @@ main( int argc, char **argv )
 #ifdef HAVE_QPHIX
   finalize_qphix();
 #endif
-  
+
   normal_exit(0);
   return 0;
 }
-
