@@ -64,7 +64,7 @@ void update_u(Real eps){
 /* CPU version */
 
 void update_u( Real eps ){
-
+#ifndef U1_ONLY
   register int i,dir;
   register site *s;
   su3_matrix *link,temp1,temp2,htemp;
@@ -120,6 +120,7 @@ void update_u( Real eps ){
   /**dtime += dclock();
     node0_printf("LINK_UPDATE: time = %e  mflops = %e\n",
     dtime, (double)(5616.0*volume/(1.0e6*dtime*numnodes())) );**/
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
   update_u_u1(eps);
 #endif

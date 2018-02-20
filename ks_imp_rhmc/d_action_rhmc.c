@@ -21,6 +21,7 @@ double d_action_rhmc( su3_vector **multi_x, su3_vector *sumvec){
   Real s2Fmunu_u1, t2Fmunu_u1;
 #endif
 
+#ifndef U1_ONLY
   d_plaquette(&ssplaq,&stplaq);
   ssplaq *= -1.0; stplaq *= -1.0;
   g_action = -beta*volume*(ssplaq+stplaq);
@@ -34,6 +35,11 @@ double d_action_rhmc( su3_vector **multi_x, su3_vector *sumvec){
 
   node0_printf("ACTION: g,h,f = %.14e  %.14e  %.14e  %.14e\n",
 	       g_action, h_action, f_action, g_action+h_action+f_action );
+#else
+#ifndef PURE_GAUGE_U1
+  f_action = fermion_action(multi_x,sumvec);
+#endif /* PURE_GAUGE_U1 */
+#endif /* U1_ONLY */
 
 #ifdef HAVE_U1
   u1Fmunu(&s2Fmunu_u1, &t2Fmunu_u1);
@@ -47,37 +53,61 @@ double d_action_rhmc( su3_vector **multi_x, su3_vector *sumvec){
                g_action_u1 + h_action_u1,
                s2Fmunu_u1,
                t2Fmunu_u1);
+
+#ifndef U1_ONLY
   node0_printf("ACTION SU3+U1: f = %.14e\n",
                g_action + h_action + g_action_u1 + h_action_u1 + f_action );
-#endif
+#else
+#ifndef PURE_GAUGE_U1
+  node0_printf("ACTION U1: f = %.14e\n",
+               g_action_u1 + h_action_u1 + f_action);
+#else
+  node0_printf("ACTION U1: f = %.14e\n",
+               g_action_u1 + h_action_u1);
+#endif /* PURE_GAUGE_U1 */
+#endif /* U1_ONLY */
+#endif /* HAVE_U1 */
 
-
+#ifndef U1_ONLY
   /*DEBUG*/
   node0_printf("DG = %e, DH = %e, DF = %e, D = %e\n",
 	       g_action-old_g, h_action-old_h, f_action-old_f,
 	       g_action+h_action+f_action-old_a);
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
   node0_printf("DG_U1 = %e, DH_U1 = %e, D_U1 = %e\n",
                g_action_u1 - old_g_u1,
                h_action_u1 - old_h_u1,
                g_action_u1 + h_action_u1 - old_a_u1);
 
+#ifndef U1_ONLY
   node0_printf("DG_SU3_U1 = %e, DH_SU3_U1 = %e, "
                "DF_SU3_U1 = %e D_SU3_U1 = %e\n",
                g_action + g_action_u1 - old_g - old_g_u1,
                h_action + h_action_u1 - old_h - old_h_u1,
                f_action - old_f,
                g_action + g_action_u1 + h_action + h_action_u1 + f_action - old_a - old_a_u1);
+#endif /* U1_ONLY */
   old_g_u1 = g_action_u1;
   old_h_u1 = h_action_u1;
   old_a_u1 = g_action_u1 + h_action_u1;
 #endif
+#ifndef U1_ONLY
   old_g=g_action; old_h=h_action; old_f=f_action;
   old_a=g_action+h_action+f_action;
+#endif /* U1_ONLY */
   /*ENDDEBUG*/
 
 #ifdef HAVE_U1
+#ifndef U1_ONLY
   return (g_action + h_action + g_action_u1 + h_action_u1 + f_action);
+#else
+#ifndef PURE_GAUGE_U1
+  return (g_action_u1 + h_action_u1 + f_action);
+#else
+  return (g_action_u1 + h_action_u1);
+#endif /* PURE_GAUGE_U1 */
+#endif /* U1_ONLY */
 #else
   return(g_action+h_action+f_action);
 #endif

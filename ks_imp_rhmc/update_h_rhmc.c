@@ -20,15 +20,20 @@ int update_h_rhmc( Real eps, su3_vector **multi_x ){
   /*  node0_printf("update_h_rhmc:\n"); */
   /* gauge field force */
   rephase(OFF);
+#ifndef U1_ONLY
   imp_gauge_force(eps,F_OFFSET(mom));
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
   gauge_force_u1(eps);
-#endif
+#endif /* HAVE_U1 */
   rephase(ON);
+#ifndef PURE_GAUGE_U1
   /* fermionic force */
-
   iters = update_h_fermion( eps,  multi_x );
   return iters;
+#else
+  return 0;
+#endif /* PURE_GAUGE_U1 */
 } /* update_h_rhmc */
 
 // gauge and fermion force parts separately, for algorithms that use
@@ -37,7 +42,9 @@ void update_h_gauge( Real eps ){
   /* node0_printf("update_h_gauge:\n");*/
   /* gauge field force */
   rephase(OFF);
+#ifndef U1_ONLY
   imp_gauge_force(eps,F_OFFSET(mom));
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
   gauge_force_u1(eps);
 #endif
@@ -46,6 +53,7 @@ void update_h_gauge( Real eps ){
 
 // fermion force update grouping pseudofermions with the same path coeffs
 int update_h_fermion( Real eps, su3_vector **multi_x ){
+#ifndef PURE_GAUGE_U1
   int iphi,jphi;
   Real final_rsq;
   int i,j,n;
@@ -162,5 +170,8 @@ int update_h_fermion( Real eps, su3_vector **multi_x ){
 
   free(allresidues);
   return iters;
+#else
+  return 0;
+#endif /* PURE_GAUGE_U1 */
 } /* update_h_fermion */
 

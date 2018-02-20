@@ -17,5 +17,5 @@
 /* This can be moved to the Makefile.
  *   Added by Yuzhi Liu on 05/05/2016.
  */
-#define HAVE_U1
+//#define HAVE_U1
 #define MAX_CHARGES 12

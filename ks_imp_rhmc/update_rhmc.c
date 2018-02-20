@@ -169,11 +169,14 @@ int update()  {
   }
 
   /* refresh the momenta */
+#ifndef U1_ONLY
   ranmom();
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
   ranmom_u1();
 #endif
 
+#ifndef PURE_GAUGE_U1
   /* generate a pseudofermion configuration only at start*/
   // NOTE used to clear xxx here.  May want to clear all solutions for reversibility
   iphi=0;
@@ -206,12 +209,15 @@ int update()  {
 
     }
   }
+#endif /* PURE_GAUGE_U1 */
 
   /* find action */
   startaction=d_action_rhmc(multi_x,sumvec);
 #ifdef HMC
   /* copy link field to old_link */
+#ifndef U1_ONLY
   gauge_field_copy( F_OFFSET(link[0]), F_OFFSET(old_link[0]));
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
     /* copy the U1 phase to old_u1_A; */
     u1_A_copy_field_to_field(u1_A, old_u1_A);
@@ -558,7 +564,9 @@ int update()  {
   broadcast_float(&xrandom);
   if( exp( (double)(startaction-endaction) ) < xrandom ){
     if(steps > 0)
+#ifndef U1_ONLY
       gauge_field_copy( F_OFFSET(old_link[0]), F_OFFSET(link[0]) );
+#endif /* U1_ONLY */
 #ifdef HAVE_U1
     /* copy the U1 phase to old_u1_A */
     u1_A_copy_field_to_field(old_u1_A, u1_A);

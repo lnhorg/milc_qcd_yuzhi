@@ -39,6 +39,7 @@ register site *s;
     }
 }
 
+#ifdef HAVE_U1
 /* Produce Gaussian random momenta for the U(1) gauge fields. */
 /* Added by YL on 11/03/2016. */
 void ranmom_u1(){
@@ -68,3 +69,4 @@ void ranmom_u1(){
         }
     }
 } /* ranmom_u1 */
+#endif

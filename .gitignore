@@ -5,4 +5,34 @@
 .lastmake.*
 localmake
 
+*optrpt
+.fuse*
+*.swp
+*.swo
+*gitignore
+.lastmake.Make_vanilla
+.lastmake*
+
+#excutables
+*rhm?_hisq
+su3_leapfrog
+ks_spectrum_hisq_fat7_u1
+ks_spectrum_hisq_u1
+ks_spectrum_asqtad_fat7_u1
+ks_spectrum_asqtad_u1
+
+
+su3_u1_rhmc_OFN
+core
+u1_g
+pure_gauge_u1
+
+#action files
+gauge_action.h
+quark_action.h
+
+*.sh
+out.*
+*in*
+*out*
 

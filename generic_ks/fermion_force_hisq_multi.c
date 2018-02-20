@@ -1511,6 +1511,7 @@ fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_cpu(info_t *info, Real eps,
 #endif /* HISQ_FF_DEBUG */
 #endif /* MILC_GLOBAL_DEBUG */
 
+#ifndef U1_ONLY
     /* Put antihermitian traceless part into momentum */
     /* add force to momentum */
     for (dir = XUP; dir <= TUP; dir++)FORALLSITES_OMP(i, s, private(tmat2)) {
@@ -1520,6 +1521,7 @@ fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_cpu(info_t *info, Real eps,
     } END_LOOP_OMP
 
     nflops += 18;
+#endif /* U1_ONLY */
 
     /* Put trace part into momentum */
     /* add U(1) force to U(1) momentum */
