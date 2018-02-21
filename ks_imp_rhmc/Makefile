@@ -25,7 +25,7 @@ COMPILER = gnu # intel, ibm, portland, cray-intel
 # 3. MPP vs Scalar
 
 # Compiling for a parallel machine?  blank for a scalar machine
-MPP = #true
+MPP = true
 
 #----------------------------------------------------------------------
 # 4. Precision 
@@ -83,14 +83,15 @@ endif
 #   CXX = icpc
 # endif
 
-#CC = /usr/local/mvapich/bin/mpicc  # FNAL
-#CXX =  /usr/local/mvapich/bin/mpiCC  # FNAL
+CC = /usr/local/mvapich/bin/mpicc  # FNAL
+CXX =  /usr/local/mvapich/bin/mpiCC  # FNAL
 
 #----------------------------------------------------------------------
 # 6. Compiler optimization level
 # Choices include -g -O, etc
 
-OPT              = -g -pg #-O3
+#OPT              = -g -pg #-O3
+OPT              = -O3
 
 # OpenMP?
 
