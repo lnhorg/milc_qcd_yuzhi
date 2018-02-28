@@ -19,7 +19,7 @@ ARCH = # knl knc hsw
 #----------------------------------------------------------------------
 # 2. Compiler family
 
-COMPILER = intel # gnu # intel, ibm, portland, cray-intel
+COMPILER = intel # gnu, ibm, portland, cray-intel
 
 #----------------------------------------------------------------------
 # 3. MPP vs Scalar
@@ -42,11 +42,11 @@ ifeq ($(strip ${COMPILER}),intel)
   ifeq ($(strip ${MPP}),true)
     CC = mpiicc
     CXX = mpiicpc
-#CC = cc #bigred2
+CC = cc #bigred2
   else
     CC  = icc
     CXX = icpc
-#CC = cc #bigred2
+CC = cc #bigred2
   endif
 
 else ifeq ($(strip ${COMPILER}),cray-intel)
@@ -54,7 +54,7 @@ else ifeq ($(strip ${COMPILER}),cray-intel)
   ifeq ($(strip ${MPP}),true)
     CC = cc
     CXX = CC
-#CC = cc #bigred2
+CC = cc #bigred2
   else
     CC  = icc
     CXX = icpc
@@ -65,7 +65,7 @@ else ifeq ($(strip ${COMPILER}),gnu)
   ifeq ($(strip ${MPP}),true)
     CC = mpicc
     CXX = mpiCC
-#CC = cc #bigred2
+CC = cc #bigred2
   else
     CC  = gcc
     CXX = CC
