@@ -88,6 +88,13 @@ static void
 fn_fermion_force_multi_hisq_mx( info_t *info, Real eps, Real *residues, 
 				su3_vector **multi_x, int nterms, 
 				fermion_links_t *fl );
+#ifdef HAVE_U1
+static void
+fn_fermion_force_multi_hisq_mx_su3_u1(info_t *info, Real eps, Real *residues,
+				                      su3_vector **multi_x, int nterms,
+                                      int nterms_heavy, fermion_links_t *fl,
+                                      Real charge);
+#endif
 
 // In the following routines smearing and reunitarization
 // are split into separate routines. This allows for arbitrary levels of
@@ -110,6 +117,12 @@ static void
 fn_fermion_force_multi_hisq_wrapper_mx_cpu( info_t *info, Real eps, Real *residues,
 					su3_vector **multi_x, int nterms,
 					fermion_links_t *fl);
+#ifdef HAVE_U1
+static void
+fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_cpu(info_t *info, Real eps,
+        Real *residues, su3_vector **multi_x, int nterms, int nterms_heavy,
+        fermion_links_t *fl, Real charge);
+#endif
 // Contribution to the force from 0 level of smearing, force contains
 // only |X><Y| terms
 static void 
@@ -147,6 +160,12 @@ static void
 fn_fermion_force_multi_hisq_wrapper_mx_gpu( info_t *info, Real eps, Real *residues,
 					su3_vector **multi_x, int nterms,
 					fermion_links_t *fl);
+#ifdef HAVE_U1
+static void
+fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_gpu(info_t *info, Real eps,
+        Real *residues, su3_vector **multi_x, int nterms, int nterms_heavy,
+        fermion_links_t *fl, Real charge);
+#endif
 #endif /* ifndef USE_FF_GPU */
 
 
@@ -154,8 +173,14 @@ fn_fermion_force_multi_hisq_wrapper_mx_gpu( info_t *info, Real eps, Real *residu
 
 #ifdef USE_FF_GPU
 #define fn_fermion_force_multi_hisq_wrapper_mx fn_fermion_force_multi_hisq_wrapper_mx_gpu
+#ifdef HAVE_U1
+#define fn_fermion_force_multi_hisq_wrapper_mx_su3_u1 fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_gpu
+#endif
 #else 
 #define fn_fermion_force_multi_hisq_wrapper_mx fn_fermion_force_multi_hisq_wrapper_mx_cpu
+#ifdef HAVE_U1
+#define fn_fermion_force_multi_hisq_wrapper_mx_su3_u1 fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_cpu
+#endif
 #endif
 
 #endif /* HISQ_FF_MULTI_WRAPPER || USE_FF_GPU */
@@ -215,6 +240,53 @@ void eo_fermion_force_multi( Real eps, Real *residues, su3_vector **xxx,
   hisq_force_filter_counter += INFO_HISQ_FORCE_FILTER_COUNTER(&info);
 
 }
+
+#ifdef HAVE_U1
+void eo_fermion_force_multi_su3_u1(Real eps, Real *residues, su3_vector **xxx,
+			     int nterms, int nterms_heavy, int prec, fermion_links_t *fl, Real charge) {
+  double dtime = -dclock();
+  info_t info = INFO_ZERO;
+
+  if(prec != PRECISION){
+    node0_printf("eo_fermion_force_multi_su3_u1: WARNING, precision requests not supported. Using %d.\n",
+		 PRECISION);
+  }
+  switch(KS_MULTIFF){
+  case FNMATREV:
+    node0_printf("FNMATREV isn't implemented\n"); exit(0);
+    break;
+  case FNMAT:
+#if defined(HISQ_FF_MULTI_WRAPPER) || defined(USE_FF_GPU)
+    fn_fermion_force_multi_hisq_wrapper_mx_su3_u1(&info,  eps, residues, xxx, nterms, nterms_heavy, fl, charge );
+#else
+    node0_printf("fn_fermion_force_multi_hisq_mx_su3_u1 isn't implemented yet\n"); exit(0);
+    node0_printf("Need to set HISQ_FF_MULTI_WRAPPER or USE_FF_GPU for SU(3)xU(1) simulation\n"); exit(0);
+    break;
+    fn_fermion_force_multi_hisq_mx_su3_u1(&info,  eps, residues, xxx, nterms, nterms_heavy, fl, charge );
+#endif
+    break;
+  default:
+    fn_fermion_force_multi_hisq_mx_su3_u1(&info, eps, residues, xxx, nterms, nterms_heavy, fl, charge );
+  }
+
+  dtime += dclock();
+  info.final_sec = dtime;
+#ifdef FFTIME
+  node0_printf("FFTIME:  time = %e (HISQ %s) terms = %d flops/site = %d mflops = %e\n",
+	       info.final_sec,qop_prec[PRECISION-1],nterms,
+	       (int)(info.final_flop*numnodes()/volume),
+	       info.final_flop/(1e6*info.final_sec) );
+#endif
+
+  /* Sum over all nodes and update counter */
+  g_intsum(&INFO_HISQ_SVD_COUNTER(&info));
+  hisq_svd_counter += INFO_HISQ_SVD_COUNTER(&info);
+  
+  g_intsum(&INFO_HISQ_FORCE_FILTER_COUNTER(&info));
+  hisq_force_filter_counter += INFO_HISQ_FORCE_FILTER_COUNTER(&info);
+
+}
+#endif
 
 /**********************************************************************/
 /* Unoptimized wrappers to support non-RHMC evolution in ks_imp_dyn   */
@@ -1163,6 +1235,16 @@ if(this_path->forwback== -1)continue;	// CHECK THIS!!!!
 //printf("FF flops = %d\n",tempflops);
 } //fn_fermion_force_multi_hisq_mx
 
+#ifdef HAVE_U1
+static void
+fn_fermion_force_multi_hisq_mx_su3_u1(info_t *info, Real eps, Real *residues,
+				su3_vector **multi_x, int nterms, int nterms_heavy,
+				fermion_links_t *fl, Real charge)
+{
+  /* not implemented yet*/
+return;
+}
+#endif
 
 
 #if defined(HISQ_FF_MULTI_WRAPPER) || defined(USE_FF_GPU)
@@ -1178,6 +1260,337 @@ if(this_path->forwback== -1)continue;	// CHECK THIS!!!!
 //    1) smearing level 2 + smearing level 2 Naik corrected
 //    2) reunitarization
 //    3) smearing level 1
+
+#ifdef HAVE_U1
+static void
+fn_fermion_force_multi_hisq_wrapper_mx_su3_u1_cpu(info_t *info, Real eps,
+        Real *residues, su3_vector **multi_x, int nterms, int nterms_heavy,
+        fermion_links_t *fl, Real charge)
+{
+  /* Get the terms we need from the fermion links structure */
+  ks_action_paths_hisq *ap = get_action_paths_hisq(fl);
+  hisq_auxiliary_t *aux = get_hisq_auxiliary(fl);
+  int n_naiks = fermion_links_get_n_naiks(fl);
+  int nterms_diff = nterms - nterms_heavy;
+  double *eps_naik = fermion_links_get_eps_naik(fl);
+  su3_matrix *U_link = aux->U_link;
+  su3_matrix *W_unitlink = aux->W_unitlink;
+  su3_matrix *force_accum_0[4];  /* accumulate force, smearing 0 */
+  su3_matrix *force_accum_0_naik[4];  /* accumulate force, smearing 0, Naik */
+  su3_matrix *force_accum_1[4];  /* accumulate force, smearing 1 */
+  su3_matrix *force_accum_1u[4];  /* accumulate force, reunitarization */
+  su3_matrix *force_accum_2[4];  /* accumulate force, smearing 2 */
+  su3_matrix *force_final[4];  /* accumulate final force, multiply by time step */
+  su3_matrix tmat2;
+  anti_hermitmat *ahmat_tmp;
+  register site *s;
+  int dir;
+  int i;
+  int ipath;
+  int inaik;
+  int n_naik_shift;
+  int num_q_paths_current, n_orders_naik_current;
+  Real coeff_mult;
+  size_t nflops = 0;
+  double dtime = -dclock();
+  double final_flop = 0;
+  int order;
+  complex trace; /* hold the trace of the force_accum for U(1) fermion force */
+
+  if (nterms == 0 && nterms_heavy == 0) return;
+
+  int num_q_paths_1 = ap->p1.num_q_paths;
+  Q_path *q_paths_1 = ap->p1.q_paths;
+  int num_q_paths_2 = ap->p2.num_q_paths;
+  Q_path *q_paths_2 = ap->p2.q_paths;
+  int num_q_paths_3 = ap->p3.num_q_paths;
+  Q_path *q_paths_3 = ap->p3.q_paths;
+
+  if( first_force==1 ){
+    if( q_paths_sorted_1==NULL )
+      q_paths_sorted_1 = (Q_path *)malloc( num_q_paths_1*sizeof(Q_path) );
+    if(netbackdir_table_1==NULL )
+      netbackdir_table_1 = (int *)malloc( num_q_paths_1*sizeof(int) );
+    if( q_paths_sorted_2==NULL )
+      q_paths_sorted_2 = (Q_path *)malloc( num_q_paths_2*sizeof(Q_path) );
+    if(netbackdir_table_2==NULL )
+      netbackdir_table_2 = (int *)malloc( num_q_paths_2*sizeof(int) );
+    if( q_paths_sorted_3==NULL )
+      q_paths_sorted_3 = (Q_path *)malloc( num_q_paths_3*sizeof(Q_path) );
+    if(netbackdir_table_3==NULL )
+      netbackdir_table_3 = (int *)malloc( num_q_paths_3*sizeof(int) );
+    else{ node0_printf("WARNING: remaking sorted path tables\n"); exit(0); }
+    /* make sorted tables */
+    sort_quark_paths( q_paths_1, q_paths_sorted_1, num_q_paths_1, 8 );
+    for( ipath=0; ipath<num_q_paths_1; ipath++ )
+      netbackdir_table_1[ipath] =
+	find_backwards_gather( &(q_paths_sorted_1[ipath]) );
+    sort_quark_paths( q_paths_2, q_paths_sorted_2, num_q_paths_2, 16 );
+    for( ipath=0; ipath<num_q_paths_2; ipath++ )
+      netbackdir_table_2[ipath] =
+	find_backwards_gather( &(q_paths_sorted_2[ipath]) );
+    sort_quark_paths( q_paths_3, q_paths_sorted_3, num_q_paths_3, 16 );
+    for( ipath=0; ipath<num_q_paths_3; ipath++ )
+      netbackdir_table_3[ipath] =
+	find_backwards_gather( &(q_paths_sorted_3[ipath]) );
+    first_force=0;
+  }
+
+
+  for(i=XUP;i<=TUP;i++){
+     force_accum_0[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+     force_accum_0_naik[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+     force_accum_1[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+     force_accum_1u[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+     force_accum_2[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+     force_final[i] =
+       (su3_matrix *) malloc(sites_on_node*sizeof(su3_matrix) );
+  }
+  ahmat_tmp =
+    (anti_hermitmat *) special_alloc(sites_on_node*sizeof(anti_hermitmat) );
+
+  /* node0_printf("UNITARIZATION_METHOD=%d\n",ap->umethod); */
+
+  for(dir=XUP;dir<=TUP;dir++) {
+    FORALLFIELDSITES_OMP(i,  ){
+      clear_su3mat( &( force_accum_2[dir][i] ) );
+    } END_LOOP_OMP
+  }
+
+
+    /* calculate (dS/dX_0 + dS/dX_c)*dX_0/dW,
+     * where X_c = X_0 + \epsilon*\DeltaX
+     * X_0 corresponds to q_paths_sorted_2 and \DeltaX corresponds to q_paths_sorted_3
+     */
+    /* smearing level 0 */
+    fn_fermion_force_multi_hisq_smearing0(info, eps, residues, multi_x, nterms,
+                                          force_accum_0, force_accum_0_naik);
+    final_flop += info->final_flop;
+    /* smearing level 2 */
+    q_paths_sorted_current = q_paths_sorted_2;
+    num_q_paths_current = num_q_paths_2;
+    netbackdir_table_current = netbackdir_table_2;
+    /* the parameter multi_x in fn_fermion_force_multi_hisq_smearing is never
+     * used at all
+     */
+    fn_fermion_force_multi_hisq_smearing(info, eps, residues, multi_x, nterms,
+                                         force_accum_1, force_accum_0,
+                                         force_accum_0_naik, W_unitlink,
+                                         num_q_paths_current,
+                                         q_paths_sorted_current,
+                                         netbackdir_table_current);
+    final_flop += info->final_flop;
+    coeff_mult = 1.0;
+    for (dir = XUP; dir <= TUP; dir++) {
+        FORALLFIELDSITES_OMP(i,  ) {
+            /* add_su3_matrix(&(force_accum_2[dir][i]), &(force_accum_1[dir][i]),
+             *              &(force_accum_2[dir][i]));
+             */
+            scalar_mult_add_su3_matrix(&(force_accum_2[dir][i]),
+                                       &(force_accum_1[dir][i]), coeff_mult,
+                                       &(force_accum_2[dir][i]));
+        } END_LOOP_OMP
+        nflops += 36;
+    }
+
+    if (nterms_heavy != 0) {
+        /* calculate \epsilon*dS/dX_c*d(\DeltaX)/dW,
+         * where X_c = X_0 + \epsilon*\DeltaX
+         * X_0 corresponds to q_paths_sorted_2 and
+         * \DeltaX corresponds to q_paths_sorted_3
+         */
+        /* smearing level 0 */
+        fn_fermion_force_multi_hisq_smearing0(info, eps,
+                                              residues + nterms_diff,
+                                              multi_x + nterms_diff,
+                                              nterms_heavy, force_accum_0,
+                                              force_accum_0_naik );
+        final_flop += info->final_flop;
+        /* smearing level 2 */
+        q_paths_sorted_current = q_paths_sorted_3;
+        num_q_paths_current = num_q_paths_3;
+        netbackdir_table_current = netbackdir_table_3;
+        fn_fermion_force_multi_hisq_smearing(info, eps, residues + nterms_diff,
+                                             multi_x + nterms_diff,
+                                             nterms_heavy, force_accum_1,
+                                             force_accum_0, force_accum_0_naik,
+                                             W_unitlink, num_q_paths_current,
+                                             q_paths_sorted_current,
+                                             netbackdir_table_current);
+        final_flop += info->final_flop;
+        coeff_mult = eps_naik[1]; /* only one none-zero eps_naik is assumed */
+        for (dir = XUP; dir <= TUP; dir++) {
+            FORALLFIELDSITES_OMP(i,  ) {
+                /* add_su3_matrix(&(force_accum_2[dir][i]), &(force_accum_1[dir][i]),
+                 *              &(force_accum_2[dir][i]));
+                 */
+                scalar_mult_add_su3_matrix(&(force_accum_2[dir][i]),
+                                           &(force_accum_1[dir][i]),
+                                           coeff_mult,
+                                           &(force_accum_2[dir][i]));
+            } END_LOOP_OMP
+            nflops += 36;
+        }
+    } /* nterms_heavy != 0 */
+
+    switch (ap->umethod) {
+    case UNITARIZE_NONE:
+        /* smearing level 1 */
+        fn_fermion_force_multi_hisq_smearing(info, eps, residues, multi_x,
+                                             nterms, force_accum_1,
+                                             force_accum_2, NULL, U_link,
+                                             num_q_paths_1, q_paths_sorted_1,
+                                             netbackdir_table_1);
+        final_flop += info->final_flop;
+        break;
+    case UNITARIZE_ROOT:
+    case UNITARIZE_RATIONAL:
+    case UNITARIZE_ANALYTIC:
+        /* reunitarization */
+        fn_fermion_force_multi_hisq_reunit(info, force_accum_1u, force_accum_2,
+                                           fl);
+        final_flop += info->final_flop;
+#ifdef MILC_GLOBAL_DEBUG
+#ifdef HISQ_FF_DEBUG
+        {
+            printf("WRAPPER FORCE EXP REUNIT\n");
+            dumpmat(&(force_accum_1u[AB_OUT_ON_LINK][AB_OUT_ON_SITE]));
+        }
+#endif /* HISQ_FF_DEBUG */
+#endif /* MILC_GLOBAL_DEBUG */
+        /* smearing level 1 */
+        fn_fermion_force_multi_hisq_smearing(info, eps, residues, multi_x,
+                                             nterms, force_accum_1,
+                                             force_accum_1u, NULL, U_link,
+                                             num_q_paths_1, q_paths_sorted_1,
+                                             netbackdir_table_1);
+        final_flop += info->final_flop;
+        break;
+    default:
+        node0_printf("Unknown unitarization method\n");
+        terminate(1);
+    }
+
+
+    /* contraction with the link in question should be done here,
+     * after contributions from all levels of smearing are taken into account
+     */
+    for (dir = XUP; dir <= TUP; dir++) {
+        FORALLSITES_OMP(i, s,  ) {
+            mult_su3_nn(&(s->link[dir]), &(force_accum_1[dir][i]),
+                        &(force_final[dir][i]));
+        } END_LOOP_OMP
+        nflops += 198;
+    }
+
+    /* multiply by the time step "eps" twice
+     * (only forward paths are considered)
+     * take into account even/odd parity (it is NOT done in "smearing" routine)
+     */
+    for (dir = XUP; dir <= TUP; dir++) {
+        FOREVENFIELDSITES_OMP(i,  ) {
+            scalar_mult_su3_matrix(&(force_final[dir][i]), 2.0 * eps,
+                                   &(force_final[dir][i]));
+        } END_LOOP_OMP
+        FORODDFIELDSITES_OMP(i,  ) {
+            scalar_mult_su3_matrix(&(force_final[dir][i]), -2.0 * eps,
+                                   &(force_final[dir][i]));
+        } END_LOOP_OMP
+        nflops += 36;
+    }
+
+
+#ifdef MILC_GLOBAL_DEBUG
+#ifdef HISQ_FF_DEBUG
+    {
+        printf("WRAPPER FORCE\n");
+        dumpmat(&(force_final[AB_OUT_ON_LINK][AB_OUT_ON_SITE]));
+        printf("WRAPPER FORCE ANTIHERMITIAN\n");
+        for (dir = XUP; dir <= TUP; dir++) FORALLFIELDSITES_OMP(i,  ) {
+            make_anti_hermitian(&(force_final[dir][i]), &(ahmat_tmp[i]));
+            uncompress_anti_hermitian(&(ahmat_tmp[i]),&(force_final[dir][i]));
+        } END_LOOP_OMP
+        dumpmat(&(force_final[AB_OUT_ON_LINK][AB_OUT_ON_SITE]));
+    }
+#endif /* HISQ_FF_DEBUG */
+#endif /* MILC_GLOBAL_DEBUG */
+
+#ifndef U1_ONLY
+    /* Put antihermitian traceless part into momentum */
+    /* add force to momentum */
+    for (dir = XUP; dir <= TUP; dir++)FORALLSITES_OMP(i, s, private(tmat2)) {
+        uncompress_anti_hermitian(&(s->mom[dir]), &tmat2);
+        add_su3_matrix(&tmat2, &(force_final[dir][i]), &tmat2);
+        make_anti_hermitian(&tmat2, &(s->mom[dir]));
+    } END_LOOP_OMP
+
+    nflops += 18;
+#endif /* U1_ONLY */
+
+    /* Put trace part into momentum */
+    /* add U(1) force to U(1) momentum */
+    /* dh/dt = \sum_q 2*q*Im(\Tr[U dS/dU]) */
+
+    for (dir = XUP; dir <= TUP; dir++) {
+        FOREVENFIELDSITES_OMP(i,  ) {
+            scalar_mult_su3_matrix(&(force_final[dir][i]), -1.0 / 3.0 /
+                                   pseudo_charges[0], &(force_final[dir][i]));
+        } END_LOOP_OMP
+        FORODDFIELDSITES_OMP(i,  ) {
+            scalar_mult_su3_matrix(&(force_final[dir][i]), -1.0 / 3.0 /
+                                   pseudo_charges[0], &(force_final[dir][i]));
+        } END_LOOP_OMP
+        nflops += 36;
+    }
+
+
+    for (dir = XUP; dir <= TUP; dir++)FORALLSITES_OMP(i, s, private(tmat2)) {
+        trace = trace_su3(&(force_final[dir][i]));
+        /* printf("trace %e %e %e\n", trace.real, trace.imag,
+         *        current_charge_u1);
+         * dumpmat(&(force_final[dir][i]));
+         * trace.real*=current_charge_u1;
+         * trace.imag*=current_charge_u1;
+         */
+        trace.real *= charge;
+        trace.imag *= charge;
+        /* printf("trace2 %e %e %e\n", trace.real, trace.imag,
+         *         current_charge_u1);
+         */
+        s->mom_u1[dir] += trace.imag;
+#ifdef U1_DEBUG
+        if (dir == XUP && i == 0) {
+            node0_printf("../generic_ks/fermion_force_hisq_multi.c"
+                         "trace.real, trace.imag, charge, "
+                         "s->mom_u1[dir] %e %e %e %e\n",
+                         trace.real, trace.imag, charge, s->mom_u1[dir]);
+        }
+#endif
+    } END_LOOP_OMP
+
+    for (i = XUP; i <= TUP; i++) {
+        free(force_accum_0[i]);
+        free(force_accum_0_naik[i]);
+        free(force_accum_1[i]);
+        free(force_accum_1u[i]);
+        free(force_accum_2[i]);
+        free(force_final[i]);
+    }
+    free(ahmat_tmp);
+
+    dtime += dclock();
+    info->final_sec = dtime;
+    info->final_flop = final_flop + ((double)nflops) * volume / numnodes();
+
+} //fn_fermion_force_multi_hisq_wrapper_mx
+
+#endif
+
 
 static void 
 fn_fermion_force_multi_hisq_wrapper_mx_cpu( info_t *info, Real eps, Real *residues, 

@@ -192,6 +192,8 @@ void eo_fermion_force_multi( Real eps, Real *residues, su3_vector **xxx,
 			     int nterms, int prec, fermion_links_t *fn);
 void fermion_force_fn_multi( Real eps, Real *residues, su3_vector **multi_x, 
 			     int nterms, int prec, fermion_links_t *fn);
+void eo_fermion_force_multi_su3_u1( Real eps, Real *residues, su3_vector **xxx, 
+			     int nterms, int nterms_heavy, int prec, fermion_links_t *fn, Real charge);
 void fermion_force_fn_multi_reverse( Real eps, Real *residues, 
 				     su3_vector **multi_x, int nterms,
 				     fermion_links_t *fn);

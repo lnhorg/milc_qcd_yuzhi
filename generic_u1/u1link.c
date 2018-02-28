@@ -65,5 +65,45 @@ void u1phase_off(void){
 
 #endif
 
-/* ************************************************************	*/
+/* ************************ */
+void construct_u1_links_from_A(Real charge, Real *A, complex *clink) {
+    int i, dir;
+    site *s;
+    Real theta;
 
+    FORALLSITES(i, s) {
+        FORALLUPDIR(dir) {
+            theta = charge * A[4 * i + dir];  /* Qe * A(mu, x) */
+            clink[4 * i + dir] = ce_itheta(theta);
+        }
+    }
+} /* construct_u1_links_from_A */
+
+/* copy a gauge field - an array of four complex numbers */
+void u1_link_copy_field_to_field(complex *src, complex *dest) {
+    register int i, dir;
+    register site *s;
+    FORALLSITES(i, s) {
+        for (dir = XUP; dir <= TUP; dir++) {
+            dest[4 * i + dir] = src[4 * i + dir];
+        }
+    }
+#ifdef FN
+/* free_fn_links_u1(fn_links_u1); */
+#endif
+}
+
+/* copy a gauge potential - an array of four real numbers */
+void u1_A_copy_field_to_field(Real *src, Real *dest) {
+    register int i, dir;
+    register site *s;
+    FORALLSITES(i, s) {
+        for (dir = XUP; dir <= TUP; dir++) {
+            dest[4 * i + dir] = src[4 * i + dir];
+        }
+    }
+#ifdef FN
+/*   free_fn_links_u1(&fn_links); */
+#endif
+}
+/* ************************************************************ */

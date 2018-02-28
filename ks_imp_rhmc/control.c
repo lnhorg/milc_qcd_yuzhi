@@ -99,6 +99,9 @@ main( int argc, char **argv )
 	g_measure( );
 	ENDTIME("do gauge measurement");
 	rephase(ON);
+#ifdef HAVE_U1
+	g_measure_nc_u1( );
+#endif
 #ifdef MILC_GLOBAL_DEBUG
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
         g_measure_plaq( );
@@ -124,6 +127,14 @@ main( int argc, char **argv )
 #endif
  	  f_meas_imp_field( par_buf.npbp_reps, &par_buf.qic_pbp[i], 
  			    par_buf.ksp_pbp[i].mass, naik_index, fn_links);
+#ifdef HAVE_U1
+    /* for (j = 0; j < n_charges_uniq; j++) {
+     *   f_meas_imp_field_su3_u1(par_buf.npbp_reps, &par_buf.qic_pbp[i],
+     *                           par_buf.ksp_pbp[i].mass, naik_index, fn_links,
+     *                           fn_links_u1, charges_uniq[j]);
+     * }
+     */
+#endif
 	  
 #ifdef D_CHEM_POT
 	  Deriv_O6_field( par_buf.npbp_reps, &par_buf.qic_pbp[i],
@@ -170,6 +181,12 @@ main( int argc, char **argv )
       save_lattice( saveflag, savefile, stringLFN );
       rephase( ON );
     }
+#ifdef HAVE_U1
+    /* save U(1) lattice if requested */
+    if (save_u1flag != FORGET) {
+        save_u1_lattice(save_u1flag, save_u1file);
+    }
+#endif
 
     /* Destroy fermion links (created in readin() */
 
@@ -182,6 +199,15 @@ main( int argc, char **argv )
 #endif
     fn_links = NULL;
   }
+
+#ifdef HAVE_U1
+#ifdef HMC
+    destroy_r_array_field(old_u1_A, 4);
+    old_u1_A = NULL;
+#endif
+    destroy_r_array_field(u1_A, 4);
+    u1_A = NULL;
+#endif
 
   free_lattice();
 

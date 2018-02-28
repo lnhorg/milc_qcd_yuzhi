@@ -28,6 +28,18 @@ typedef struct {
   int n_dyn_masses;       /* number of dynamical masses */
   Real dyn_mass[MAX_DYN_MASSES];  /* List of dynamical masses */
   int dyn_flavors[MAX_DYN_MASSES]; /* Numbers of dynamical flavors */
+
+#ifdef HAVE_U1
+  Real beta_u1;             /* U(1) gauge coupling */
+  int n_pseudo_charges;     /* number of charges */
+  /* list of charges
+   * should not be more than the number of dynamical masses)
+   */
+  Real pseudo_charges[MAX_CHARGES];
+  int n_charges_uniq;       /* number of unique charges */
+  Real charges_uniq[MAX_CHARGES]; /* number of charges */
+#endif
+
   Real u0;                /* tadpole parameter */
   /*  REPEATING BLOCK */
   int warms;	/* the number of warmup trajectories */
@@ -48,6 +60,16 @@ typedef struct {
   char rparamfile[MAXFILENAME];
   char startfile[MAXFILENAME],savefile[MAXFILENAME];
   char stringLFN[MAXFILENAME];  /** ILDG LFN if applicable ***/
+
+#ifdef HAVE_U1
+  int start_u1flag;     /* what to do for beginning u(1) lattice */
+  int save_u1flag;    /* what to do with u(1) lattice at end */
+  char start_u1file[MAXFILENAME];
+  char save_u1file[MAXFILENAME];
+  /** ILDG LFN if applicable **/
+  /*  char stringLFN_u1[MAXFILENAME]; */
+#endif
+
   /* PBP and related quantities */
   int num_pbp_masses;   /* Number of masses for pbp calculation */
   quark_invert_control qic_pbp[MAX_MASS_PBP];

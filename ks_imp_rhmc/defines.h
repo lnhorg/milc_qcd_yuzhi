@@ -11,4 +11,6 @@
 #define MAX_SPECTRUM_REQUEST 512
 #define MAX_N_PSEUDO 10
 
+//#define HAVE_U1
+#define MAX_CHARGES 12
 #endif /* _DEFINES_H */

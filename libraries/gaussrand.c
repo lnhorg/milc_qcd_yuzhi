@@ -71,6 +71,29 @@ complex complex_gaussian_rand_no( double_prn *prn_pt ){
   return result;
 }
 
+/*  Probability distribution exp( -0.5*x*x ), so < x^2 > = 1*/
+Real gaussian_rand_no_u1(double_prn *prn_pt) {
+  static double_prn *ptoggle = NULL;
+  static Real gset;
+  Real fac, r, v1, v2;
+
+  if  (ptoggle != prn_pt) {
+    do {
+      v1 = 2.0 * myrand(prn_pt) - 1.0;
+      v2 = 2.0 * myrand(prn_pt) - 1.0;
+      r = v1 * v1 + v2 * v2;
+    } while (r >= 1.0);
+    fac = sqrt( -0.5 * log((double)r) / (double)r);
+    gset = v1 * fac;
+    ptoggle = prn_pt;
+    return v2 * fac;
+  } else {
+    ptoggle = NULL;
+    return gset;
+  }
+}
+
+
 #else
 
 // don't save state -- makes it really thread save, instead of just for loops
@@ -100,6 +123,19 @@ complex complex_gaussian_rand_no( double_prn *prn_pt ){
     result.real = v2*fac;
     result.imag = v1*fac;
     return result;
+}
+
+/*  Probability distribution exp( -0.5*x*x ), so < x^2 > = 1*/
+Real gaussian_rand_no_u1( double_prn *prn_pt ) {
+  Real fac, r, v1, v2;
+
+  do {
+    v1 = 2.0 * myrand(prn_pt) - 1.0;
+    v2 = 2.0 * myrand(prn_pt) - 1.0;
+    r = v1 * v1 + v2 * v2;
+  } while (r >= 1.0);
+  fac = sqrt( -2.0 * log((double)r) / (double)r);
+  return v2 * fac;
 }
 
 #endif

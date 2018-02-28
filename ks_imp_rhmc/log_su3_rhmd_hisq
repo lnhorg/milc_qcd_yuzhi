@@ -1,0 +1,943 @@
+make -f Makefile target "MYTARGET= su3_rhmd_hisq.knl" "DEFINES= -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5" "GAUGE = symanzik_1loop_hisq_action.h" "QUARK = hisq/hisq_u3_action.h" "EXTRA_OBJECTS= fermion_links_from_site.o f_meas.o gauss_smear_ks.o grsource_imp.o naik_eps_utilities.o path_transport.o rephase.o show_generic_ks_opts.o show_hisq_links_opts.o show_hypisq_links_opts.o fermion_links_hisq_milc.o fermion_links_hisq_load_milc.o fermion_links.o fermion_links_fn_load_milc.o fermion_links_fn_twist_milc.o general_staple.o fn_links_milc.o ks_action_paths_hisq.o su3_mat_op.o stout_smear.o d_congrad5_two_src.o d_congrad5_fn_qphix.o d_congrad5_fn_qphix_D.o d_congrad5_fn_qphix_F.o d_congrad5_fn_milc.o mat_invert.o ks_invert.o d_congrad5_fn.o d_congrad_opt.o report_invert_status.o dslash_fn_dblstore.o ks_multicg.o ks_multicg_offset_qphix.o ks_multicg_offset_qphix_D.o  ks_multicg_offset_qphix_F.o fermion_force_hisq_multi.o show_hisq_force_opts.o show_hypisq_force_opts.o ff_opt.o  gauge_force_symzk1_qphix.o gauge_stuff.o ranmom.o gauge_force_symzk1_qphix_D.o gauge_force_symzk1_qphix_F.o control.o"
+make[1]: Entering directory `/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc'
+Building libraries with Make_vanilla
+cd ../libraries ;\
+make -f Make_vanilla "APP_CC=mpiicc" "PRECISION=2" \
+        "ARCH=knl " "COMPILER=intel " all
+make[2]: Entering directory `/home/liuyuz/LQCD_acquisition/milc_qcd/libraries'
+================================================================
+PLEASE CHECK COMPILERS: Libraries: icc. Application: mpiicc
+================================================================
+make[2]: Leaving directory `/home/liuyuz/LQCD_acquisition/milc_qcd/libraries'
+/bin/rm -f .lastmake.* quark_action.h gauge_action.h
+make -f Makefile clean
+make[2]: Entering directory `/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc'
+/bin/rm -f *.o quark_action.h gauge_action.h
+make[2]: Leaving directory `/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc'
+touch .lastmake.Makefile.2.su3_rhmd_hisq.knl
+/bin/cp ../generic/imp_actions/symanzik_1loop_hisq_action.h gauge_action.h
+/bin/cp ../generic_ks/imp_actions/hisq/hisq_u3_action.h quark_action.h
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    d_action_rhmc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    eo_fermion_force_rhmc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    gauge_info.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    grsource_rhmc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ks_ratinv.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    load_rhmc_params.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    setup.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    update_h_rhmc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    update_rhmc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    update_u.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/ape_smear.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/check_unitarity.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/d_plaq4.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gaugefix2.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/io_lat4.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/momentum_twist.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/nersc_cksum.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/path_product.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/project_su3_hit.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/reunitarize2.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/show_generic_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/show_scidac_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/map_milc_to_qphix.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/milc_to_qphix_utilities.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+../generic/milc_to_qphix_utilities.c(63): warning #266: function "omp_get_max_threads" declared implicitly
+    int numThreads = omp_get_max_threads();
+                     ^
+
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/layout_hyper_prime.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/field_translation.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/field_utilities.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gauge_utilities.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/io_detect.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/io_helpers.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/io_lat_utils.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/make_lattice.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/ranstuff.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/remap_stdio_from_args.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/io_ansi.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/com_mpi.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/ploop3.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_generic_ks_md_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links_from_site.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/f_meas.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/gauss_smear_ks.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/grsource_imp.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/naik_eps_utilities.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/path_transport.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/rephase.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_generic_ks_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_hisq_links_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_hypisq_links_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links_hisq_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links_hisq_load_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links_fn_load_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_links_fn_twist_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/general_staple.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fn_links_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_action_paths_hisq.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/su3_mat_op.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/stout_smear.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_two_src.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_fn_qphix.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_fn_qphix_D.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_fn_qphix_F.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_fn_milc.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/mat_invert.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_invert.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad5_fn.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/d_congrad_opt.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/report_invert_status.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/dslash_fn_dblstore.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_multicg.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_multicg_offset_qphix.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_multicg_offset_qphix_D.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ks_multicg_offset_qphix_F.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/fermion_force_hisq_multi.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_hisq_force_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/show_hypisq_force_opts.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic_ks/ff_opt.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gauge_force_symzk1_qphix.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gauge_stuff.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/ranmom.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gauge_force_symzk1_qphix_D.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    ../generic/gauge_force_symzk1_qphix_F.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicc -c -O3 -std=c99 -xMIC-AVX512 -parallel-source-info=2 -debug inline-debug-info -qopt-report=5 -DMPI_COMMS   -DCG_OK -DREMAP_STDIO_APPEND    -DDBLSTORE_FN -DFEWSUMS -DD_FN_GATHER13  -DKS_MULTICG=HYBRID  -DKS_MULTIFF=FNMAT   -DCL_CG=BICG      -DC_GLOBAL_INLINE  -DMILC_PRECISION=2 -DPRECISION=2   -DQPHIX_PrecisionInt=2  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE       -I.   -DHAVE_QPHIX -DUSE_GF_QPHIX -DFN -DINT_ALG=INT_3G1F -DHISQ_REUNIT_ALLOW_SVD -DHISQ_REUNIT_SVD_REL_ERROR=1e-8 -DHISQ_REUNIT_SVD_ABS_ERROR=1e-8 -DHISQ_FF_MULTI_WRAPPER -DHISQ_FORCE_FILTER=5.0e-5      -I../QPhiX_MILC/milc-qphix    control.c
+icc: remark #10397: optimization reports are generated in *.optrpt files in the output location
+mpiicpc -o su3_rhmd_hisq.knl -xMIC-AVX512 \
+d_action_rhmc.o eo_fermion_force_rhmc.o gauge_info.o grsource_rhmc.o ks_ratinv.o load_rhmc_params.o setup.o update_h_rhmc.o update_rhmc.o update_u.o  ape_smear.o check_unitarity.o d_plaq4.o gaugefix2.o io_lat4.o momentum_twist.o nersc_cksum.o path_product.o project_su3_hit.o reunitarize2.o show_generic_opts.o show_scidac_opts.o map_milc_to_qphix.o milc_to_qphix_utilities.o layout_hyper_prime.o field_translation.o field_utilities.o gauge_utilities.o io_detect.o io_helpers.o io_lat_utils.o make_lattice.o ranstuff.o remap_stdio_from_args.o io_ansi.o  com_mpi.o ploop3.o show_generic_ks_md_opts.o fermion_links_from_site.o f_meas.o gauss_smear_ks.o grsource_imp.o naik_eps_utilities.o path_transport.o rephase.o show_generic_ks_opts.o show_hisq_links_opts.o show_hypisq_links_opts.o fermion_links_hisq_milc.o fermion_links_hisq_load_milc.o fermion_links.o fermion_links_fn_load_milc.o fermion_links_fn_twist_milc.o general_staple.o fn_links_milc.o ks_action_paths_hisq.o su3_mat_op.o stout_smear.o d_congrad5_two_src.o d_congrad5_fn_qphix.o d_congrad5_fn_qphix_D.o d_congrad5_fn_qphix_F.o d_congrad5_fn_milc.o mat_invert.o ks_invert.o d_congrad5_fn.o d_congrad_opt.o report_invert_status.o dslash_fn_dblstore.o ks_multicg.o ks_multicg_offset_qphix.o ks_multicg_offset_qphix_D.o  ks_multicg_offset_qphix_F.o fermion_force_hisq_multi.o show_hisq_force_opts.o show_hypisq_force_opts.o ff_opt.o  gauge_force_symzk1_qphix.o gauge_stuff.o ranmom.o gauge_force_symzk1_qphix_D.o gauge_force_symzk1_qphix_F.o control.o ../libraries/su3.2.a ../libraries/complex.2.a           -L../QPhiX_MILC/milc-qphix -lqphixmilc_avx512 -lrt    -lm
+milc_to_qphix_utilities.o: In function `initialize_qphix':
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic/milc_to_qphix_utilities.c:63: undefined reference to `omp_get_max_threads'
+ks_multicg.o: In function `ks_multicg_hybrid_field':
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic_ks/ks_multicg.c:201: undefined reference to `ks_multicg_offset_field_cpu'
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic_ks/ks_multicg.c:201: undefined reference to `ks_multicg_offset_field_cpu'
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic_ks/ks_multicg.c:201: undefined reference to `ks_multicg_offset_field_cpu'
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic_ks/ks_multicg.c:201: undefined reference to `ks_multicg_offset_field_cpu'
+/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc/../generic_ks/ks_multicg.c:201: undefined reference to `ks_multicg_offset_field_cpu'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `QPHIX_F3_asqtad_invert':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:227: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_source_norm(float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_rsq(float*, float const*, float const*, float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_pkp(float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_rsq2(float*, float const*, float, float*, float const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `axpy(float const*, float const*, float, float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_rsq2(float*, float const*, float, float*, float const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_pkp(float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_rsq(float*, float const*, float const*, float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `calc_source_norm(float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.fo): In function `QPHIX_F3_asqtad_invert':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:583: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `QPHIX_D3_asqtad_invert':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:227: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_source_norm(double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_rsq(double*, double const*, double const*, double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_pkp(double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_rsq2(double*, double const*, double, double*, double const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `axpy(double const*, double const*, double, double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:183: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_rsq2(double*, double const*, double, double*, double const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:139: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_pkp(double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:164: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_rsq(double*, double const*, double const*, double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:90: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `calc_source_norm(double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:65: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_d_congrad_fn.do): In function `QPHIX_D3_asqtad_invert':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_d_congrad_fn.cpp:583: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `QPHIX_F3_asqtad_invert_multi':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:257: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `update_dest(float (**) [3][2][16], int, float const (**) [3][2][16], float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `calc_rsq2(float*, float, float const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `calc_pkp(float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_atomic_float4_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `copyKS(float*, float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `calc_source_norm(float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_atomic_float4_add'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `copyKS(float*, float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `calc_pkp(float*, float*, float)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `calc_rsq2(float*, float, float const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `update_dest(float (**) [3][2][16], int, float const (**) [3][2][16], float*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.fo): In function `update_pm(float const*, float (**) [3][2][16], float (**) [3][2][16], float*, float*, float*, int)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_dispatch_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_dispatch_next_4'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `QPHIX_D3_asqtad_invert_multi':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:257: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `update_dest(double (**) [3][2][8], int, double const (**) [3][2][8], double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `calc_rsq2(double*, double, double const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `calc_pkp(double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `copyKS(double*, double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `calc_source_norm(double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_atomic_float8_add'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:73: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `copyKS(double*, double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:86: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `calc_pkp(double*, double*, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:114: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `calc_rsq2(double*, double, double const*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:157: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `update_dest(double (**) [3][2][8], int, double const (**) [3][2][8], double*)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:184: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_multicg_offset.do): In function `update_pm(double const*, double (**) [3][2][8], double (**) [3][2][8], double*, double*, double*, int)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_dispatch_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_multicg_offset.cpp:206: undefined reference to `__kmpc_dispatch_next_4'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_create_V_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:109: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_create_G_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:204: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_create_F_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:341: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_extract_V_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:468: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:502: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:475: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_extract_G_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:547: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:630: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:549: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_extract_F_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:727: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:825: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:732: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_asqtad_create_L_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:961: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1012: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:968: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:947: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:947: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_f3.o): In function `QPHIX_F3_asqtad_extract_L_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1093: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1093: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1137: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1095: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1079: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_f3.cpp:1079: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_create_V_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:107: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_create_G_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:202: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_create_F_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:339: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_extract_V_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:466: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:500: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:473: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_extract_G_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:546: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:629: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:548: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_extract_F_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:726: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:824: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:731: undefined reference to `__kmpc_end_serialized_parallel'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_asqtad_create_L_from_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:960: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1011: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:967: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:946: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:946: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_d3.o): In function `QPHIX_D3_asqtad_extract_L_to_raw':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1092: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1092: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1136: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1094: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1078: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_d3.cpp:1078: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_misc.fo): In function `QPHIX_init_F':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:439: undefined reference to `omp_get_max_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:511: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:439: undefined reference to `omp_get_max_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:511: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_misc.fo): In function `init_ks_dslash_imp()':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_misc.do): In function `QPHIX_init_D':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:439: undefined reference to `omp_get_max_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:522: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:511: undefined reference to `__kmpc_global_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(qphix_misc.do): In function `init_ks_dslash_imp()':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/qphix_misc.cpp:63: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(gauge_force_imp.fo): In function `initBuf(void*, unsigned long)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(gauge_force_imp.fo): In function `update_h_u_gforce_imp_F(void*, void*, void*, int, double, double, double, double, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(gauge_force_imp.do): In function `initBuf(void*, unsigned long)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:83: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(gauge_force_imp.do): In function `update_h_u_gforce_imp_D(void*, void*, void*, int, double, double, double, double, double)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `omp_get_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/gauge_force_imp.cpp:225: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.fo): In function `initBuf(void*, unsigned long)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.fo): In function `setFullGauge18_F':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.fo): In function `setFullGauge_F':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.fo): In function `qphix_ks_dslash_F':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.do): In function `initBuf(void*, unsigned long)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:264: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.do): In function `setFullGauge18_D':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:367: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.do): In function `setFullGauge_D':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:413: undefined reference to `__kmpc_for_static_fini'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_long_dslash.do): In function `qphix_ks_dslash_D':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_long_dslash.cpp:574: undefined reference to `omp_get_thread_num'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_blas_utils_c.fo): In function `relative_residue(float (*) [3][2][16], float (*) [3][2][16], int)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_atomic_float8_add'
+../QPhiX_MILC/milc-qphix/libqphixmilc_avx512.a(ks_blas_utils_c.do): In function `relative_residue(double (*) [3][2][8], double (*) [3][2][8], int)':
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_global_thread_num'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_ok_to_fork'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_push_num_threads'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_fork_call'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_end_serialized_parallel'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_for_static_init_4'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_for_static_fini'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_end_reduce_nowait'
+/home/liuyuz/LQCD_acquisition/milc_qcd/QPhiX_MILC/milc-qphix/ks_blas_utils_c.cpp:140: undefined reference to `__kmpc_atomic_float8_add'
+make[1]: *** [localmake] Error 1
+make[1]: Leaving directory `/home/liuyuz/LQCD_acquisition/milc_qcd/ks_imp_rhmc'
+make: *** [su3_rhmd_hisq] Error 2
