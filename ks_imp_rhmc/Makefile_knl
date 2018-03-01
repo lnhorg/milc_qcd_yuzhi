@@ -90,7 +90,7 @@ OPT              = -O3
 
 # OpenMP?
 
-OMP = #true
+OMP = true
 
 #----------------------------------------------------------------------
 # 7. Other compiler optimization flags.  Uncomment stanza to suit.
@@ -429,12 +429,10 @@ endif
 # 16. QPhiX Options
 
 WANTQPHIX = true
-WANT_FN_CG_QPHIX = #true
+WANT_FN_CG_QPHIX = true
 WANT_GF_QPHIX = true
 
 QPHIX_HOME = ../QPhiX_MILC/milc-qphix
-#QPHIX_HOME = /home/liuyuz/LQCD_acquisition/milc-qphix
-#QPHIX_HOME = /home/sg/jlab_git/milc-qphix
 
 ifeq ($(strip ${WANTQPHIX}), true)
 
