@@ -5,4 +5,11 @@
 .lastmake.*
 localmake
 
-
+*rhmd_hisq
+*rhmc_hisq
+pure_gauge_u1
+quark_action.h
+gauge_action.h
+Makefile
+*swp
+remez-milc/
