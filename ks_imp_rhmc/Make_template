@@ -277,6 +277,10 @@ pure_gauge_u1::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@${BINEXT}" ${HISQ_OPTIONS_U1} \
 	"DEFINES+= -DU1_ONLY -DPURE_GAUGE_U1"
 
+pure_gauge_u1_hmc::
+	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@${BINEXT}" ${HISQ_OPTIONS_U1} \
+	"DEFINES+= -DU1_ONLY -DPURE_GAUGE_U1 -DHMC"
+
 #######################################################################
 # Experimental targets
 
