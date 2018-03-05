@@ -36,3 +36,5 @@ out.*
 *in*
 *out*
 
+!pure_gauge_u1.2.sample-in
+!pure_gauge_u1.2.sample-out
