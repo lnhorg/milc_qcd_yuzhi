@@ -6,7 +6,7 @@
 #
 
 # This file
-MAKEFILE = Makefile_knl
+MAKEFILE = Makefile_fnal
 
 #----------------------------------------------------------------------
 #  User choices - edit to suit 
@@ -14,12 +14,12 @@ MAKEFILE = Makefile_knl
 # 1. Machine architecture.  Controls optimization flags here and in libraries.
 #    Can control BINEXT below, a suffix appended to the name of the executable.
 
-ARCH = knl # knl knc hsw pow8
+ARCH = # knl knc hsw pow8
 
 #----------------------------------------------------------------------
 # 2. Compiler family
 
-COMPILER = intel # gnu intel, ibm, portland, cray-intel
+COMPILER = gnu # intel, ibm, portland, cray-intel
 
 #----------------------------------------------------------------------
 # 3. MPP vs Scalar
@@ -79,8 +79,8 @@ endif
 #   CXX = icpc
 # endif
 
-#CC = /usr/local/mvapich/bin/mpicc  # FNAL
-#CXX =  /usr/local/mvapich/bin/mpiCC  # FNAL
+CC = /usr/local/mvapich/bin/mpicc  # FNAL
+CXX =  /usr/local/mvapich/bin/mpiCC  # FNAL
 
 #----------------------------------------------------------------------
 # 6. Compiler optimization level
@@ -90,7 +90,7 @@ OPT              = -O3
 
 # OpenMP?
 
-OMP = true
+OMP = #true
 
 #----------------------------------------------------------------------
 # 7. Other compiler optimization flags.  Uncomment stanza to suit.
@@ -428,7 +428,7 @@ endif
 #----------------------------------------------------------------------
 # 16. QPhiX Options
 
-WANTQPHIX = true
+WANTQPHIX = #true
 WANT_FN_CG_QPHIX = true
 WANT_GF_QPHIX = true
 
@@ -972,7 +972,7 @@ DARCH = ${CSCIDAC} ${CGPU} ${CPHI}
 
 # Complete set of compiler flags - do not change
 CFLAGS = ${OPT} ${OCFLAGS} -D${COMMTYPE} ${CODETYPE} ${INLINEOPT} \
-	${CPREC} ${CLFS} ${INCSCIDAC} -I${MYINCLUDEDIR} ${DARCH} \
+	# ${CPREC} ${CLFS} ${INCSCIDAC} -I${MYINCLUDEDIR} ${DARCH} \
 	${DEFINES} ${ADDDEFINES} ${IMPI} ${INCADD}
 CXXFLAGS = ${OPT} ${OCXXFLAGS} -D${COMMTYPE} ${CODETYPE} ${INLINEOPT} \
         ${CPREC} ${CLFS} ${INCSCIDAC} -I${MYINCLUDEDIR} ${DARCH} \
