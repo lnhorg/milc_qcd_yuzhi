@@ -462,6 +462,7 @@ initialize_machine(int *argc, char ***argv)
   required = MPI_THREAD_SINGLE;
 #endif
   
+#ifdef HAVE_GRID
   flag = MPI_Init_thread(argc, argv, required, &provided);
   if(flag != MPI_SUCCESS) err_func(&comm, &flag);
   if(provided != required){
@@ -469,6 +470,9 @@ initialize_machine(int *argc, char ***argv)
     fflush(stdout);
     exit(flag);
   }
+#else
+  flag = MPI_Init(argc, argv);
+#endif
   flag = MPI_Comm_dup(MPI_COMM_WORLD, &MPI_COMM_THISJOB);
   comm = MPI_COMM_THISJOB;
   if(flag != MPI_SUCCESS) err_func(&comm, &flag);

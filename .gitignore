@@ -11,3 +11,8 @@ localmake
 *.sample-tmp
 *.test-diff
 *.test-tmp
+
+pure_gauge_u1
+su3_*rhm*_hisq
+
+.*swp

@@ -1,0 +1,95 @@
+This is a bug report for the current milc_qcd develop branch commit
+19d74025f3d597d0c4e5c47700fdef8e0f184197
+
+It relates to the ../generic/com_mpi.c  routine.
+
+When compiling and running the ``su3_rhmd_hisq'' on FNAL pi0 and ds clusters, I
+got the following output:
+
+```
+Mon Mar  5 16:02:20 CST 2018
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+com_mpi: required thread-safety level 0 can't be provided 1.
+```
+
+This can be traced back to the following lines of the code inside
+``../generic/com_mpi.c''
+
+```
+ 457 #ifdef HAVE_GRID
+ 458   required = MPI_THREAD_MULTIPLE;
+ 459   printf("com_mpi: setting required thread-safety level to MPI_THREAD_MULTIPLE = %d\n", MPI_THREAD_MULTIPLE);
+ 460 #else
+ 461   printf("com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = %d\n", MPI_THREAD_SINGLE);
+ 462   required = MPI_THREAD_SINGLE;
+ 463 #endif
+ 464 
+ 465   flag = MPI_Init_thread(argc, argv, required, &provided);
+ 466   if(flag != MPI_SUCCESS) err_func(&comm, &flag);
+ 467   if(provided != required){
+ 468     printf("com_mpi: required thread-safety level %d can't be provided %d.\n", required, provided);
+ 469     fflush(stdout);
+ 470     exit(flag);
+ 471   } 
+```
+
+The reason for this falure is due to the ``MPI_Init_thread(argc, argv,
+required, &provided)'' call. There is no guarantee that the returned
+``provided'' value is always equal to the `'required'' value. For example, on
+BigRedII, with cray-mpich/7.3.2, both ``provided'' and ``required'' are 0 and
+the program runs fine. But on FNAL pi0, with mvapich 1.2rc1 built with
+gcc-4.4.7 for Infiniband), the ``required'' is set to be 0 but ``provided'' is
+set to be 1.
+
+One possible fix for this bug is to add an extra flag for GRID implementation
+and use ``MPI_Init_thread'' only when the ``HAVE_GRID'' flag is present.
+
+```
+ 465 #ifdef HAVE_GRID
+ 466   flag = MPI_Init_thread(argc, argv, required, &provided);
+ 467   if(flag != MPI_SUCCESS) err_func(&comm, &flag);
+ 468   if(provided != required){
+ 469     printf("com_mpi: required thread-safety level %d can't be provided %d.\n", required, provided);
+ 470     fflush(stdout);
+ 471     exit(flag);
+ 472   }
+ 473 #else
+ 474   flag = MPI_Init(argc, argv);
+ 475 #endif
+```
+
+It will also be nice to print only one line 
+```
+com_mpi: setting required thread-safety level to MPI_THREAD_SINGLE = 0
+```
+instead of number-of-core lines to the output.
