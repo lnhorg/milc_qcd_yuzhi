@@ -24,21 +24,25 @@ then
   exit
 fi
 
+if [ "$MULTIGRID" = "1" ]
+then
+  MG="-DMULTIGRID"
+fi
+
 if [ ! -f "./Makefile" ]
 then
   cp ../Makefile .
 fi
 
-if [ -f "./su3_rhmd_hisq" ]
+if [ -f "./ks_spectrum_hisq" ]
 then
-  rm ./su3_rhmd_hisq
+  rm ./ks_spectrum_hisq
 fi
 
 #ARCH="pow9" \
 #COMPILER="gnu" \
 #OPT="-O3 -Ofast" \
-#CTIME="-DNERSC_TIME -DCGTIME -DFFTIME -DGATIME -DGFTIME -DREMAP -DPRTIME -DIOTIME" \
-#QUDA_VERBOSITY=VERBOSE \
+#CTIME="-DNERSC_TIME -DCGTIME -DFFTIME -DGFTIME -DREMAP -DPRTIME -DIOTIME" \
 MY_CC=mpicc \
 MY_CXX=mpicxx \
 CUDA_HOME=${PATH_TO_CUDA} \
@@ -48,7 +52,7 @@ WANT_FN_CG_GPU=true \
 WANT_FL_GPU=true \
 WANT_GF_GPU=true \
 WANT_FF_GPU=true \
-WANT_GA_GPU=true \
+WANT_GAUGEFIX_OVR_GPU=true \
 WANT_MIXED_PRECISION_GPU=2 \
 PRECISION=2 \
 MPP=true \
@@ -57,4 +61,7 @@ WANTQIO=true \
 WANTQMP=true \
 QIOPAR=${PATH_TO_QIO} \
 QMPPAR=${PATH_TO_QMP} \
-make -j 1 su3_rhmd_hisq
+CGEOM="-DFIX_NODE_GEOM -DFIX_IONODE_GEOM" \
+KSCGMULTI="-DKS_MULTICG=HYBRID -DMULTISOURCE $MG" \
+make -j 1 ks_spectrum_hisq
+
