@@ -1,8 +1,6 @@
 // Mapping between MILC and Grid types
 
-//#if defined(_OPENMP) || defined(OMP)
 #include "../include/openmp_defs.h"
-//#endif
 
 #include <Grid/Grid.h>
 
@@ -15,7 +13,6 @@ extern "C" {
 }
 
 #include "../include/milc_datatypes.h"
-#include "../include/macros.h"
 
 extern	int sites_on_node;		/* number of sites on this node */
 extern	int even_sites_on_node;	/* number of even sites on this node */
@@ -149,12 +146,10 @@ create_V_from_vec( su3_vector *src, int milc_parity,
 
   auto start = std::chrono::system_clock::now();
   #pragma omp parallel for 
-    for( uint64_t idx = loopstart; idx < loopend; idx++){
+    for( size_t idx = loopstart; idx < loopend; idx++){
 
       Coordinate x(4);
       indexToCoords(idx,x);
-      Coordinate lx(4);
-      for (int i = 0; i < 4; i++)lx[i] = x[i];
 
       ColourVector cVec;
       for(int col=0; col<Nc; col++){
@@ -162,8 +157,9 @@ create_V_from_vec( su3_vector *src, int milc_parity,
 	  Complex(src[idx].c[col].real, src[idx].c[col].imag);
       }
       
-      autoView(Dst_cv, (*(out->cv)), CpuWrite);
-      pokeLocalSite(cVec, Dst_cv, x);
+      //      autoView(Dst_cv, (*(out->cv)), CpuWrite);
+      //      pokeLocalSite(cVec, Dst_cv, x);
+      pokeLocalSite(cVec, *(out->cv), x);
       
     }
   auto end = std::chrono::system_clock::now();
@@ -195,8 +191,9 @@ create_nV_from_vecs( su3_vector *src[], int n, int milc_parity,
   std::cout << "create_nv_from_vecs: ColourVector size  = " << sizeof(ColourVector)  
 	    << " ColourVectorField size = " << sizeof(*(out->cv)) << "\n" << std::flush;
   auto start = std::chrono::system_clock::now();
-#pragma omp parallel for
-    for( uint64_t idx = loopstart; idx < loopend; idx++){
+  #pragma omp parallel for
+    for( size_t idx = loopstart; idx < loopend; idx++){
+
       Coordinate x(4);
       indexToCoords(idx,x);
 //      Coordinate x5(1,0);
@@ -205,7 +202,7 @@ create_nV_from_vecs( su3_vector *src[], int n, int milc_parity,
       Coordinate x5(5);
       for( int d = 0; d < 4; d++ )
 	x5[d+1] = x[d];
-
+      
       for( int j = 0; j < n; j++ ){
 	x5[0] = j;
 	ColourVector cVec;
@@ -213,8 +210,9 @@ create_nV_from_vecs( su3_vector *src[], int n, int milc_parity,
 	  cVec._internal._internal._internal[col] = 
 	    Complex(src[j][idx].c[col].real, src[j][idx].c[col].imag);
 	}
-        autoView(Dst_cv, (*(out->cv)), CpuWrite);
-        pokeLocalSite(cVec, Dst_cv, x5);
+//        autoView(Dst_cv, (*(out->cv)), CpuWrite);
+//        pokeLocalSite(cVec, Dst_cv, x5);
+	pokeLocalSite(cVec, *(out->cv), x5);
       }
     }
   auto end = std::chrono::system_clock::now();
@@ -237,11 +235,10 @@ static void extract_V_to_vec( su3_vector *dest,
       Coordinate x(4);
       indexToCoords(idx, x);
       ColourVector cVec;
-      Coordinate lx(4);
-      for (int i = 0; i < 4; i++)lx[i] = x[i];
 
-      autoView(Src_cv, (*(src->cv)), CpuRead);
-      peekLocalSite(cVec, Src_cv, x);
+      // autoView(Src_cv, (*(src->cv)), CpuRead);
+      // peekLocalSite(cVec, Src_cv, x);
+      peekLocalSite(cVec, *(src->cv), x);
 
       for(int col = 0; col < Nc; col++)
 	{
@@ -267,15 +264,14 @@ static void extract_nV_to_vecs( su3_vector *dest[], int n,
       Coordinate x5(1,0);
       for( int d = 0; d < 4; d++ )
 	x5.push_back(x[d]);
-      Coordinate lx5(5);
-      for (int i = 0; i < 4; i++)lx5[i] = x[i];
 
       for( int j = 0; j < n; j++ ){
-	lx5[0] = j;
+	x5[0] = j;
 
 	ColourVector cVec;
-        autoView(Src_cv, (*(src->cv)), CpuRead);
-        peekLocalSite(cVec, Src_cv, x5);
+	//        autoView(Src_cv, (*(src->cv)), CpuRead);
+	//        peekLocalSite(cVec, Src_cv, x5);
+	peekLocalSite(cVec, *(src->cv), x5);
 	
 	for(int col = 0; col < Nc; col++)
 	  {
@@ -316,9 +312,7 @@ static void milcGaugeFieldToGrid(su3_matrix *in, LatticeGaugeField &out){
       Coordinate x(4);
       indexToCoords(milc_idx, x);
       int grid_idx;
-      Coordinate lx(4);
-      for (int i = 0; i < 4; i++)lx[i] = x[i];
-      Lexicographic::IndexFromCoor(lx, grid_idx, grid->_ldimensions);
+      Lexicographic::IndexFromCoor(x, grid_idx, grid->LocalDimensions());
       milcSU3MatrixToGrid<sobj, Complex>(in + 4*milc_idx, scalardata[grid_idx]);
     }
   
@@ -381,7 +375,7 @@ asqtad_destroy_L( struct GRID_FermionLinksAsqtad_struct<LatticeGaugeField> *Link
   if (Link->fatlinks != NULL) delete Link->fatlinks;
   if (Link->lnglinks != NULL) delete Link->lnglinks;
   
-  free(Link);
+  delete Link;
   
   Link = NULL;
 }
@@ -509,7 +503,6 @@ GRID_F3_create_nV( int n, int milc_parity,
 		   GRID_4Dgrid *grid_full,GRID_4DRBgrid *grid_rb ){
   return create_nV<ImprovedStaggeredFermion5DF>( n, milc_parity, grid_5D->gridF, grid_5Drb->gridF,
 					  grid_full->gridF, grid_rb->gridF );
-
 }
 
 // create color vector
@@ -525,7 +518,6 @@ GRID_D3_create_nV( int n, int milc_parity,
                    GRID_4Dgrid *grid_full, GRID_4DRBgrid *grid_rb ){
   return create_nV<ImprovedStaggeredFermion5DD>( n, milc_parity, grid_5D->gridD, grid_5Drb->gridD,
 					  grid_full->gridD, grid_rb->gridD );
-
 }
 
 // free color vector
