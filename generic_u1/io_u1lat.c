@@ -60,7 +60,7 @@
 #define NATURAL_ORDER 0
 
 #undef MAX_BUF_LENGTH
-#define MAX_BUF_LENGTH 4096
+#define MAX_BUF_LENGTH 32768
 
 /* Forward declarations */
 static gauge_file *w_u1_serial_i(char *filename);
@@ -1456,14 +1456,14 @@ static void r_u1_parallel(gauge_file *gf)
   buf_length = 0;
   where_in_buf = 0;
   
-  /* Cycle through nodes, dealing 4 values from each node in sequence.
+  /* Cycle through nodes, dealing 128 values from each node in sequence.
      (We don't know if this pattern is generally optimal.)
 
      It is possible that messages arrive at a node in an order
      different from the order of dealing so we include the site
      coordinates in the message to specify where it goes */
   
-  site_block = 4;
+  site_block = 128;
   for(ksite=0; ksite<sites_on_node; ksite += site_block)
     {
     for(sendnode=0; sendnode<number_of_nodes; sendnode++)
