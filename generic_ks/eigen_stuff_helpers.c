@@ -316,6 +316,28 @@ void print_densities(su3_vector *src, char *tag, int y,int z,int t,
 }
 
 /*****************************************************************************/
+/* Restore the ODD (EVEN) part of KS eigenvectors from the EVEN (ODD) part */
+
+void restore_eigVec(int Nvecs, Real *eigVal, su3_vector **eigVec, int parity,
+		    imp_ferm_links_t *fn)
+{
+  char myname[] = "restore_eigVec";
+  
+  su3_vector *ttt = create_v_field();
+  
+  for(int i=0; i < Nvecs; i++){
+    dslash_fn_field(eigVec[i], ttt, parity, fn);
+    int j;
+    FORSOMEFIELDPARITY(j, parity){
+      complex c = cmplx(0.0,1.0/sqrt(eigVal[i]));
+      c_scalar_mult_su3vec(ttt + j, &c, eigVec[i] + j) ;
+    } END_LOOP;
+  }
+  
+  destroy_v_field(ttt);
+}
+
+/*****************************************************************************/
 /* Reset the eigenvalues from the eigenvectors using the Rayleigh quotient   */
 /* (Needed when the eigenvalues are from a preconditioned operator)          */
 
@@ -507,24 +529,22 @@ static void double_vec_mult(double *a, su3_vector *vec1,
 /* Construct odd-site eigenvectors from even                                 */
 /* (Simply multiply even-site vectors by dslash and normalize                */
 
-void construct_eigen_odd(su3_vector *eigVec[], Real eigVal[], 
-			 ks_eigen_param *eigen_param, imp_ferm_links_t *fn){
+void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[], 
+				  ks_eigen_param *eigen_param, imp_ferm_links_t *fn){
   
   char myname[] = "construct_eigen_odd";
   int i,j;
   double *magsq;
   int Nvecs = eigen_param->Nvecs;
-
-  if(eigen_param->parity != EVEN){
-    node0_printf("%s: ERROR. active_parity must be EVEN\n", myname);
-    terminate(1);
-  }
+  /* If parity = ODD we assume we have EVEN eigenvectors and vice-versa */
+  int parity = eigen_param->parity;
+  site *s;
 
   for(j = 0; j < Nvecs; j++){
-    FORODDFIELDSITES_OMP(i,){
+    FORSOMEPARITY_OMP(i,s,parity,){
       clearvec(eigVec[j]+i);
     } END_LOOP_OMP;
-    dslash_field(eigVec[j], eigVec[j], ODD, fn);
+    dslash_field(eigVec[j], eigVec[j], parity, fn);
   }
 
   /* If we calculate the 2-norms all at once we do only one large
@@ -535,7 +555,7 @@ void construct_eigen_odd(su3_vector *eigVec[], Real eigVal[],
     terminate(1);
   }
 
-  dvecmagsq(magsq, eigVec, ODD, Nvecs);
+  dvecmagsq(magsq, eigVec, parity, Nvecs);
 
   /* Normalize the odd-site vectors */
   for(j = 0; j < Nvecs; j++){
@@ -546,7 +566,7 @@ void construct_eigen_odd(su3_vector *eigVec[], Real eigVal[],
       node0_printf("%s: ERROR. zero norm for eigenvector %d.", myname, j);
       fact = 0.;
     }
-    double_vec_mult(&fact, eigVec[j], eigVec[j], ODD);
+    double_vec_mult(&fact, eigVec[j], eigVec[j], parity);
   }
   
   free(magsq);
