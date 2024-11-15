@@ -391,6 +391,7 @@ size_t node_index(int x,int y,int z,int t);
 size_t num_sites(int node);
 const int *get_logical_dimensions(void);
 const int *get_logical_coordinate(void);
+size_t get_even_sites_on_node(int node);
 void get_coords(int coords[], int node, size_t index);
 
 /* make_lattice.c */
