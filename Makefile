@@ -365,7 +365,7 @@ endif
 #----------------------------------------------------------------------
 # 12. FFTW3 Options
 
-WANTFFTW = true
+WANTFFTW ?= false
 
 ifeq ($(strip ${WANTFFTW}),true)
   FFTW ?= ${HOME}/fftw/build-gcc
