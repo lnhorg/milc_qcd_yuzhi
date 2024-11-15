@@ -317,6 +317,7 @@ void print_densities(su3_vector *src, char *tag, int y,int z,int t,
 
 /*****************************************************************************/
 /* Restore the ODD (EVEN) part of KS eigenvectors from the EVEN (ODD) part */
+/* Here we don't normalize the result */
 
 void restore_eigVec(int Nvecs, Real *eigVal, su3_vector **eigVec, int parity,
 		    imp_ferm_links_t *fn)
@@ -526,13 +527,13 @@ static void double_vec_mult(double *a, su3_vector *vec1,
 }
 
 /*****************************************************************************/
-/* Construct odd-site eigenvectors from even                                 */
+/* Construct odd-site (even-site)  eigenvectors from even (odd)              */
 /* (Simply multiply even-site vectors by dslash and normalize                */
 
 void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[], 
 				  ks_eigen_param *eigen_param, imp_ferm_links_t *fn){
   
-  char myname[] = "construct_eigen_odd";
+  char myname[] = "construct_eigen_other_parity";
   int i,j;
   double *magsq;
   int Nvecs = eigen_param->Nvecs;

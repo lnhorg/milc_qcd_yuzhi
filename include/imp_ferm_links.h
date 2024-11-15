@@ -284,6 +284,8 @@ void set_fn_last(imp_ferm_links_t *fn_last_new);
 
 /* eigen_stuff*.c */
 
+void restore_eigVec(int Nvecs, Real *eigVal, su3_vector **eigVec, int parity,
+		    imp_ferm_links_t *fn);
 typedef struct {
   int norder ; /* Order of the preconditioning polynomial */
   int which_poly; /* Polynomial selection */
@@ -388,8 +390,8 @@ void perturb_eigpair(su3_vector *eigVec_new[], Real *eigVal_new,
 		     imp_ferm_links_t *fn_old);
 void check_eigres(double *resid, su3_vector *eigVec[], Real *eigVal,
 		  int Nvecs, int parity, imp_ferm_links_t *fn);
-void construct_eigen_odd(su3_vector **eigVec, Real *eigVal, ks_eigen_param* eigen_param, imp_ferm_links_t *fn);
-
+void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[], 
+				  ks_eigen_param *eigen_param, imp_ferm_links_t *fn);
 
 /* fn_links_qop.c  and fn_links_milc.c */
 

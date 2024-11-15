@@ -166,7 +166,7 @@ endif
 EIGEN_OBJECTS = eigen_stuff_helpers.o io_helpers_ks_eigen.o io_ks_eigen.o read_eigen_param.o
 
 ifeq ($(strip ${HAVEQIO}),true)
-  EIGEN_OBJECTS += io_scidac_ks_eigen.o
+  EIGEN_OBJECTS += io_scidac_ks_eigen.o io_grid_ks_eigen.o
 endif
 
 ifeq ($(strip ${HAVE_EIG_GPU}),true)
