@@ -109,7 +109,7 @@ int main( int argc, char **argv ){
     fflush(stdout);
 
     /* Construct eigenpairs on odd sites */
-    construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
+    construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
     
     /* Calculate and print the residues and norms of the eigenvectors */
     resid = (double *)malloc(param.eigen_param.Nvecs*sizeof(double));

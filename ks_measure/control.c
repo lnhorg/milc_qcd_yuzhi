@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
 	}
       }
 
-      ENDTIME("calculate Dirac eigenpairs"); fflush(stdout);
+      ENDTIME("calculate/reload Dirac eigenpairs"); fflush(stdout);
       
 #endif
     }
