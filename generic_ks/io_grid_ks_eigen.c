@@ -111,7 +111,7 @@ grid_checksum(su3_vector *eigVec, uint32_t *suma, uint32_t *sumb){
     /* The global rank  of the site */
     global_site = lex_rank( coords, 4, latdim);
 
-    printf("%lu %5d coords %2d %2d %2d %2d", global_site,  i - even_sites_on_node, coords[0], coords[1], coords[2], coords[3]); dumpvec(&eigVec[i]);
+    // printf("%lu %5d coords %2d %2d %2d %2d", global_site,  i - even_sites_on_node, coords[0], coords[1], coords[2], coords[3]); dumpvec(&eigVec[i]);
 
     /* Then fix the byte order */
     byterevn64(site_buf, sizeof(dsu3_vector)/sizeof(double));
