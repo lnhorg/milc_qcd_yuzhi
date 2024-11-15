@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
 	total_R_iters=ks_eigensolve(eigVec, eigVal, &param.eigen_param, 1);
-	construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
+	construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
 	node0_printf("total Rayleigh iters = %d\n", total_R_iters);
 	
 #if 0 /* If needed for debugging */
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, EVEN, fn );
-      construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
+      construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
       
