@@ -1052,57 +1052,6 @@ copy_list_switch(comlink *old_compt, int *send_subl)
   return(firstpt);
 }
 
-// Function to swap two addressed values
-static void swap(int *a, int *b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-/* quicksort adapted from https://gist.github.com/Erniuu/f5d38f1e6b892c70dbac */
-
-// Function to run quicksort on an array of integers
-// l is the leftmost starting index, which begins at 0
-// r is the rightmost starting index, which begins at array length - 1
-static void quicksort(int key[], int arr[], int l, int r)
-{
-    // Base case: No need to sort arrays of length <= 1
-    if (l >= r)
-    {
-        return;
-    }
-    
-    // Choose pivot to be the last element in the subarray
-    int pivot = key[r];
-
-    // Index indicating the "split" between elements smaller than pivot and 
-    // elements greater than pivot
-    int cnt = l;
-
-    // Traverse through array from l to r
-    for (int i = l; i <= r; i++)
-    {
-        // If an element less than or equal to the pivot is found...
-        if (key[i] <= pivot)
-        {
-            // Then swap key[cnt] and key[i] so that the smaller element key[i] 
-            // is to the left of all elements greater than pivot
-            swap(&key[cnt], &key[i]);
-            swap(&arr[cnt], &arr[i]);
-
-            // Make sure to increment cnt so we can keep track of what to swap
-            // key[i] with
-            cnt++;
-        }
-    }
-    
-    // NOTE: cnt is currently at one plus the pivot's index 
-    // (Hence, the cnt-2 when recursively sorting the left side of pivot)
-    quicksort(key, arr, l, cnt-2); // Recursively sort the left side of pivot
-    quicksort(key, arr, cnt, r);   // Recursively sort the right side of pivot
-}
-
 /*
 **  sort a list of sites according to the order of the sites on the
 **  node with which they comunicate
@@ -1135,8 +1084,6 @@ sort_site_list(
     key[j] = node_index(x,y,z,t);
   }
 
-#if 0
-
   /* bubble sort, if this takes too long fix it later */
   for(j = n-1; j>0; j--) {
     flag=0;
@@ -1154,9 +1101,6 @@ sort_site_list(
     }
     if(flag==0)break;
   }
-#else
-  quicksort(key, list, 0, n-1);
-#endif
 
   free(key);
 }
