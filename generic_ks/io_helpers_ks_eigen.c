@@ -178,7 +178,7 @@ reload_ks_eigen_file(char *eigfile, int serpar, int *Nvecs, Real *eigVal,
   
   /* Reconstruct eigenvalues */
   //  if(status == 0)
-    reset_eigenvalues( eigVec, eigVal, *Nvecs, parity, fn);
+  //  reset_eigenvalues( eigVec, eigVal, *Nvecs, parity, fn);
 
   return status;
 
