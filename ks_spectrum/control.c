@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   ks_prop_field *quark[MAX_QK];
   int prop_nc[MAX_PROP];
   int Nvecs_curr;
-  double *resid = NULL;
+  Real *resid = NULL;
   
   initialize_machine(&argc,&argv);
 
