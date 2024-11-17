@@ -395,6 +395,7 @@ open_ks_eigen_infile(const char *filename, int *Nvecs, int *packed, int *file_ty
 
   /* Interpret the file XML */
 
+  xml = QIO_string_ptr(filexml);
   parse_file_xml_Nvec(&Nvecs_test, xml);
   parse_file_xml_packed(packed, xml);
 
@@ -483,6 +484,11 @@ read_ks_eigenvector(QIO_Reader *infile, int packed, su3_vector *eigVec, Real *ei
     unpack_field(eigVec, sizeof(su3_vector));
     dt += dclock();
     node0_printf("%s unpack time %0.2f\n",__func__,dt);
+  }
+
+  if(status != QIO_EOF){
+    xml = QIO_string_ptr(recxml);
+    parse_xml_eigVal(eigVal, xml);
   }
 
   QIO_string_destroy(recxml);
@@ -762,7 +768,7 @@ read_quda_ks_eigenvectors(QIO_Reader *infile, su3_vector *eigVec[], Real *eigVal
 
   if(datacount < *Nvecs){
     node0_printf("%s WARNING: Requested %d eigenvectors but the file has %d.\n",
-		 myname, *Nvecs, datacount);
+ 		 myname, *Nvecs, datacount);
     node0_printf("%s WARNING: Reducing the request.\n", myname);
     *Nvecs = datacount;
   }
