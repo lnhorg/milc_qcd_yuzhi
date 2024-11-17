@@ -537,15 +537,21 @@ void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[],
   int i,j;
   double *magsq;
   int Nvecs = eigen_param->Nvecs;
+  int otherparity = 0;
   /* If parity = ODD we assume we have EVEN eigenvectors and vice-versa */
   int parity = eigen_param->parity;
   site *s;
 
+  switch(parity){
+  case(EVEN): otherparity=ODD; break;
+  case(ODD):  otherparity=EVEN; break;
+  }
+
   for(j = 0; j < Nvecs; j++){
-    FORSOMEPARITY_OMP(i,s,parity,){
+    FORSOMEPARITY_OMP(i,s,otherparity,){
       clearvec(eigVec[j]+i);
     } END_LOOP_OMP;
-    dslash_field(eigVec[j], eigVec[j], parity, fn);
+    dslash_field(eigVec[j], eigVec[j], otherparity, fn);
   }
 
   /* If we calculate the 2-norms all at once we do only one large
