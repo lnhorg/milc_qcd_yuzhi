@@ -9,12 +9,19 @@
 #
 #  Targets
 #
-#	ks_measure_asqtad         Basic measurements (asqtad)
-#	ks_measure_hisq		  Basic measurements (HISQ)
-#	ks_measure_asqtad_eos     " plus DM_DU0 (asqtad)
-#	ks_measure_asqtad_susc    " plus quark number susceptibilities (asqtad)
-#	ks_measure_asqtad_mu_eos  " plus nonzero chemical potential
-
+#	ks_measure_asqtad              Basic measurements (asqtad)
+#	ks_measure_asqtad_eos           " plus DM_DU0 (asqtad)
+#	ks_measure_asqtad_susc          " plus quark number susceptibilities (asqtad)
+#	ks_measure_asqtad_mu_eos        " plus nonzero chemical potential
+#	ks_measure_hisq		        Basic measurements (HISQ)
+#	ks_measure_hisq_eos	        " plus DM_DU0 (HISQ)
+#	ks_measure_hisq_susc            " plus quark number susceptibilities (HISQ)
+#	ks_measure_hisq_mu_eos	        " plus nonzero chemical potential (HISQ)
+#       ks_measure_eigcg_hisq	        Measurements with eigcg-generated eigenpairs
+#	ks_measure_current_hisq         Disconnected vector current measurements
+#	ks_measure_current_hisq_u1      Disconn with photon (experimental)
+#	ks_measure_current_hisq_u1_loop Disconn with photon (experimental)
+#	ks_measure_current_eigcg_hisq   Disconn but with eigcg eigenvectors (experimental)
 
 MYINCLUDEDIR = .
 INCLUDEDIR = ../include
