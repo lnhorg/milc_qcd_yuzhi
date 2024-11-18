@@ -2,14 +2,13 @@
 /* MIMD version 7 */
 /* For reading Grid eigenpack multifile eigenvectors using MPI I/O */
 
-/* 11/24  C. DeTar stole the code from Grid parallelIO/BinaryIO.h */
+/* 11/24  C. DeTar code stolen from Grid parallelIO/BinaryIO.h */
 
 /* The offset parameter specifies the location of the
    beginning of the data in the file.  This routine reads
    only the data and evaluates the checksum */
 
 #include "generic_ks_includes.h"
-#include <mpi.h>
 #include <qio.h>
 #include <qmp.h>
 #define LOOPEND
@@ -18,6 +17,10 @@
 #include <zlib.h>
 #include <assert.h>
 
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+#include <qio.h>
 /*------------------------------------------------------------------*/
 /* Convert rank to coordinates */
 static void lex_coords(int coords[], const int dim, const int size[], 
@@ -139,37 +142,12 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
   char myname[] = "read_grid_eigenvector_data";
 
   if(typesize != 48){
-    node0_printf("%s: Wrong typesize.  Want 48 and got %d\n", myname, typesize);
+    node0_printf("%s: Grid requires double.  Typesize %d != 48\n", myname, typesize);
     terminate(1);
   }
-  
-  MPI_Datatype mpiObject;
-  MPI_Datatype fileArray;
-  MPI_Datatype localArray;
-  MPI_Datatype mpiword;
-  
-  MPI_Offset disp = offset;
-  MPI_File fh ;
-  MPI_Status status;
-  int numword = 6;  /* su3_vector */
-  
-  if(typesize == 24)
-    mpiword = MPI_FLOAT;
-  else if(typesize == 48 )
-    mpiword = MPI_DOUBLE;
-  else
-    {
-      printf("%s(%d): Bad typesize %d\n", myname, this_node, typesize);
-      terminate(1);
-    }
 
   printf("%s(%d): Entered\n", myname, this_node); fflush(stdout);
 
-  /* su3_vector in MPI phrasing */
-  int ierr;
-  ierr = MPI_Type_contiguous(numword, mpiword, &mpiObject);    assert(ierr==0);
-  ierr = MPI_Type_commit(&mpiObject);
-  
   const int latdim[4] = {nx, ny, nz, nt};
   int grid_reduced_dim[4] = {nx/2, ny, nz, nt};
   const int *nsquares = get_logical_dimensions();
@@ -187,6 +165,25 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
 
   if ( numnodes() > 1 ) {
 
+#ifdef HAVE_MPI
+    MPI_Datatype mpiObject;
+    MPI_Datatype fileArray;
+    MPI_Datatype localArray;
+    MPI_Datatype mpiword;
+    
+    MPI_Offset disp = offset;
+    MPI_File fh ;
+    MPI_Status status;
+
+    int numword = 6;  /* su3_vector */
+  
+    mpiword = MPI_DOUBLE; /* Grid requirement for eigenvectors */
+
+    /* su3_vector in MPI phrasing */
+    int ierr;
+    ierr = MPI_Type_contiguous(numword, mpiword, &mpiObject);    assert(ierr==0);
+    ierr = MPI_Type_commit(&mpiObject);
+  
     /*  File global array data type */
     ierr=MPI_Type_create_subarray(4, grid_reduced_dim, squaresize, coord_start,
 				  MPI_ORDER_FORTRAN, mpiObject, &fileArray);    assert(ierr==0);
@@ -211,7 +208,17 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
     MPI_Type_free(&fileArray);
     MPI_Type_free(&localArray);
 
-  } else { /* For one node, use POSIX I/O */
+#else
+
+    /* MPI required here for multiple nodes */
+    node0_printf("%s: ERROR: Must compile with MPI\n", myname);
+    terminate(1);
+
+#endif
+
+  } else {
+
+    /* For one node, use POSIX I/O */
 
     FILE *fin = fopen(file, "rb");
     fseek(fin, offset, SEEK_SET);
@@ -221,7 +228,6 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
     fclose(fin);
 
   }
-
   
   grid_checksum(eigVec, suma, sumb);
   
