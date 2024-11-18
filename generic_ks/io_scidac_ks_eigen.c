@@ -648,8 +648,8 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
   }
 
   /* Broadcast the eigenvalue to the other nodes */
-  broadcast_bytes((char *)&eigVal, sizeof(eigVal));
-  printf("%s(%d): eigVal = %f\n", myname, this_node, eigVal);
+  broadcast_bytes((char *)eigVal, sizeof(*eigVal));
+  printf("%s(%d): eigVal = %f\n", myname, this_node, *eigVal);
   
   /* Read the scidac-private-record-xml and get the typesize */
   int typesize;
@@ -684,7 +684,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
 
     uint64_t bytes_wanted = typesize*volume/2;
     if(nbytes != bytes_wanted){
-      printf("ERROR: LIME record byte count %;u is not equal to the wanted number %lu\n",
+      printf("ERROR: LIME record byte count %lu is not equal to the wanted number %lu\n",
 	     nbytes, bytes_wanted);
       terminate(1);
     }
