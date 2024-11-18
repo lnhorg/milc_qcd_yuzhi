@@ -120,6 +120,14 @@ OPT              ?= -O3 -g
 OMP ?= #true
 
 #----------------------------------------------------------------------
+# Usually required
+
+ifeq ($(strip ${MPP}),true)
+  OCFLAGS   += -DHAVE_MPI
+  OCXXFLAGS += -DHAVE_MPI
+endif
+
+#----------------------------------------------------------------------
 # 7. Other compiler optimization flags.  Uncomment stanza to suit.
 
 #-------------- Gnu C -------------------------------------
@@ -783,6 +791,12 @@ INLINEOPT = -DC_GLOBAL_INLINE # -DSSE_GLOBAL_INLINE #-DC_INLINE
 # To get them, uncomment the next line
 
 #INLINEOPT += -DSSEOPTERON
+
+#----------------------------------------------------------------------
+# crc32
+
+CFLAGS += -I/usr/include
+LDFLAGS += -L/usr/lib64 -lz
 
 #----------------------------------------------------------------------
 # 20. Miscellaneous macros for performance control and metric
