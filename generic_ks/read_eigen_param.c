@@ -37,6 +37,7 @@ int read_ks_eigen_param(ks_eigen_param *eigen_param, int status, int prompt){
   IF_OK status += get_i(stdin, prompt, "Max_Lanczos_restart_iters", &eigen_param->MaxIter );    
   IF_OK status += get_f(stdin, prompt, "eigenval_tolerance", &eigen_param->tol );
   IF_OK status += get_i(stdin, prompt, "Lanczos_max", &eigen_param->Nkr );
+  IF_OK status += get_i(stdin, prompt, "Lanczos_restart", &eigen_param->Nrestart );
   IF_OK status += get_f(stdin, prompt, "Chebyshev_alpha", &eigen_param->poly.minE );
   IF_OK status += get_f(stdin, prompt, "Chebyshev_beta", &eigen_param->poly.maxE );
   IF_OK status += get_i(stdin, prompt, "Chebyshev_order", &eigen_param->poly.norder );
