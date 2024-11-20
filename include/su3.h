@@ -643,11 +643,11 @@ void mult_su3_an ( su3_matrix *a, su3_matrix *b, su3_matrix *c );
 #endif
 
 #ifndef mult_su3_mat_vec
-void mult_su3_mat_vec( su3_matrix *a, su3_vector *b, su3_vector *c );
+void mult_su3_mat_vec( const su3_matrix * const a, const su3_vector * const b, su3_vector *c );
 #endif
 
 #ifndef mult_adj_su3_mat_vec
-void mult_adj_su3_mat_vec( su3_matrix *a, su3_vector *b, su3_vector *c );
+void mult_adj_su3_mat_vec( const su3_matrix * const a, const su3_vector * const b, su3_vector *c );
 #endif
 
 #ifndef mult_adj_su3_mat_vec_4dir
