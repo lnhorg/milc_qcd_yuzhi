@@ -133,7 +133,7 @@ void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
 void ddslash_fn_du0_field( su3_vector *src, su3_vector *dest, int parity,
 			   imp_ferm_links_t *fn, imp_ferm_links_t *fn_dmdu0);
 
-void dslash_fn_dir(su3_vector *src, su3_vector *dest, int parity,
+void dslash_fn_dir(const su3_vector * const src, su3_vector *dest, int parity,
 		   imp_ferm_links_t *fn, int dir, int fb, 
 		   Real wtfat, Real wtlong);
 
@@ -342,6 +342,7 @@ typedef struct {
   int Nvecs_in; /* number of input starting eigenvectors */
   Real tol; /* Tolerance for the eigenvalue computation */
   int MaxIter; /* max restarting iterations */
+  int Nrestart; /* Lanczos restarts from this number of eigenvalues */
   int Nkr; /* size of the Krylov subspace */
   ks_eigen_poly poly; /* Preconditioning polynomial */
   int blockSize; /* block size for block variant eigensolvers */
