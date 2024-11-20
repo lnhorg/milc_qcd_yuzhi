@@ -484,6 +484,32 @@ void check_eigres(double *resid, su3_vector *eigVec[], Real *eigVal,
   g_vecdoublesum(resid, Nvecs);
   g_vecdoublesum(norm, Nvecs);
 
+  /* Fix the normalization if needed */
+  double tol = 1e-9;
+  int count_renorm = 0;
+  int count_zero = 0;
+  double maxdev = 0;
+  for(i = 0; i < Nvecs; i++){
+    if(norm[i] == 0.){
+      count_zero++;
+    } else {
+      double dev = fabs(sqrt(norm[i])-1.);
+      maxdev = fmax(maxdev, dev);
+      if(dev > tol){
+	count_renorm++;
+	double fact = 1./sqrt(norm[i]);
+	FORSOMEFIELDPARITY_OMP(j,parity,){
+	  scalar_mult_su3_vector( eigVec[i]+j, fact, eigVec[i]+j );
+	} END_LOOP_OMP;
+      }
+    }
+  }
+
+  if(count_zero > 0){
+    node0_printf("check_eigres: %d eigVecs have zero norm\n", count_zero);
+    terminate(1);
+  }
+
   node0_printf("Checking eigensolutions\n");
   for(i = 0; i < Nvecs; i++){
     resid[i] = sqrt(resid[i]/norm[i]);
@@ -491,6 +517,12 @@ void check_eigres(double *resid, su3_vector *eigVec[], Real *eigVal,
     node0_printf("eigVal[%d] = %e ( resid = %e , |eigVec[%d]|-1 = %e )\n",
 		 i, eigVal[i], resid[i], i, norm[i]-1);
   }
+  if(count_renorm > 0){
+    node0_printf("check_eigres: NOTE: %d eigVec norms deviated from 1 by more than %g with max deviation %g.\n",
+		 count_renorm, tol, maxdev);
+    node0_printf("They were renormalized to 1\n");
+  }
+  
   node0_printf("End of eigensolutions\n");
   free(norm);
 }
@@ -562,7 +594,7 @@ void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[],
     terminate(1);
   }
 
-  dvecmagsq(magsq, eigVec, parity, Nvecs);
+  dvecmagsq(magsq, eigVec, otherparity, Nvecs);
 
   /* Normalize the odd-site vectors */
   for(j = 0; j < Nvecs; j++){
@@ -573,7 +605,7 @@ void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[],
       node0_printf("%s: ERROR. zero norm for eigenvector %d.", myname, j);
       fact = 0.;
     }
-    double_vec_mult(&fact, eigVec[j], eigVec[j], parity);
+    double_vec_mult(&fact, eigVec[j], eigVec[j], otherparity);
   }
   
   free(magsq);
