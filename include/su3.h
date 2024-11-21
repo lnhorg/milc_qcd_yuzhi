@@ -344,7 +344,7 @@ void c_scalar_mult_sub_su3mat( su3_matrix *src1, su3_matrix *src2,
 void su3_adjoint( su3_matrix *a, su3_matrix *b );
 void make_anti_hermitian( su3_matrix *m3, anti_hermitmat *ah3 );
 void random_anti_hermitian( anti_hermitmat *mat_antihermit, double_prn *prn_pt );
-void uncompress_anti_hermitian( anti_hermitmat *mat_anti, su3_matrix *mat );
+void uncompress_anti_hermitian( const anti_hermitmat * const mat_anti, su3_matrix *mat );
 void compress_anti_hermitian( su3_matrix *mat, anti_hermitmat *mat_anti);
 void clear_su3mat( su3_matrix *dest );
 void su3mat_copy( su3_matrix *a, su3_matrix *b );
