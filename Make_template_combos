@@ -489,7 +489,7 @@ endif
   
 # Standard QOP combinations
 
-  GAUGE_FORCE_QOP = gauge_force_symzk1_qop.o  gauge_stuff.o ranmom.o
+  GAUGE_FORCE_QOP = gauge_force_symzk1_qop.o gauge_action_imp.o  gauge_stuff.o ranmom.o
 
 # Standard QPhiX combinations
 
