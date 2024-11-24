@@ -283,7 +283,8 @@ restore_fermion_links(fermion_links_t *fl, int precision,
   }
 
   if( phases_in != 1){
-    if(mynode() == 0)printf("BOTCH: %s needs phases in\n",myname); terminate(1);
+    if(mynode() == 0)printf("BOTCH: %s needs phases in\n",myname);
+    terminate(1);
   }
   
   restore_qop_asqtad_links_t(fl->flg, precision, links, fl->options.want_back);
