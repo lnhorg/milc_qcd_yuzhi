@@ -184,6 +184,8 @@ ifeq ($(strip ${HAVE_EIG_GPU}),true)
 else
   ifeq ($(strip ${HAVE_PRIMME}),true)
     EIGEN_OBJECTS += eigen_stuff_PRIMME.o
+  else ifeq ($(strip ${HAVE_QDP}),true)
+    EIGEN_OBJECTS += eigen_stuff_qdp.o
   else ifeq ($(strip ${HAVE_ARPACK}),true)
     EIGEN_OBJECTS += eigen_stuff_ARPACK.o
   else ifeq ($(strip ${HAVEQDP}),true)
