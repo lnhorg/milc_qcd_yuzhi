@@ -42,7 +42,15 @@ int read_ks_eigen_param(ks_eigen_param *eigen_param, int status, int prompt){
   IF_OK status += get_f(stdin, prompt, "Chebyshev_beta", &eigen_param->poly.maxE );
   IF_OK status += get_i(stdin, prompt, "Chebyshev_order", &eigen_param->poly.norder );
   IF_OK status += get_i(stdin, prompt, "block_size", &param.eigen_param.blockSize );
-  
+
+#elif defined(HAVE_QDP)
+
+  /* Incomplete Needs updating */
+  IF_OK status += get_i(stdin, prompt,"Max_Rayleigh_iters", &eigen_param->MaxIter );
+  IF_OK status += get_i(stdin, prompt,"Restart_Rayleigh", &eigen_param->Restart );
+  IF_OK status += get_i(stdin, prompt,"Kalkreuter_iters", &eigen_param->Kiters );
+  IF_OK status += get_f(stdin, prompt,"eigenval_tolerance", &eigen_param->tol );
+ 
 #else
   
   /* Kalkreuter_Ritz */
