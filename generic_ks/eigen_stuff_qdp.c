@@ -681,6 +681,7 @@ Kalkreuter(su3_vector **eigVec, double *eigVal, ks_eigen_param *eigen_param, int
 {
   node0_printf("The Kalkreuter QDP eigensolver has not been updated\n");
   terminate(1);
+  return 0;
 }
 
 #endif
