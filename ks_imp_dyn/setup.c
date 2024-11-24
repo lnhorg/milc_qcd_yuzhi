@@ -215,7 +215,9 @@ initial_set()
 			   param.ionode_geometry, 4);
 #endif
 #endif
-    IF_OK status += get_i(stdin, prompt,"iseed", &param.iseed );
+      int iseed_in;
+      status += get_i(stdin, prompt,"iseed", &iseed_in);
+      param.iseed = iseed_in;
     
     if(status>0) param.stopflag=1; else param.stopflag=0;
   } /* end if(mynode()==0) */
