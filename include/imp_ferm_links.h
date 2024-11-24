@@ -348,6 +348,18 @@ typedef struct {
   int blockSize; /* block size for block variant eigensolvers */
   int parity; 
 } ks_eigen_param;
+#elif defined(HAVE_QDP)
+#define ks_eigensolve Kalkreuter
+typedef struct {
+  int Nvecs ; /* number of eigenvectors */
+  int Nvecs_in ; /* number of input starting eigenvectors */
+  Real tol ; /* Tolerance for the eigenvalue computation */
+  Real RelTol ;
+  int MaxIter ; /* max  Rayleigh iterations */
+  int Restart ; /* Restart  Rayleigh every so many iterations */
+  int Kiters ; /* Kalkreuter iterations */
+  int parity; 
+} ks_eigen_param;
 #else
 #define ks_eigensolve ks_eigensolve_Kalkreuter_Ritz
 typedef struct {
@@ -371,6 +383,7 @@ int ks_eigensolve_Kalkreuter_Ritz(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_PRIMME(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
+int Kalkreuter(su3_vector **eigVec, double *eigVal, ks_eigen_param *eigen_param, int init);
 int ks_eigensolve_ARPACK(su3_vector **eigVec, Real *eigVal, 
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_Grid( su3_vector ** eigVec, Real * eigVal, ks_eigen_param * eigen_param, int init );
