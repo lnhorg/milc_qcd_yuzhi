@@ -383,7 +383,7 @@ int ks_eigensolve_Kalkreuter_Ritz(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_PRIMME(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
-int Kalkreuter(su3_vector **eigVec, double *eigVal, ks_eigen_param *eigen_param, int init);
+int Kalkreuter(su3_vector **eigVec, Real *eigVal, ks_eigen_param *eigen_param, int init);
 int ks_eigensolve_ARPACK(su3_vector **eigVec, Real *eigVal, 
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_Grid( su3_vector ** eigVec, Real * eigVal, ks_eigen_param * eigen_param, int init );
