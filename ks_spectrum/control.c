@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
       /* Check the eigenvectors */
 
       /* Calculate and print the residues and norms of the eigenvectors */
-      resid = (double *)malloc(Nvecs_curr*sizeof(double));
+      resid = (Real *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, EVEN, fn );
       construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
