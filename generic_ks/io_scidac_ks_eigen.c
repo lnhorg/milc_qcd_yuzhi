@@ -199,7 +199,11 @@ parse_xml_eigVal(Real *eigVal, char *xml){
     return;
   }
 
+#if MILC_PRECISION == 1
+  status = sscanf(p, "%f", eigVal);
+#else
   status = sscanf(p, "%lf", eigVal);
+#endif
   
   if(status != 1) *eigVal = 0;
 
