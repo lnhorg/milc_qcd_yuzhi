@@ -669,11 +669,8 @@ static void pack_unpack_field(void *data, int size, int dir){
     terminate(1);
   }
   
-  printf("pack_unpack_field(%d): Calling start_gather_field\n", this_node); fflush(stdout);
   mtag = start_gather_field(data, size, dir, EVENANDODD, gen_pt[0]);
-  printf("pack_unpack_field(%d): Done calling start_gather_field\n", this_node); fflush(stdout);
   wait_gather(mtag);
-  printf("pack_unpack_field(%d): Done with wait_gather\n", this_node); fflush(stdout);
 
   /* First copy gathered data to temporary */
   for(int i = 0; i < sites_on_node; i++)
@@ -828,7 +825,7 @@ int ask_ending_ks_eigen(FILE *fp, int prompt, int *flag, char *filename){
   else if(strcmp("save_partfile_ks_eigen",savebuf) == 0)
     *flag = SAVE_PARTFILE_SCIDAC;
   else{
-    printf("ERROR IN INPUT: ks_eigen output command %s is invalid.\n", savebuf);
+    printf("ERROR IN OUTPUT: ks_eigen output command %s is invalid.\n", savebuf);
     printf("Choices are ");
     print_save_options();
     printf("\n");
