@@ -1,8 +1,8 @@
-/*********************** io_scidac_ks_eigen.c *************************/
+n/*********************** io_scidac_ks_eigen.c *************************/
 /* MIMD version 7 */
 /* For reading Grid eigenpack multifile eigenvectors using MPI I/O */
 
-/* 11/24  C. DeTar code stolen from Grid parallelIO/BinaryIO.h */
+/* 11/24  C. DeTar code adapted from Grid parallelIO/BinaryIO.h */
 
 /* The offset parameter specifies the location of the
    beginning of the data in the file.  This routine reads
