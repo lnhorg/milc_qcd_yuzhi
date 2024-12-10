@@ -81,21 +81,18 @@ initial_set()
   if(mynode()==0){
     /* print banner */
     printf("SU3 with improved KS action\n");
-#ifdef CHECK_INVERT
+#if defined(CHECK_INVERT)
     printf("Inversion checking\n");
-#else
-#ifdef FERMION_FORCE
+#elif defined(FERMION_FORCE)
     printf("Fermion-force checking\n");
-#else
-#ifdef LINK_FATTENING
+#elif defined(LINK_FATTENING)
     printf("Creating FN link files\n");
-#else
-#ifdef REUNIT
+#elif defined(REUNIT)
     printf("Reunitarization checking\n");
 #else
 #error "Must specify what is being checked"
 #endif
-#endif
+
     printf("MIMD version 7\n");
     printf("Machine = %s, with %d nodes\n",machine_type(),numnodes());
 
