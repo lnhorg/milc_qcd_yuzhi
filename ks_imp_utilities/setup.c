@@ -87,6 +87,8 @@ initial_set()
     printf("Fermion-force checking\n");
 #elif defined(LINK_FATTENING)
     printf("Creating FN link files\n");
+#elif defined(CHECK_LINK_FATTENING)
+    printf("Checking FN link fattening files\n");
 #elif defined(REUNIT)
     printf("Reunitarization checking\n");
 #else
@@ -283,11 +285,11 @@ readin(int prompt)
 #endif
     }
 #endif // CHECK_INVERT or FERMION_FORCE
-#if defined(FERMION_FORCE) || defined(LINK_FATTENING)
+#if defined(FERMION_FORCE) || defined(CHECK_FATTENING)
     /* Optional answer for fat links or fermion force */
     IF_OK status += ask_color_matrix( prompt, &(param.ansflag[0]),
 				      param.ansfile[0] );
-#ifdef LINK_FATTENING
+#ifdef CHECK_FATTENING
     /* Optional answer for fat links or long links */
     IF_OK status += ask_color_matrix( prompt, &(param.ansflag[1]),
 				      param.ansfile[1] );
