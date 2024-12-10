@@ -225,7 +225,7 @@ int reload_ks_eigen(int flag, char *eigfile, int *Nvecs, Real *eigVal,
   double dtime = (double)0.0;
   char myname[] = "reload_ks_eigen";
   
-  if(timing && flag != FRESH) dtime = -dclock();
+  if(timing && (flag != FRESH)) dtime = -dclock();
   
   switch(flag){
 
@@ -266,7 +266,7 @@ int reload_ks_eigen(int flag, char *eigfile, int *Nvecs, Real *eigVal,
     terminate(1);
   }
   
-  if(timing && flag != FRESH){
+  if(timing && (flag != FRESH)){
     dtime += dclock();
     node0_printf("Time to reload %d eigenvectors = %e\n", *Nvecs, dtime);
   }
