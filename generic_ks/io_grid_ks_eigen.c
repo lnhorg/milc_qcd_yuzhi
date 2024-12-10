@@ -1,4 +1,4 @@
-n/*********************** io_scidac_ks_eigen.c *************************/
+/*********************** io_scidac_ks_eigen.c *************************/
 /* MIMD version 7 */
 /* For reading Grid eigenpack multifile eigenvectors using MPI I/O */
 
