@@ -205,7 +205,8 @@ int mat_invert_cg_field(su3_vector *src, su3_vector *dst,
     ks_dirac_adj_op( src, tmp, mass, EVENANDODD, fn);
 
     /* Do deflation if we have eigenvectors and the deflate parameter is true */
-
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -222,12 +223,15 @@ int mat_invert_cg_field(su3_vector *src, su3_vector *dst,
       node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
 #endif
     }
+#endif
       
     /* dst_e <- (M_adj M)^-1 tmp_e  (even sites only) */
     qic->parity = EVEN;
     int cgn = ks_congrad_field( tmp, dst, qic, mass, fn );
     int even_iters = qic->final_iters;
 
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -242,6 +246,7 @@ int mat_invert_cg_field(su3_vector *src, su3_vector *dst,
       node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
 #endif
     }
+#endif
 
     /* dst_o <- (M_adj M)^-1 tmp_o  (odd sites only) */
     qic->parity = ODD;
@@ -277,6 +282,8 @@ int mat_invert_cgz_field(su3_vector *src, su3_vector *dst,
 
     /* Put "exact" low-mode even-site solution in tmp if deflate parameter is true */
 
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -292,6 +299,7 @@ int mat_invert_cgz_field(su3_vector *src, su3_vector *dst,
      node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
 #endif
     }
+#endif
       
     /* Solve for all modes using tmp as an initial guess */
     /* tmp_e <- (M_adj M)^-1 src_e  (even sites only) */
@@ -301,6 +309,8 @@ int mat_invert_cgz_field(su3_vector *src, su3_vector *dst,
 
     /* Put "exact" low-mode odd-site solution in tmp if deflate parameter is true */
 
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -316,6 +326,7 @@ int mat_invert_cgz_field(su3_vector *src, su3_vector *dst,
       node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
 #endif
     }
+#endif
 
     /* Solve for all modes using tmp as an initial guess */
     /* tmp_o <- (M_adj M)^-1 src_o  (odd sites only) */
@@ -427,6 +438,8 @@ int mat_invert_uml_field(su3_vector *src, su3_vector *dst,
     ks_dirac_adj_op( src, tmp, mass, EVENANDODD, fn );
 
 #if EIGMODE != EIGCG
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -439,6 +452,7 @@ int mat_invert_uml_field(su3_vector *src, su3_vector *dst,
       node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
 #endif
     }
+#endif
 #endif
 
     /* dst_e <- (M_adj M)^-1 tmp_e  (even sites only) */
@@ -460,6 +474,8 @@ int mat_invert_uml_field(su3_vector *src, su3_vector *dst,
     } END_LOOP_OMP;
 
 #if EIGMODE != EIGCG
+    /* Skip MILC CPU deflation if using QUDA deflation */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0 && qic->deflate){
 
       dtime = - dclock();
@@ -470,6 +486,7 @@ int mat_invert_uml_field(su3_vector *src, su3_vector *dst,
       dtime += dclock();
       node0_printf("Time to deflate %d modes %g\n", param.eigen_param.Nvecs, dtime);
     }
+#endif
 #endif
 
     /* Polish off odd sites to correct for possible roundoff error */

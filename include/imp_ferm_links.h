@@ -346,7 +346,8 @@ typedef struct {
   int Nkr; /* size of the Krylov subspace */
   ks_eigen_poly poly; /* Preconditioning polynomial */
   int blockSize; /* block size for block variant eigensolvers */
-  int parity; 
+  int parity;
+  double tol_restart; 
 } ks_eigen_param;
 #elif defined(HAVE_QDP)
 #define ks_eigensolve Kalkreuter
@@ -371,6 +372,7 @@ typedef struct {
   int Restart ; /* Restart  Rayleigh every so many iterations */
   int Kiters ; /* Kalkreuter iterations */
   int parity; 
+  double tol_restart;
 } ks_eigen_param;
 #endif
 

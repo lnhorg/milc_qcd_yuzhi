@@ -256,6 +256,14 @@ int readin(int prompt) {
 
     IF_OK if(param.eigen_param.Nvecs > 0){
 
+      /* Additional parameters for QUDA deflation */
+#if ( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
+      /* allow file to have more eigenpairs than will be used for deflation */
+      IF_OK status += get_i(stdin, prompt,"file_number_of_eigenpairs", &param.eigen_param.Nvecs_in);
+      /* controls how often redeflation occurs during deflated inversions */
+      IF_OK status += get_f(stdin, prompt,"tol_restart", &param.eigen_param.tol_restart);
+#endif
+
       /* eigenvector input */
       IF_OK status += ask_starting_ks_eigen(stdin, prompt, &param.ks_eigen_startflag,
 					    param.ks_eigen_startfile);

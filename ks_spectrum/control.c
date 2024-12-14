@@ -318,6 +318,8 @@ int main(int argc, char *argv[])
 #endif
     
 #if EIGMODE != EIGCG
+    /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0){
       /* malloc for eigenpairs */
       eigVal = (Real *)malloc(param.eigen_param.Nvecs*sizeof(double));
@@ -338,6 +340,7 @@ int main(int argc, char *argv[])
 	node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors");
       }
     }
+#endif
 #endif
     
     /**************************************************************/
@@ -378,6 +381,8 @@ int main(int argc, char *argv[])
     
       /* Check the eigenvectors */
 
+      /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not checked by MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
       /* Calculate and print the residues and norms of the eigenvectors */
       resid = (Real *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
@@ -385,12 +390,14 @@ int main(int argc, char *argv[])
       construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
-      
+#endif
       /* Unapply twisted boundary conditions on the fermion links and
 	 restore conventional KS phases and antiperiodic BC, if
 	 changed. */
       boundary_twist_fn(fn, OFF);
-      
+     
+      /* If using QUDA for deflation, then eigenvalues are printed by QUDA */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) ) 
       /* print eigenvalues of iDslash */
       node0_printf("The above were eigenvalues of -Dslash^2 in MILC normalization\n");
       node0_printf("Here we also list eigenvalues of iDslash in continuum normalization\n");
@@ -403,6 +410,7 @@ int main(int argc, char *argv[])
 	  node0_printf("eigenval(%i): %10g\n", i, 0.0);
 	}
       }
+#endif
 #endif
     }
     

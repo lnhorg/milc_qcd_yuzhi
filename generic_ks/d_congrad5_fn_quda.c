@@ -133,6 +133,49 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   inv_args.tadpole = u0;
 #endif
 
+  // Setup for deflation on GPU
+  
+  inv_args.tol_restart = param.eigen_param.tol_restart;
+  //int parity = param.eigen_param.parity;
+  int parity = qic->parity;
+  int blockSize = 1;
+    
+  QudaEigParam qep = newQudaEigParam();
+  qep.block_size = blockSize;
+  qep.eig_type = ( blockSize > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  //qep.invert_param = &qip;
+  qep.eig_type = ( blockSize > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  qep.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  qep.n_conv = param.eigen_param.Nvecs_in;
+  qep.n_ev_deflate = param.eigen_param.Nvecs;
+  qep.n_ev = qep.n_conv;
+  qep.n_kr = 2*qep.n_conv;
+  //qep.block_size = blockSize;
+  //qep.tol = tol;
+  //qep.qr_tol = qep.tol;
+  //qep.max_restarts = maxIter;
+  qep.batched_rotate = 0;
+  qep.require_convergence = QUDA_BOOLEAN_TRUE;
+  qep.check_interval = 1;
+  qep.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  qep.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  qep.use_dagger = QUDA_BOOLEAN_FALSE;
+  qep.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  qep.compute_svd = QUDA_BOOLEAN_FALSE;
+  qep.use_eigen_qr = QUDA_BOOLEAN_TRUE;
+  //qep.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  //qep.poly_deg = polyDeg;
+  //qep.a_min = aMin;
+  //qep.a_max = aMax;
+  //qep.arpack_check = QUDA_BOOLEAN_FALSE;
+  //strcpy( qep.arpack_logfile, "" );
+  strcpy( qep.vec_infile, param.ks_eigen_startfile );
+  strcpy( qep.vec_outfile, param.ks_eigen_savefile );
+  qep.save_prec = (MILC_PRECISION==2) ? QUDA_DOUBLE_PRECISION : QUDA_SINGLE_PRECISION;
+  qep.io_parity_inflate = QUDA_BOOLEAN_FALSE;
+    
+  inv_args.eig_param = qep;
+
   qudaInvert(MILC_PRECISION,
 	     quda_precision, 
 	     mass,
