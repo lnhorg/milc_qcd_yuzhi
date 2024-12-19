@@ -362,7 +362,10 @@ int main(int argc, char *argv[])
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
       boundary_twist_fn(fn, ON);
-      
+
+      // If using QUDA deflated CG + asking for QUDA to do the eigensolve, then
+      // the eigensolver is called from within QUDA's CG solver...not from MILC
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) ) 
       /* compute eigenpairs if requested */
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
@@ -378,7 +381,7 @@ int main(int argc, char *argv[])
 	initialize_site_prn_from_seed(iseed);
 #endif
       }
-    
+#endif
       /* Check the eigenvectors */
 
       /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not checked by MILC */
@@ -955,6 +958,9 @@ int main(int argc, char *argv[])
 #endif
 
     if(param.eigen_param.Nvecs > 0){
+
+      /* If using QUDA for deflation, then eigenvectors are loaded and saved directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
       STARTTIME;
       
       /* save eigenvectors if requested */
@@ -969,6 +975,8 @@ int main(int argc, char *argv[])
       free(eigVal); free(eigVec); free(resid);
 
       ENDTIME("save eigenvectors (if requested)");
+
+#endif
     }
 
     /* Clean up quark sources, both base and modified */
