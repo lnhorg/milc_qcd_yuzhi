@@ -147,7 +147,6 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   qep.n_conv = param.eigen_param.Nvecs_in; // +2?
   qep.n_ev_deflate = param.eigen_param.Nvecs;
   qep.n_ev = qep.n_conv;
-  //qep.n_kr = param.eigen_param.Nkr;
   qep.n_kr = 2*qep.n_ev;
   qep.tol = param.eigen_param.tol;
   qep.qr_tol = qep.tol; // change?
@@ -170,6 +169,17 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   //qep.save_prec = (MILC_PRECISION==2) ? QUDA_DOUBLE_PRECISION : QUDA_SINGLE_PRECISION;
   qep.io_parity_inflate = QUDA_BOOLEAN_FALSE;
 
+  qep.compute_evals_batch_size = 16; // Default is 4, memory considerations
+  qep.preserve_deflation = QUDA_BOOLEAN_TRUE;
+
+  // If mass changes, eigenvalues need to be recomputed
+  static Real previous_mass = -1.0;
+  if( fabs(mass - previous_mass) < 1e-6 ) {
+    qep.preserve_evals = QUDA_BOOLEAN_TRUE;
+  } else {
+    qep.preserve_evals = QUDA_BOOLEAN_FALSE;
+  }
+  previous_mass = mass;
 
   qep.batched_rotate = 20; // add to input parameters
   qep.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
@@ -177,6 +187,7 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
 
     
   inv_args.eig_param = qep;
+  inv_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
 
   qudaInvert(MILC_PRECISION,
 	     quda_precision, 
