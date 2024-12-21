@@ -693,7 +693,6 @@ int readin(int prompt) {
 	}
 
 	IF_OK param.ksp[nprop].mass = atof(param.mass_label[nprop]);
-
 	IF_OK {
 	  int dir;
 	  FORALLUPDIR(dir)param.bdry_phase[nprop][dir] = bdry_phase[dir];
@@ -725,9 +724,10 @@ int readin(int prompt) {
 	param.qic[nprop].deflate = 0;
 	IF_OK {
 	  if(param.eigen_param.Nvecs > 0){  /* Need eigenvectors to deflate */
-	    IF_OK status += get_s(stdin, prompt,"deflate", savebuf);
+	    char savebuf2[128];
+	    IF_OK status += get_s(stdin, prompt,"deflate", savebuf2);
 	    IF_OK {
-	      if(strcmp(savebuf,"yes") == 0)param.qic[nprop].deflate = 1;
+	      if(strcmp(savebuf2,"yes") == 0)param.qic[nprop].deflate = 1;
 	    }
 	  }
 	}
