@@ -158,28 +158,26 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   qep.use_dagger = QUDA_BOOLEAN_FALSE;
   qep.compute_gamma5 = QUDA_BOOLEAN_FALSE;
   qep.compute_svd = QUDA_BOOLEAN_FALSE;
-  qep.use_eigen_qr = QUDA_BOOLEAN_TRUE; // change?
+  qep.use_eigen_qr = QUDA_BOOLEAN_TRUE;
   qep.use_poly_acc = QUDA_BOOLEAN_TRUE;
   qep.poly_deg = param.eigen_param.poly.norder;
   qep.a_min = param.eigen_param.poly.minE;
   qep.a_max = param.eigen_param.poly.maxE;
   qep.arpack_check = QUDA_BOOLEAN_FALSE;
-  strcpy( qep.vec_infile, param.ks_eigen_startfile ); // auto FRESH if empty?
-  strcpy( qep.vec_outfile, param.ks_eigen_savefile ); // auto forget if empty?
-  //qep.save_prec = (MILC_PRECISION==2) ? QUDA_DOUBLE_PRECISION : QUDA_SINGLE_PRECISION;
+  strcpy( qep.vec_infile, param.ks_eigen_startfile );
+  strcpy( qep.vec_outfile, param.ks_eigen_savefile );
   qep.io_parity_inflate = QUDA_BOOLEAN_FALSE;
 
-  qep.compute_evals_batch_size = 16; // Default is 4, memory considerations
+  qep.compute_evals_batch_size = 16; // Default is 4
   qep.preserve_deflation = QUDA_BOOLEAN_TRUE;
 
   // If mass changes, eigenvalues need to be recomputed
+  // but no need to recompute on the first solve
   static Real previous_mass = -1.0;
-  if( fabs(mass - previous_mass) < 1e-6 ) {
-    qep.preserve_evals = QUDA_BOOLEAN_TRUE;
-  } else {
-    qep.preserve_evals = QUDA_BOOLEAN_FALSE;
-  }
+  static bool first_solve=true;
+  qep.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
   previous_mass = mass;
+  first_solve = false;
 
   qep.batched_rotate = 20; // add to input parameters
   qep.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
@@ -335,6 +333,60 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 #else
   inv_args.tadpole = u0;
 #endif
+
+  // Setup for deflation (and eigensolve) on GPU
+
+  inv_args.tol_restart = param.eigen_param.tol_restart;
+  //int parity = param.eigen_param.parity;
+  int parity = qic->parity;
+  int blockSize = param.eigen_param.blockSize;
+
+  QudaEigParam qep = newQudaEigParam();
+  qep.block_size = blockSize;
+  qep.eig_type = ( blockSize > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  qep.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  qep.n_conv = param.eigen_param.Nvecs_in; // +2?
+  qep.n_ev_deflate = param.eigen_param.Nvecs;
+  qep.n_ev = qep.n_conv;
+  qep.n_kr = 2*qep.n_ev;
+  qep.tol = param.eigen_param.tol;
+  qep.qr_tol = qep.tol; // change?
+  qep.max_restarts = param.eigen_param.MaxIter;
+  qep.require_convergence = QUDA_BOOLEAN_TRUE;
+  qep.check_interval = 10; // change?
+  qep.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  qep.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  qep.use_dagger = QUDA_BOOLEAN_FALSE;
+  qep.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  qep.compute_svd = QUDA_BOOLEAN_FALSE;
+  qep.use_eigen_qr = QUDA_BOOLEAN_TRUE; // change?
+  qep.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  qep.poly_deg = param.eigen_param.poly.norder;
+  qep.a_min = param.eigen_param.poly.minE;
+  qep.a_max = param.eigen_param.poly.maxE;
+  qep.arpack_check = QUDA_BOOLEAN_FALSE;
+  strcpy( qep.vec_infile, param.ks_eigen_startfile );
+  strcpy( qep.vec_outfile, param.ks_eigen_savefile );
+  qep.io_parity_inflate = QUDA_BOOLEAN_FALSE;
+
+  qep.compute_evals_batch_size = 16; // Default is 4
+  qep.preserve_deflation = QUDA_BOOLEAN_TRUE;
+
+  // If mass changes, eigenvalues need to be recomputed
+  // but no need to recompute on the first solve
+  static Real previous_mass = -1.0;
+  static bool first_solve=true;
+  qep.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  previous_mass = mass;
+  first_solve = false;
+
+  qep.batched_rotate = 20; // add to input parameters
+  qep.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
+  qep.partfile = QUDA_BOOLEAN_TRUE; // add to input parameters
+
+
+  inv_args.eig_param = qep;
+  inv_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
 
   qudaInvertMsrc(MILC_PRECISION,
      quda_precision,
