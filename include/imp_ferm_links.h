@@ -346,6 +346,9 @@ typedef struct {
   int Nkr; /* size of the Krylov subspace */
   ks_eigen_poly poly; /* Preconditioning polynomial */
   int blockSize; /* block size for block variant eigensolvers */
+  int partfile; /* Whether to save in partfile or not */
+  int eigPrec; /* Run the eigensolver in this precision */
+  int batchedRotate; /* Size of the rotation space to use for solver */
   int parity;
   double tol_restart; 
 } ks_eigen_param;
