@@ -372,7 +372,7 @@ endif
 WANTFFTW = true
 
 ifeq ($(strip ${WANTFFTW}),true)
-  FFTW ?= ${HOME}/fftw/build-gcc
+  FFTW ?= ${FFTW_ROOT}
 
   FFTW_HEADERS = ${FFTW}/include
   INCFFTW = -I${FFTW_HEADERS}
@@ -459,7 +459,7 @@ ifeq ($(strip ${WANTQUDA}),true)
   WANT_SHIFT_GPU ?= #true
   WANT_SPIN_TASTE_GPU ?= #true
   WANT_GAUGEFIX_OVR_GPU ?= #true
-  WANT_MULTIGRID ?= #true
+  WANT_MULTIGRID ?= false
 
 endif
 
