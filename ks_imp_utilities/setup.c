@@ -74,9 +74,6 @@ int
 initial_set()
 {
   int prompt=0,status;
-#ifdef FIX_NODE_GEOM
-  int i;
-#endif
   /* On node zero, read lattice size, seed and send to others */
   if(mynode()==0){
     /* print banner */
@@ -134,10 +131,10 @@ initial_set()
   iseed=param.iseed;
 
 #ifdef FIX_NODE_GEOM
-  for(i = 0; i < 4; i++)
+  for(int i = 0; i < 4; i++)
     node_geometry[i] = param.node_geometry[i];
 #ifdef FIX_IONODE_GEOM
-  for(i = 0; i < 4; i++)
+  for(int i = 0; i < 4; i++)
     ionode_geometry[i] = param.ionode_geometry[i];
 #endif
 #endif

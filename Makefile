@@ -20,7 +20,7 @@ ARCH ?= # epyc hsw skx clx icx spr knl pow8 pow9
 #----------------------------------------------------------------------
 # 2. Compiler family
 
-COMPILER ?= gnu # intel, ibm, cray-intel, rocm
+COMPILER ?= intel # intel, ibm, cray-intel, rocm
 OFFLOAD ?= # cuda hip sycl openmp
 
 #----------------------------------------------------------------------
@@ -147,7 +147,7 @@ ifeq ($(strip ${COMPILER}),gnu)
 # Other Gnu options
 #OCFLAGS += -mavx # depends on architecture
 # enable all warnings with exceptions
-OCFLAGS += -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-function
+OCFLAGS += -Wall -Wno-unused-variable -Wno-unused-but-set-variable
 
 endif
 
@@ -381,7 +381,7 @@ endif
 WANTFFTW ?= false
 
 ifeq ($(strip ${WANTFFTW}),true)
-  FFTW ?= ${HOME}/fftw/build-gcc
+  FFTW ?= ${FFTW_ROOT}
 
   FFTW_HEADERS = ${FFTW}/include
   INCFFTW = -I${FFTW_HEADERS}
@@ -471,13 +471,13 @@ ifeq ($(strip ${WANTQUDA}),true)
   WANT_SHIFT_GPU ?= #true
   WANT_SPIN_TASTE_GPU ?= #true
   WANT_GAUGEFIX_OVR_GPU ?= #true
-  WANT_MULTIGRID ?= #true
+  WANT_MULTIGRID ?= false
 
 endif
 
 ifeq ($(strip ${WANTQUDA}),true)
   ifeq ($(strip ${OFFLOAD}),)
-    OFFLOAD = CUDA
+    OFFLOAD = cuda
   endif
 
   QUDA_HOME ?= ${HOME}/quda
@@ -489,11 +489,14 @@ ifeq ($(strip ${WANTQUDA}),true)
   QUDA_LIBRARIES = ${QUDA_HOME}/lib
   QUDA_HEADERS = ${QUDA_HOME}/include
 
-  ifeq ($(strip ${OFFLOAD}),CUDA)
+  ifeq ($(strip ${OFFLOAD}),cuda)
     CUDA_HOME ?= /usr/local/cuda
+    CUDA_MATH ?= /usr/local/cuda
+    CUDA_COMP ?= /usr/local/cuda
+    CUDA_NVML ?= /usr/local/cuda
     INCQUDA += -I${CUDA_HOME}/include
     PACKAGE_HEADERS += ${CUDA_HOME}/include
-    LIBQUDA += -L${CUDA_HOME}/lib64 -L${CUDA_MATH}/lib64 -L${CUDA_COMP}/lib -lcudart -lcuda -lcublas -lcufft -ldl
+    LIBQUDA += -L${CUDA_HOME}/lib64 -lcudart -L${CUDA_COMP} -lcuda  -L${CUDA_MATH}/lib -lcublas -lcufft -ldl -L${CUDA_NVML} -lnvidia-ml
   endif
 
 # Verbosity choices:
