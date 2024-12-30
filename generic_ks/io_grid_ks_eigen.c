@@ -1,4 +1,4 @@
-/*********************** io_scidac_ks_eigen.c *************************/
+/*********************** io_grid_ks_eigen.c *************************/
 /* MIMD version 7 */
 /* For reading Grid eigenpack multifile eigenvectors using MPI I/O */
 
@@ -236,4 +236,4 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
   
   g_sync();
   
-}
+} /*io_grid_ks_eigen.c */
