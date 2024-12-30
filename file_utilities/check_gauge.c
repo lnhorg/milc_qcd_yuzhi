@@ -554,6 +554,10 @@ int main(int argc, char *argv[])
     }
   filename = argv[1];
 
+#if MILC_PRECISION == 2
+  node0_printf("WARNING: To check MILC v5 lattices, this utility must be compiled with PRECISION = 1\n");
+#endif
+	       
   initialize_machine(&argc,&argv);
 
   this_node = mynode();
