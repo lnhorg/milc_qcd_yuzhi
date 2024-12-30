@@ -46,7 +46,6 @@ int setup()   {
 #ifdef U1_FIELD
   u1_A = create_u1_A_field();
 #endif
-  ape_links = NULL;
   FORALLUPDIR(dir){
     boundary_phase[dir] = 0.;
   }

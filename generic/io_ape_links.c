@@ -16,7 +16,7 @@ gauge_file *
 save_apelinks( int flag, su3_matrix *links, const char *filename){
   double dtime;
   gauge_file *gf = NULL;
-  
+
   dtime = -dclock();
   switch( flag ){
   case FORGET:
@@ -46,7 +46,7 @@ save_apelinks( int flag, su3_matrix *links, const char *filename){
   }
   
   dtime += dclock();
-  if(flag != FRESH)
+  if(flag != FORGET)
     node0_printf("Time to save APE links = %e\n", dtime);
   
   return gf;
