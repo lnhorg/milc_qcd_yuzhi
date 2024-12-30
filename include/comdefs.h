@@ -25,6 +25,7 @@
 #include "../include/su3.h"
 #include "../include/complex.h"
 #include "../include/macros.h"
+#include "../include/unistd.h"
 
 /* arguments to the make_gather() routine */
 #define FORWARDS         1

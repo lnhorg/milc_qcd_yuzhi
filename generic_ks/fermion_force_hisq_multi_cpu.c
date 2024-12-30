@@ -1867,7 +1867,7 @@ fn_fermion_force_multi_hisq_wrapper_mx( info_t *info, Real eps, Real *residues,
 } //fn_fermion_force_multi_hisq_wrapper_mx
 
 /**********************************************************************/
-/* Top entry point
+/* Top entry point */
 /**********************************************************************/
 
 void fermion_force_multi_hisq_cpu( info_t *info, int prec, Real eps, Real *residues,

@@ -3,8 +3,10 @@
 ARCH=$1
 PK_CC=$2
 PK_CXX=$3
-GIT_REPO=https://github.com/paboyle/grid
-GIT_BRANCH=develop
+#GIT_REPO=https://github.com/paboyle/grid
+GIT_REPO=https://github.com/clarkedavida/Grid
+#GIT_BRANCH=develop
+GIT_BRANCH=hisq_force
 
 if [ -z ${PK_CXX} ]
 then
@@ -22,7 +24,7 @@ case ${ARCH} in
 esac
 
 TOPDIR=`pwd`
-SRCDIR=${TOPDIR}/grid
+SRCDIR=${TOPDIR}/Grid
 BUILDDIR=${TOPDIR}/build-grid-${ARCH}
 INSTALLDIR=${TOPDIR}/install-grid-${ARCH}
 

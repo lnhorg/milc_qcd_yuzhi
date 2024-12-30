@@ -37,11 +37,17 @@
     };
     static int quark_action_npaths_1 = NUM_BASIC_PATHS_1 ;
     static int path_length_in_1[NUM_BASIC_PATHS_1] = {1,3,5,7};
+//    static Real path_coeff_1[NUM_BASIC_PATHS_1] = {
+//       ( 1.0/8.0),        /* one link */
+//       (-1.0/8.0)*0.5,              /* simple staple */
+//       ( 1.0/8.0)*0.25*0.5,         /* displace link in two directions */
+//       (-1.0/8.0)*0.125*(1.0/6.0),  /* displace link in three directions */
+//    };
     static Real path_coeff_1[NUM_BASIC_PATHS_1] = {
-       ( 1.0/8.0),        /* one link */
-       (-1.0/8.0)*0.5,              /* simple staple */
-       ( 1.0/8.0)*0.25*0.5,         /* displace link in two directions */
-       (-1.0/8.0)*0.125*(1.0/6.0),  /* displace link in three directions */
+      ( 1.0),         /* one link */
+      ( 0.0),         /* simple staple */
+      ( 0.0),         /* displace link in two directions */
+      ( 0.0)          /* displace link in three directions */
     };
 #endif
 
@@ -71,14 +77,23 @@
     };
     static int path_length_in_2[NUM_BASIC_PATHS_2] = {1,3,3,5,7,5};
     static int quark_action_npaths_2 = NUM_BASIC_PATHS_2 ;
+//    static Real path_coeff_2[NUM_BASIC_PATHS_2] = {
+//       (( 1.0/8.0)+(2.0*6.0/16.0)+(1.0/8.0)),        /* one link */
+//            /*One link is 1/8 as in fat7 + 2*3/8 for Lepage + 1/8 for Naik */
+//       (-1.0/24.0),                 /* Naik */
+//       (-1.0/8.0)*0.5,              /* simple staple */
+//       ( 1.0/8.0)*0.25*0.5,         /* displace link in two directions */
+//       (-1.0/8.0)*0.125*(1.0/6.0),  /* displace link in three directions */
+//       (-2.0/16 ),                  /* Correct O(a^2) errors, 2X as much as Asqtad  */
+//    };
     static Real path_coeff_2[NUM_BASIC_PATHS_2] = {
-       (( 1.0/8.0)+(2.0*6.0/16.0)+(1.0/8.0)),        /* one link */
-            /*One link is 1/8 as in fat7 + 2*3/8 for Lepage + 1/8 for Naik */
-       (-1.0/24.0),                 /* Naik */
-       (-1.0/8.0)*0.5,              /* simple staple */
-       ( 1.0/8.0)*0.25*0.5,         /* displace link in two directions */
-       (-1.0/8.0)*0.125*(1.0/6.0),  /* displace link in three directions */
-       (-2.0/16 ),                  /* Correct O(a^2) errors, 2X as much as Asqtad  */
+       (0),        /* one link */
+                    /* One link is 1/8 as in fat7 + 2*3/8 for Lepage + 1/8 for Naik */
+       (0),         /* Naik */
+       (0),         /* simple staple */
+       (0),         /* displace link in two directions */
+       (0),         /* displace link in three directions */
+       (0),         /* Correct O(a^2) errors, 2X as much as Asqtad  */
     };
 #define INDEX_ONELINK 0
 #define INDEX_NAIK 1
@@ -96,9 +111,13 @@
     };
     static int path_length_in_3[NUM_BASIC_PATHS_3] = {1,3};
     static int quark_action_npaths_3 = NUM_BASIC_PATHS_3 ;
+//    static Real path_coeff_3[NUM_BASIC_PATHS_3] = {
+//       1.0/8.0,        /* one link */
+//       -1.0/24.0,                 /* Naik */
+//    };
     static Real path_coeff_3[NUM_BASIC_PATHS_3] = {
-       1.0/8.0,        /* one link */
-       -1.0/24.0,                 /* Naik */
+      (0.0),        /* one link */
+      (0.0),        /* Naik */
     };
 #endif /* IMP_QUARK_ACTION_INFO_ONLY */
 

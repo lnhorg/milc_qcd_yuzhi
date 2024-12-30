@@ -4,7 +4,7 @@
 /* Created 10/24/2006 C. DeTar
  */
 
-#include "ks_imp_includes.h"
+#include "generic_ks_includes.h"
 #define IF_OK if(status==0)
 
 static int read_broadcast_ratfunc(FILE *fp, 
