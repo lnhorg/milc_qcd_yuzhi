@@ -187,8 +187,9 @@ int main(int argc, char *argv[])
     } else {
 
       /* Reload APE links from a file */
-      if(ape_links == NULL) ape_links = create_G();
+      ape_links = create_G();
       reload_apelinks( param.start_ape_flag, ape_links, param.start_ape_file );
+      ape_links_ks_phases = ON;  /* Because we save them with phases on */
 
     }
     
@@ -231,7 +232,7 @@ int main(int argc, char *argv[])
     /* Save the APE links to a file if requested */
     if(param.save_ape_flag != FORGET){
       if(ape_links == NULL){
-	node0_printf("ERROR: setup: Requested saving empty APE links\n");
+	node0_printf("ERROR: main: Requested saving empty APE links\n");
 	terminate(1);
       }
       save_apelinks( param.save_ape_flag, ape_links, param.save_ape_file );
@@ -503,6 +504,8 @@ int main(int argc, char *argv[])
 
       for(int color = 0; color < qs->ncolor; color++){
 
+	node0_printf("Creating modified source %d for color %d from parent source %d\n",
+		     is, color, p);
 	/* Apply operator*/
         v_field_op(source[is]->v[color], &(param.src_qs_op[is]), qs->subset, qs->t0);
 
