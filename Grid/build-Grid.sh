@@ -3,8 +3,10 @@
 ARCH=$1
 PK_CC=$2
 PK_CXX=$3
-GIT_REPO=https://github.com/paboyle/grid
-GIT_BRANCH=develop
+GIT_REPO=https://github.com/milc-qcd/Grid
+#GIT_REPO=https://github.com/paboyle/grid
+GIT_BRANCH=feature/LMI-develop
+#GIT_BRANCH=develop
 
 if [ -z ${PK_CXX} ]
 then
@@ -22,7 +24,7 @@ case ${ARCH} in
 esac
 
 TOPDIR=`pwd`
-SRCDIR=${TOPDIR}/grid
+SRCDIR=${TOPDIR}/Grid
 BUILDDIR=${TOPDIR}/build-grid-${ARCH}
 INSTALLDIR=${TOPDIR}/install-grid-${ARCH}
 
@@ -143,6 +145,7 @@ then
 	${SRCDIR}/configure \
              --prefix ${INSTALLDIR}       \
 	     --enable-comms=mpi3-auto     \
+	     --enable-comms-threads       \
 	     --enable-shm=nvlink          \
              --enable-gen-simd-width=64   \
 	     --enable-simd=GPU \
@@ -150,14 +153,15 @@ then
 	     --enable-setdevice \
 	     --disable-accelerator-cshift \
 	     --disable-fermion-reps \
-	     --disable-unified \
+	     --enable-unified=no \
 	     --disable-gparity \
+	     --disable-zmobius \
              --host=x86_64-unknown-linux-gnu \
 	     --with-gmp=${HOME}/perlmutter/gmp \
 	     --with-mpfr=${HOME}/perlmutter/mpfr \
-	     --with-hdf5=${HDF5_ROOT} \
-	     --with-lime=${HOME}/perlmutter/quda/install/lib \
-             CXX="nvcc"                \
+	     --with-hdf5=${CFAY_HDF5_DIRT} \
+	     --with-lime=${HOME}/perlmutter/quda/install \
+             CXX=nvcc                \
 	     LDFLAGS="-L${CUDATOOLKIT_HOME}/targets/x86_64-linux/lib -cudart shared " \
              CXXFLAGS="-ccbin ${PK_CXX} -gencode arch=compute_80,code=sm_80 -std=c++17 -cudart shared" \
 
