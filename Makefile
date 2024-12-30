@@ -1266,6 +1266,10 @@ CXXFLAGS = ${OPT} ${OCXXFLAGS} -D${COMMTYPE} ${CODETYPE} ${INLINEOPT} \
 
 ILIB = ${LIBSCIDAC} ${LMPI} ${LIBADD}
 
+# Loader flag for command-line macro substitution
++LDFLAGS_ADD ?=
++LDFLAGS += ${LDFLAGS_ADD}
+
 .PHONY: time check test_clean
 time:
 	make -f Make_time time
