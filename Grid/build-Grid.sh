@@ -3,8 +3,11 @@
 ARCH=$1
 PK_CC=$2
 PK_CXX=$3
-GIT_REPO=https://github.com/paboyle/grid
-GIT_BRANCH=develop
+#GIT_REPO=https://github.com/paboyle/grid
+#GIT_BRANCH=develop
+#GIT_REPO=https://github.com/clarkedavida/Grid
+GIT_REPO=https://github.com/milc-qcd/Grid
+GIT_BRANCH=feature/LMI-develop
 
 if [ -z ${PK_CXX} ]
 then
@@ -22,7 +25,7 @@ case ${ARCH} in
 esac
 
 TOPDIR=`pwd`
-SRCDIR=${TOPDIR}/grid
+SRCDIR=${TOPDIR}/Grid
 BUILDDIR=${TOPDIR}/build-grid-${ARCH}
 INSTALLDIR=${TOPDIR}/install-grid-${ARCH}
 
@@ -78,17 +81,24 @@ then
 
     avx2)
 
-       ${SRCDIR}/configure \
+	source ${TOPDIR}/env.sh
+
+	${SRCDIR}/configure \
             --prefix=${INSTALLDIR} \
             --enable-mkl=no \
             --enable-simd=GEN \
             --enable-shm=shmnone \
-            --enable-comms=mpi3 \
-	    --with-lime=${HOME}/scidac/install/qio \
-	    --with-hdf5=${CRAY_HDF5_DIR} \
-            --with-mpfr=${HOME}/perlmutter/mpfr \
+            --enable-comms=mpi3-auto \
+	    --disable-fermion-reps       \
+	    --disable-gparity            \
+	    --disable-zmobius \
+	    --with-lime=${HOME}/frontier/quda/install/qio \
+	    --with-hdf5=${HDF5_ROOT} \
+            --with-mpfr=/opt/cray/pe/gcc/mpfr/3.1.4/ \
+	    --with-openssl=${HOME}/frontier/openssl/install/ \
             CXX="${PK_CXX}" CC="${PK_CC}" \
-            CXXFLAGS="-std=c++17 -mavx2" \
+            CXXFLAGS="${MPI_CFLAGS} -I${ROCM_PATH}/include -fPIC -fopenmp -std=c++17 -O0 -g -Wno-psabi -mavx2" \
+	    LDFLAGS="-L/lib64 -fopenmp -L${ROCM_PATH}/lib ${MPI_LDFLAGS}" \
 
        status=$?
              ;;
@@ -177,20 +187,19 @@ then
 	     --enable-gen-simd-width=64 \
 	     --enable-shm=nvlink \
 	     --enable-simd=GPU \
-	     --enable-tracing=timer \
+	     --disable-accelerator-cshift \
              --enable-unified=no \
 	     --with-fftw=${FFTW_DIR}/.. \
 	     --with-gmp=${OLCF_GMP_ROOT} \
-	     --with-hdf5=${OLCF_HDF5_ROOT} \
+	     --with-hdf5=${HDF5_ROOT} \
  	     --with-lime=${INSTALLROOT}/qio \
 	     --with-mpfr=/opt/cray/pe/gcc/mpfr/3.1.4/ \
-	     CXX=hipcc    CXXLD=hipcc \
+	     --with-openssl=${HOME}/frontier/openssl/install/ \
+	     CXX=hipcc   CXXLD=hipcc  \
 	     MPICXX=${MPICH_DIR}/bin/mpicxx \
-	     CXXFLAGS="${MPI_CFLAGS} -I${ROCM_PATH}/include -std=c++17 -O3 -fPIC -fopenmp --amdgpu-target=gfx90a" \
+	     CXXFLAGS="${MPI_CFLAGS} -I${ROCM_PATH}/include -O3 -fPIC -fopenmp --offload-arch=gfx90a -L/lib64 -Wunused-result" \
 	     LDFLAGS="-L/lib64 -L${ROCM_PATH}/lib -lamdhip64 ${MPI_LDFLAGS}" \
 
-# HIPFLAGS = --amdgpu-target=gfx90a
-	
         status=$?
         echo "Configure exit status $status"
 	cp ${BUILDDIR}/grid-config ${INSTALLDIR}/bin
