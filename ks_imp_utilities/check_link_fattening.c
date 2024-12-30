@@ -86,8 +86,8 @@ void check_link_fattening( char *lngansfile, int lngansflag, char *fatansfile, i
 
     Real maxdiff = 0;
     Real maxnorm = 0;
-    
     int i, dir;
+
     FORALLFIELDSITES(i){
       FORALLUPDIR(dir){
 	su3_matrix diffmat;
@@ -123,9 +123,10 @@ void check_link_fattening( char *lngansfile, int lngansflag, char *fatansfile, i
 
     node0_printf("Checking the fat-link answer\n"); fflush(stdout);
     
-    maxdiff = 0;
-    maxnorm = 0;
+    Real maxdiff = 0;
+    Real maxnorm = 0;
     
+    int i, dir;
     FORALLFIELDSITES(i){
       FORALLUPDIR(dir){
 	su3_matrix diffmat;

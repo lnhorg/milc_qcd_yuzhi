@@ -81,21 +81,20 @@ initial_set()
   if(mynode()==0){
     /* print banner */
     printf("SU3 with improved KS action\n");
-#ifdef CHECK_INVERT
+#if defined(CHECK_INVERT)
     printf("Inversion checking\n");
-#else
-#ifdef FERMION_FORCE
+#elif defined(FERMION_FORCE)
     printf("Fermion-force checking\n");
-#else
-#ifdef LINK_FATTENING
+#elif defined(LINK_FATTENING)
     printf("Creating FN link files\n");
-#else
-#ifdef REUNIT
+#elif defined(CHECK_LINK_FATTENING)
+    printf("Checking FN link fattening files\n");
+#elif defined(REUNIT)
     printf("Reunitarization checking\n");
 #else
 #error "Must specify what is being checked"
 #endif
-#endif
+
     printf("MIMD version 7\n");
     printf("Machine = %s, with %d nodes\n",machine_type(),numnodes());
 
@@ -286,11 +285,11 @@ readin(int prompt)
 #endif
     }
 #endif // CHECK_INVERT or FERMION_FORCE
-#if defined(FERMION_FORCE) || defined(LINK_FATTENING)
+#if defined(FERMION_FORCE) || defined(CHECK_FATTENING)
     /* Optional answer for fat links or fermion force */
     IF_OK status += ask_color_matrix( prompt, &(param.ansflag[0]),
 				      param.ansfile[0] );
-#ifdef LINK_FATTENING
+#ifdef CHECK_FATTENING
     /* Optional answer for fat links or long links */
     IF_OK status += ask_color_matrix( prompt, &(param.ansflag[1]),
 				      param.ansfile[1] );

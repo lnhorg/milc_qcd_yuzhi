@@ -180,12 +180,16 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 				quark_invert_control *qic, Real mass,
 				imp_ferm_links_t *fn)
 {
-#if 1
+  if (this_node == 0) {
+    printf("CONGRAD5: using QUDA's block solver\n");
+  }
+#if 0
   /* Until QUDA's MRHS solver is fixed we fake it */
   int num_iters = 0;
   for(int i = 0; i < nsrc; i++){
     num_iters += ks_congrad_parity_gpu(t_src[i], t_dest[i], qic, mass, fn);
   }
+  return num_iters;
 #else
   char myname[] = "ks_congrad_block_parity_gpu";
   QudaInvertArgs_t inv_args;
@@ -238,9 +242,9 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   initialize_quda();
 
   if(qic->parity == EVEN){
-          inv_args.evenodd = QUDA_EVEN_PARITY;
+    inv_args.evenodd = QUDA_EVEN_PARITY;
   }else if(qic->parity == ODD){
-          inv_args.evenodd = QUDA_ODD_PARITY;
+    inv_args.evenodd = QUDA_ODD_PARITY;
   }else{
     printf("%s: Unrecognised parity\n",myname);
     terminate(2);
@@ -277,23 +281,25 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 #endif
 
   qudaInvertMsrc(MILC_PRECISION,
-                 quda_precision,
-                 mass,
-                 inv_args,
-                 qic->resid,
-                 qic->relresid,
-                 fatlink,
-                 longlink,
-                 (void**)t_src,
-		 (void**)t_dest,
-                 &residual,
-                 &relative_residual,
-                 &num_iters,
-		 nsrc);
+     quda_precision,
+     mass,
+     inv_args,
+     qic->resid,
+     qic->relresid,
+     fatlink,
+     longlink,
+     (void**)t_src,
+     (void**)t_dest,
+     &residual,
+     &relative_residual,
+     &num_iters,
+     nsrc);
 
 
-  qic->final_rsq = residual*residual;
-  qic->final_relrsq = relative_residual*relative_residual;
+  // MILC's convention impled from d_congrad5_fn_milc.c is that final_rsq, final_relrsq, and final_iters
+  // are based on the values from the last solve, which qudaInvertMsrc respects.
+  qic->final_rsq = residual * residual;
+  qic->final_relrsq = relative_residual * relative_residual;
   qic->final_iters = num_iters;
 
   // check for convergence 
@@ -309,9 +315,14 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   if(this_node==0){
     printf("CONGRAD5: time = %e (fn_QUDA %s) masses = 1 srcs = %d iters = %d mflops = %e\n",
            dtimec, prec_label[quda_precision-1], nsrc,qic->final_iters,
-           (double)(nflop*volume*qic->final_iters/(1.0e6*dtimec*numnodes())) );
+           (double)(nflop*nsrc*volume*qic->final_iters/(1.0e6*dtimec*numnodes())) );
     fflush(stdout);}
 #endif
+
+  // On the other hand, MILC expects the returned value to be the aggregate number of iterations
+  // performed by each solve if it was performed sequentially. This can be approximated by
+  // the number of iterations for a single solve times the number of sources.
+  return num_iters * nsrc;
 
 #endif /* if 1 */
   return num_iters;

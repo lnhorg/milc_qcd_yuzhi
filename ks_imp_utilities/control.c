@@ -66,7 +66,7 @@ int main( int argc, char **argv ){
 #elif defined(FERMION_FORCE)
     check_fermion_force( param.srcfile, srcflag, param.ansfile[0], 
 			 param.ansflag[0], param.nmass, param.ksp);
-#elif defined(LINK_FATTENING)
+#elif defined(CHECK_FATTENING)
     check_link_fattening( param.ansfile[0], param.ansflag[0], param.ansfile[1], param.ansflag[1] );
 #elif defined(REUNIT)
     check_reunitarization( param.ansfile[0], param.ansflag[0], param.ansfile[1], param.ansflag[1] );

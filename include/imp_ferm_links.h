@@ -133,7 +133,7 @@ void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
 void ddslash_fn_du0_field( su3_vector *src, su3_vector *dest, int parity,
 			   imp_ferm_links_t *fn, imp_ferm_links_t *fn_dmdu0);
 
-void dslash_fn_dir(su3_vector *src, su3_vector *dest, int parity,
+void dslash_fn_dir(const su3_vector * const src, su3_vector *dest, int parity,
 		   imp_ferm_links_t *fn, int dir, int fb, 
 		   Real wtfat, Real wtlong);
 
@@ -284,6 +284,8 @@ void set_fn_last(imp_ferm_links_t *fn_last_new);
 
 /* eigen_stuff*.c */
 
+void restore_eigVec(int Nvecs, Real *eigVal, su3_vector **eigVec, int parity,
+		    imp_ferm_links_t *fn);
 typedef struct {
   int norder ; /* Order of the preconditioning polynomial */
   int which_poly; /* Polynomial selection */
@@ -340,9 +342,22 @@ typedef struct {
   int Nvecs_in; /* number of input starting eigenvectors */
   Real tol; /* Tolerance for the eigenvalue computation */
   int MaxIter; /* max restarting iterations */
+  int Nrestart; /* Lanczos restarts from this number of eigenvalues */
   int Nkr; /* size of the Krylov subspace */
   ks_eigen_poly poly; /* Preconditioning polynomial */
   int blockSize; /* block size for block variant eigensolvers */
+  int parity; 
+} ks_eigen_param;
+#elif defined(HAVE_QDP)
+#define ks_eigensolve Kalkreuter
+typedef struct {
+  int Nvecs ; /* number of eigenvectors */
+  int Nvecs_in ; /* number of input starting eigenvectors */
+  Real tol ; /* Tolerance for the eigenvalue computation */
+  Real RelTol ;
+  int MaxIter ; /* max  Rayleigh iterations */
+  int Restart ; /* Restart  Rayleigh every so many iterations */
+  int Kiters ; /* Kalkreuter iterations */
   int parity; 
 } ks_eigen_param;
 #else
@@ -368,6 +383,7 @@ int ks_eigensolve_Kalkreuter_Ritz(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_PRIMME(su3_vector **eigVec, Real *eigVal,
 				  ks_eigen_param *eigen_param, int init );
+int Kalkreuter(su3_vector **eigVec, Real *eigVal, ks_eigen_param *eigen_param, int init);
 int ks_eigensolve_ARPACK(su3_vector **eigVec, Real *eigVal, 
 				  ks_eigen_param *eigen_param, int init );
 int ks_eigensolve_Grid( su3_vector ** eigVec, Real * eigVal, ks_eigen_param * eigen_param, int init );
@@ -388,8 +404,8 @@ void perturb_eigpair(su3_vector *eigVec_new[], Real *eigVal_new,
 		     imp_ferm_links_t *fn_old);
 void check_eigres(double *resid, su3_vector *eigVec[], Real *eigVal,
 		  int Nvecs, int parity, imp_ferm_links_t *fn);
-void construct_eigen_odd(su3_vector **eigVec, Real *eigVal, ks_eigen_param* eigen_param, imp_ferm_links_t *fn);
-
+void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[], 
+				  ks_eigen_param *eigen_param, imp_ferm_links_t *fn);
 
 /* fn_links_qop.c  and fn_links_milc.c */
 

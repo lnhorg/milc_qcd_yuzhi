@@ -26,7 +26,7 @@ QIO_Index qio_node_index(const int x[], void *arg){
   return node_index(x[0],x[1],x[2],x[3]);
 }
 
-void qio_get_coords(int x[], int node, QIO_Index index, void *arg){
+static void qio_get_coords(int x[], int node, QIO_Index index, void *arg){
   /* For this node we have a table */
   if(node == this_node){
     x[0] = lattice[index].x;
@@ -151,6 +151,7 @@ QIO_Reader *open_scidac_input_xml(const char *filename, QIO_Layout *layout,
   infile = QIO_open_read(xml_file_in, filename, layout, fs, &iflag);
   if(infile == NULL){
     printf("%s(%d): QIO_open_read returns NULL.\n",myname,this_node);
+    fflush(stdout);
     return NULL;
   }
   return infile;

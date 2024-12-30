@@ -170,7 +170,7 @@ endif
 EIGEN_OBJECTS = eigen_stuff_helpers.o io_helpers_ks_eigen.o io_ks_eigen.o read_eigen_param.o
 
 ifeq ($(strip ${HAVEQIO}),true)
-  EIGEN_OBJECTS += io_scidac_ks_eigen.o
+  EIGEN_OBJECTS += io_scidac_ks_eigen.o io_grid_ks_eigen.o
 endif
 
 ifeq ($(strip ${HAVE_EIG_GPU}),true)
@@ -184,6 +184,8 @@ ifeq ($(strip ${HAVE_EIG_GPU}),true)
 else
   ifeq ($(strip ${HAVE_PRIMME}),true)
     EIGEN_OBJECTS += eigen_stuff_PRIMME.o
+  else ifeq ($(strip ${HAVE_QDP}),true)
+    EIGEN_OBJECTS += eigen_stuff_qdp.o
   else ifeq ($(strip ${HAVE_ARPACK}),true)
     EIGEN_OBJECTS += eigen_stuff_ARPACK.o
   else ifeq ($(strip ${HAVEQDP}),true)
@@ -328,13 +330,13 @@ endif
      d_congrad5_fn_qop_D.o d_congrad5_fn_qop_F.o ${CONGRAD_FN_BASE}
 
 ifeq ($(strip ${HAVE_FN_CG_GPU}),true)
-ifeq ($(strip ${HAVE_QUDA}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_QUDA}
-else ifeq ($(strip ${HAVE_GRID}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_GRID}
-else ifeq ($(strip ${HAVE_QPHIX}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_QPHIX}
-endif
+  ifeq ($(strip ${HAVE_QUDA}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_QUDA}
+  else ifeq ($(strip ${HAVE_GRID}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_GRID}
+  else ifeq ($(strip ${HAVE_QPHIX}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_QPHIX}
+  endif
 else
   CONGRAD_FN_MILC = ${CONGRAD_FN_MILC_CPU}
 endif
@@ -489,7 +491,7 @@ endif
   
 # Standard QOP combinations
 
-  GAUGE_FORCE_QOP = gauge_force_symzk1_qop.o  gauge_stuff.o ranmom.o
+  GAUGE_FORCE_QOP = gauge_force_symzk1_qop.o gauge_action_imp.o  gauge_stuff.o ranmom.o
 
 # Standard QPhiX combinations
 

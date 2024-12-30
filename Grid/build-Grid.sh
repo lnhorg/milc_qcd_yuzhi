@@ -147,6 +147,9 @@ then
 	# Cori: salloc -C gpu -t 60 -N 1 -c 10 --gres=gpu:1 -A m1759
 	# Summit: ./build-Grid.sh gpu-cuda mpicc mpiCC
 	# Perlmutter ./build-Grid.sh gpu-cuda cc CC
+
+	source env.sh
+	
 	${SRCDIR}/configure \
              --prefix ${INSTALLDIR}       \
 	     --enable-comms=mpi3-auto     \

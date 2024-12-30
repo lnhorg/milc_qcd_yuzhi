@@ -143,7 +143,7 @@ dslash_fn_site( field_offset src, field_offset dest, int parity,
  * Fat and long links are used instead of unfattened links          */
 
 static void 
-dslash_fn_dir_F(su3_vector *src, su3_vector *dest, int parity,
+dslash_fn_dir_F(const su3_vector * const src, su3_vector *dest, int parity,
 		imp_ferm_links_t *fn, int dir, int fb, 
 		Real wtfat, Real wtlong)
 {
@@ -167,7 +167,7 @@ dslash_fn_dir_F(su3_vector *src, su3_vector *dest, int parity,
 }  
   
 static void 
-dslash_fn_dir_D(su3_vector *src, su3_vector *dest, int parity,
+dslash_fn_dir_D(const su3_vector * const src, su3_vector *dest, int parity,
 		imp_ferm_links_t *fn, int dir, int fb, 
 		Real wtfat, Real wtlong)
 {
@@ -192,7 +192,7 @@ dslash_fn_dir_D(su3_vector *src, su3_vector *dest, int parity,
   
   
 void 
-dslash_fn_dir(su3_vector *src, su3_vector *dest, int parity,
+dslash_fn_dir(const su3_vector * const src, su3_vector *dest, int parity,
 	      imp_ferm_links_t *fn, int dir, int fb, 
 	      Real wtfat, Real wtlong)
 {

@@ -126,9 +126,11 @@ void r_ascii_ks_eigen_f(ks_eigen_file *kseigf);
 
 /**********************************************************************/
 
+/* Prototype for io_grid_ks_eigen.c */
+void read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t offset,
+				uint32_t *suma, uint32_t *sumb);
+
 /* Prototypes for io_helpers_ks_eigen.c */
-void restore_eigVec(int Nvecs, Real *eigVal, su3_vector **eigVec, int parity,
-		    imp_ferm_links_t *fn);
 ks_eigen_file *r_open_ks_eigen(int flag, char *filename);
 ks_eigen_file *w_open_ks_eigen(int flag, char *filename, int parity);
 
@@ -145,5 +147,7 @@ int ask_starting_ks_eigen(FILE *fp, int prompt, int *flag, char *filename );
 int ask_ending_ks_eigen(FILE *fp, int prompt, int *flag, char *filename );
 void unpack_field(void *data, int size);
 void pack_field(void *data, int size);
-  
+void pack_grid_field(void *data, int size);
+void unpack_grid_field(void *data, int size);
+
 #endif /* _IO_KS_EIGEN_H */

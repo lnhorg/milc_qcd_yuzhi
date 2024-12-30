@@ -51,6 +51,7 @@ G_KS_ALL = \
   eigen_stuff_Ritz.o \
   eigen_stuff_PRIMME.o \
   eigen_stuff_Grid.o \
+  eigen_stuff_qdp.o \
   eigen_stuff_QUDA.o \
   f_meas.o \
   f_meas_current.o \
@@ -115,6 +116,7 @@ G_KS_ALL = \
   grsource.o \
   hisq_links_qop.o \
   inc_eigcg.o \
+  io_grid_ks_eigen.o \
   io_helpers_ks.o \
   io_helpers_ks_eigen.o \
   io_ks_eigen.o \
@@ -282,6 +284,8 @@ eigen_stuff_PRIMME.o: ../generic_ks/eigen_stuff_PRIMME.c
 	${CC} -c ${CFLAGS} $<
 eigen_stuff_Grid.o: ../generic_ks/eigen_stuff_Grid.c
 	${CC} -c ${CFLAGS} $<
+eigen_stuff_qdp.o: ../generic_ks/eigen_stuff_qdp.c
+	${CC} -c ${CFLAGS} $<
 eigen_stuff_QUDA.o: ../generic_ks/eigen_stuff_QUDA.c
 	${CC} -c ${CFLAGS} $<
 fermion_force_asqtad.o: ../generic_ks/fermion_force_asqtad.c
@@ -417,6 +421,8 @@ grsource_imp.o: ../generic_ks/grsource_imp.c
 hisq_links_qop.o: ../generic_ks/hisq_links_qop.c
 	${CC} -c ${CFLAGS} $<
 inc_eigcg.o: ../generic_ks/inc_eigcg.c
+	${CC} -c ${CFLAGS} $<
+io_grid_ks_eigen.o: ../generic_ks/io_grid_ks_eigen.c
 	${CC} -c ${CFLAGS} $<
 io_helpers_ks.o: ../generic_ks/io_helpers_ks.c
 	${CC} -c ${CFLAGS} $<

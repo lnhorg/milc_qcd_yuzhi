@@ -140,7 +140,8 @@ ifeq ($(strip ${COMPILER}),gnu)
   ifeq ($(strip ${OMP}),true)
     OCFLAGS += -fopenmp
     OCXXFLAGS += -fopenmp
-    LDFLAGS += -fopenmp
+    LDFLAGS += -fopenmp -L/usr/uumath/ashare/gcc/gcc-8-20210512/lib64 -lgomp
+
   endif
 
 # Other Gnu options
@@ -322,8 +323,16 @@ WANTQIO ?= # true # or blank.  Implies HAVEQMP.
 
 WANTQMP ?= # true or blank.
 
+#----------------------------------------------------------------------
+# Usually required
 # QMP_MPI or QMP_SPI
 QMP_BACKEND = QMP_MPI
+
+ifeq ($(strip ${MPP}),true)
+  OCFLAGS   += -DHAVE_MPI
+  OCXXFLAGS += -DHAVE_MPI
+endif
+
 
 # Edit these locations for the installed SciDAC packages
 # It is assumed that these are the parents of "include" and "lib"
@@ -369,7 +378,7 @@ endif
 #----------------------------------------------------------------------
 # 12. FFTW3 Options
 
-WANTFFTW = true
+WANTFFTW ?= false
 
 ifeq ($(strip ${WANTFFTW}),true)
   FFTW ?= ${FFTW_ROOT}
@@ -423,6 +432,7 @@ ifeq ($(strip ${WANTPRIMME}),true)
   PACKAGE_HEADERS += ${PRIMME_HEADERS}
   LIBPRIMME = -L${HOME}/PRIMME/lib -lprimme
 
+
   CEIG ?= # -DPRIMME_PRECOND -DPOLY_EIGEN
 
 endif
@@ -432,9 +442,11 @@ endif
 
 WANTARPACK = #true
 
+# The Utah/Math load-library path:
+# /usr/uumath/ashare/gcc/gcc-7-20190711/lib64:/u/inscc/detar/milc_qcd/arpack-ng/install/lib:/usr/uumath/ashare/gcc/gcc-8.4.0/lib64:/usr/uumath/lib64:/usr/uumath/ashare/gcc/gcc-8.4.0/lib64:/usr/uumath/lib64
+
 ifeq ($(strip ${WANTARPACK}),true)
-#  LIBARPACK = -L/usr/lib64 -lparpack  -larpack -lifcore -llapack -lblas
-  LIBARPACK = -L/usr/lib64 -larpack
+  LIBARPACK = -L../arpack-ng/install/lib -larpack
 endif
 
 #----------------------------------------------------------------------
@@ -472,7 +484,8 @@ ifeq ($(strip ${WANTQUDA}),true)
 
   INCQUDA = -I${QUDA_HOME}/include -I${QUDA_HOME}/tests
   PACKAGE_HEADERS += ${QUDA_HOME}/include
-  LIBQUDA ?= -Wl,-rpath ${QUDA_HOME}/lib -L${QUDA_HOME}/lib -lquda
+  LIBQUDA ?= -Wl,-rpath ${QUDA_HOME}/lib -L${QUDA_HOME}/lib -lquda 
+
   QUDA_LIBRARIES = ${QUDA_HOME}/lib
   QUDA_HEADERS = ${QUDA_HOME}/include
 
@@ -668,6 +681,7 @@ ifeq ($(strip ${WANTGRID}), true)
   GRID_HOME = ../Grid/install-grid-${GRID_ARCH}
   GRID_LIBRARIES = ${GRID_HOME}/lib
   LIBGRID = -L${GRID_LIBRARIES} -lGrid -lcrypto -lz
+
   GRID_HEADERS = ${GRID_HOME}/include
   INCGRID = -I${GRID_HEADERS}
 
@@ -783,6 +797,12 @@ INLINEOPT = -DC_GLOBAL_INLINE # -DSSE_GLOBAL_INLINE #-DC_INLINE
 # To get them, uncomment the next line
 
 #INLINEOPT += -DSSEOPTERON
+
+#----------------------------------------------------------------------
+# crc32
+
+CFLAGS += -I/usr/include
+LDFLAGS += -L/usr/lib64 -lz
 
 #----------------------------------------------------------------------
 # 20. Miscellaneous macros for performance control and metric
