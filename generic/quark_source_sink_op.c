@@ -1102,7 +1102,7 @@ static int apply_ks_inverse(su3_vector *v, quark_source_sink_op *qss_op,
   /* Get fn links appropraite to this Naik term epsilon */
   
   restore_fermion_links_from_site(fn_links, my_qic->prec);
-  fn = get_fm_links(fn_links)[inaik];
+  fn = get_fm_links(fn_links, inaik);
 
   /* Apply twist to the boundary links of fn and reset origin of KS
      phases if requested */
@@ -1127,6 +1127,8 @@ static int apply_ks_inverse(su3_vector *v, quark_source_sink_op *qss_op,
   boundary_twist_fn(fn, OFF);
 
   destroy_v_field(src);
+  destroy_fn_links(fn);
+  
   return tot_iters;
 }
 
@@ -1696,7 +1698,7 @@ static void hop_vec(su3_vector *src, ks_param *ksp, int dhop, int mu)
   int inaik = 0;
 #endif
   /* Note: we are not restoring the links here and don't set the precision */
-  imp_ferm_links_t *fn = get_fm_links(fn_links)[inaik];
+  imp_ferm_links_t *fn = get_fm_links(fn_links, inaik);
   
   if(src == NULL){
     node0_printf("%s: Error: called with NULL arg\n", myname);
@@ -1722,7 +1724,8 @@ static void hop_vec(su3_vector *src, ks_param *ksp, int dhop, int mu)
   /* result in src */
   copy_v_field(src, v);
 
-  destroy_v_field(v); 
+  destroy_v_field(v);
+  destroy_fn_links(fn);
 
 } /* hop_vec */
 
