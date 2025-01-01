@@ -493,7 +493,7 @@ int readin(int prompt) {
     /* Propagators and their sources                              */
     /*------------------------------------------------------------*/
 
-    /* Number of sets grouped for multimass inversion */
+    /* Number of sets grouped for multimass or multisource inversion */
 
     IF_OK status += get_i(stdin,prompt,"number_of_sets", &param.num_set);
     if( param.num_set>MAX_SET ){
@@ -653,6 +653,8 @@ int readin(int prompt) {
 	status++;
       }
 
+      Real common_naik = 0;
+      
       IF_OK for(i = 0; i < param.num_prop[k]; i++){
 
 	/* Propagator parameters */
@@ -676,6 +678,13 @@ int readin(int prompt) {
 #if ( FERM_ACTION == HISQ )
 	    IF_OK status += get_f(stdin, prompt,"naik_term_epsilon", 
 				  &param.ksp[nprop].naik_term_epsilon);
+	    if(i == 0){
+	      common_naik = param.ksp[nprop].naik_term_epsilon;
+	    } else if (param.ksp[nprop].naik_term_epsilon != common_naik){
+	      node0_printf("ERROR: All propagators in a multimaws set must have the same Naik epsilon\n");
+	      status++;
+	    }
+
 #else
 	    param.ksp[nprop].naik_term_epsilon = 0.0;
 #endif
