@@ -41,8 +41,8 @@
          su3_matrix *V_link;
 	 su3_matrix *Y_unitlink; 
 	 su3_matrix *W_unitlink; 
-       fn_links_t *fn[MAX_NAIK]
-       fn_links_t *fn_deps
+       fn_links_t *fn0  Fat and long links with zero Naik epsilon
+       fn_links_t *fn_deps Used for Naik correction as well as hot QCD
 
        (Here fn_links_t is the only option.)
 
@@ -72,7 +72,7 @@ typedef struct {
 typedef struct {
   ks_action_paths_hisq *ap;
   hisq_auxiliary_t *aux;          // Intermediate links needed for fermion force
-  imp_ferm_links_t *fn[MAX_NAIK]; // Table of links depending on epsilon
+  imp_ferm_links_t *fn0;          // Links for Naik epsilon = 0
   imp_ferm_links_t *fn_deps;      // Derivative of links wrto epsilon.
 } hisq_links_t;
 
@@ -132,7 +132,7 @@ void create_hisq_links_milc(info_t *info, fn_links_t **fn, fn_links_t **fn_deps,
 			  su3_matrix *links, int want_deps, int want_back);
 
 void destroy_hisq_links_milc(ks_action_paths_hisq *ap, hisq_auxiliary_t *aux, 
-			     fn_links_t **fn, fn_links_t *fn_deps);
+			     fn_links_t *fn, fn_links_t *fn_deps);
 
 
 //hisq_auxiliary_t *create_hisq_auxiliary_t(ks_action_paths_hisq *ap,
