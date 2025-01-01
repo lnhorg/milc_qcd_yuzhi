@@ -30,7 +30,7 @@ void check_fermion_force( char srcfile[MAX_MASS][MAXFILENAME], int srcflag,
 #endif
   int ff_prec = MILC_PRECISION;  /* Just use prevailing precision for now */
   /* Supports only asqtad at the moment */
-  imp_ferm_links_t **fn = get_fm_links(fn_links);
+  imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
   Real *residues = (Real *)malloc(nmass*sizeof(Real));;
   su3_vector **src = (su3_vector **)malloc(nmass*sizeof(su3_vector *));
   su3_matrix *ansmom = (su3_matrix *)malloc(4*sites_on_node*sizeof(su3_matrix));
@@ -66,7 +66,7 @@ void check_fermion_force( char srcfile[MAX_MASS][MAXFILENAME], int srcflag,
     }  else {
       /* generate g_rand random; phi = Mdagger g_rand */
       node0_printf("Generating random sources\n");
-      grsource_imp_field( src[i], mass, EVENANDODD, fn[i]);
+      grsource_imp_field( src[i], mass, EVENANDODD, fn);
     }
   }
       
@@ -89,6 +89,8 @@ void check_fermion_force( char srcfile[MAX_MASS][MAXFILENAME], int srcflag,
 
   eo_fermion_force_multi( eps, residues, src, nmass, ff_prec, fn_links );
 
+  destroy_fn_links(fn);
+  
   /* If the answer file is given, read it for comparison */
   if(ansflag == RELOAD_SERIAL){
     restore_color_matrix_scidac_to_field(ansfile, ansmom, 4, MILC_PRECISION);
