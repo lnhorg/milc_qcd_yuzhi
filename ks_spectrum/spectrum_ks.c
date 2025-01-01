@@ -506,17 +506,21 @@ static void spectrum_ks_baryon_nd(int nc, int type[],
 static void accum_gen_meson(complex **mp, su3_vector *qp0, int naik_index0,
 			    su3_vector *qp1, int naik_index1, int pair){
 
-  imp_ferm_links_t **fn = get_fm_links(fn_links);
+  imp_ferm_links_t *fn_index0 = get_fm_links(fn_links, naik_index0);
+  imp_ferm_links_t *fn_index1 = get_fm_links(fn_links, naik_index1);
 
   ks_meson_cont_mom(mp, qp0, qp1,
 		    num_mom_parities, momentum, parity,
 		    num_spin_taste_indices, num_corr_mom_parity, corr_table,
-		    mom_parity_index, fn[naik_index0], fn[naik_index1],
+		    mom_parity_index, fn_index0, fn_index1,
 		    param.spin_taste_snk[pair],
 		    param.meson_phase[pair], param.meson_factor[pair],
 		    param.num_corr_report[pair],
 		    //		    param.corr_index[pair], &param.r_offset_m[pair][0]);
 		    param.corr_index[pair], param.coord_origin);
+
+  destroy_fn_links(fn_index0);
+  destroy_fn_links(fn_index1);
 }
 
 /*--------------------------------------------------------------------*/
