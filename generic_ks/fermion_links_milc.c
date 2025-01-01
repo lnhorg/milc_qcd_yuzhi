@@ -68,7 +68,7 @@ restore_fm_ap_links_t(info_t *info, fm_ap_links_t *al, su3_matrix *links,
 }
 
 static imp_ferm_links_t **
-get_fm_ap_links_t_fm(fm_ap_links_t *al){
+get_fm_ap_links_t_fm(fm_ap_links_t *al, int i_naik){
   return &al->fm;
 }
 
@@ -148,8 +148,8 @@ restore_milc_fm_links_t(info_t *info, milc_fm_links_t *al,
   info->final_flop = final_flop;
 }
 
-static imp_ferm_links_t **
-get_milc_fm_ap_links_fm(milc_fm_links_t *al){
+static imp_ferm_links_t *
+get_milc_fm_ap_links_fm(milc_fm_links_t *al, int i_naik){
   return get_fm_ap_links_t_fm(al->fm_ap);
 }
 
@@ -288,8 +288,8 @@ restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_mat
 /* Accessors                              */
 /*----------------------------------------*/
 
-imp_ferm_links_t **
-get_fm_links(fermion_links_t *fl){
+imp_ferm_links_t *
+get_fm_links(fermion_links_t *fl, int i_naik){
   return get_milc_fm_ap_links_fm(fl->flg);
 }
 
