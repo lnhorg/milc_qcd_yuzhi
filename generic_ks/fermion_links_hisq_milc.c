@@ -32,12 +32,11 @@ create_hisq_links_t(info_t *info, ks_action_paths_hisq *ap, su3_matrix *links,
     terminate(1);
   }
 
-  for(i = 0; i < MAX_NAIK; i++)
-    hl->fn[i] = NULL;
-  
+  hl->fn0 = NULL;
+  hl->fn_deps = NULL;
   hl->ap = ap;
 
-  create_hisq_links_milc(info, hl->fn, &hl->fn_deps, &hl->aux, ap, links, 
+  create_hisq_links_milc(info, &hl->fn0, &hl->fn_deps, &hl->aux, ap, links, 
 			 options->want_deps, options->want_back);
 
   /* Free the space if so desired */
@@ -56,7 +55,7 @@ destroy_hisq_links_t(hisq_links_t *hl){
 
   /* Destroy all members and free the structure */
 
-  destroy_hisq_links_milc(hl->ap, hl->aux, hl->fn, hl->fn_deps);
+  destroy_hisq_links_milc(hl->ap, hl->aux, hl->fn0, hl->fn_deps);
   destroy_path_table_hisq(hl->ap);
 
   free(hl);
@@ -70,7 +69,7 @@ invalidate_hisq_links_t(hisq_links_t *hl){
   /* Destroy the auxiliary and fn links and reset the pointers */
   /* Keep the path tables */
 
-  destroy_hisq_links_milc(hl->ap, hl->aux, hl->fn, hl->fn_deps);
+  destroy_hisq_links_milc(hl->ap, hl->aux, hl->fn0, hl->fn_deps);
   hl->aux = NULL;
   hl->fn_deps = NULL;
 }
@@ -84,11 +83,11 @@ restore_hisq_links_t(info_t *info, hisq_links_t *hl, su3_matrix *links,
   /* If the first fn member is not NULL, the links are assumed to be
      valid and we do nothing */
 
-  if(hl->fn[0] != NULL)return;
+  if(hl->fn0 != NULL)return;
 
   /* Allocate and create the HISQ auxiliary links and the fn links */
 
-  create_hisq_links_milc(info, hl->fn, &hl->fn_deps, &hl->aux, 
+  create_hisq_links_milc(info, &hl->fn0, &hl->fn_deps, &hl->aux, 
 			 hl->ap, links, options->want_deps,
 			 options->want_back);
 
@@ -97,18 +96,6 @@ restore_hisq_links_t(info_t *info, hisq_links_t *hl, su3_matrix *links,
     destroy_hisq_auxiliary_t(hl->aux);
     hl->aux = NULL;
   }
-}
-
-static fn_links_t **
-get_hisq_links_t_fn(hisq_links_t *hl){
-  if(hl == NULL)return NULL;
-  return hl->fn;
-}
-
-static fn_links_t *
-get_hisq_links_t_fn_deps(hisq_links_t *hl){
-  if(hl == NULL)return NULL;
-  return hl->fn_deps;
 }
 
 static ks_action_paths_hisq*
@@ -120,7 +107,7 @@ get_hisq_links_t_ap(hisq_links_t *hl){
 /* We keep only one precision for MILC types */
 static int
 valid_hisq_links_t(hisq_links_t *hl, int precision){
-  return hl->fn[0] != NULL;
+  return hl->fn0 != NULL;
 }
 
 static hisq_auxiliary_t *
@@ -177,18 +164,6 @@ restore_milc_hisq_links_t(info_t *info, milc_hisq_links_t *hl,
   restore_hisq_links_t(info, hl->hisq, links, options);
 }
 
-static fn_links_t **
-get_milc_hisq_links_fn(milc_hisq_links_t *hl){
-  if(hl == NULL)return NULL;
-  return get_hisq_links_t_fn(hl->hisq);
-}
-
-static fn_links_t *
-get_milc_hisq_links_fn_deps(milc_hisq_links_t *hl){
-  if(hl == NULL)return NULL;
-  return get_hisq_links_t_fn_deps(hl->hisq);
-}
-
 static ks_action_paths_hisq *
 get_milc_hisq_links_ap(milc_hisq_links_t *hl){
   if(hl == NULL)return NULL;
@@ -203,10 +178,66 @@ valid_milc_hisq_links(milc_hisq_links_t *hl, int precision){
   return valid_hisq_links_t(hl->hisq, precision);
 }
 
+static fn_links_t *
+get_hisq_links_t_fn_deps(hisq_links_t *hl){
+  if(hl == NULL)return NULL;
+  return hl->fn_deps;
+}
+
 static hisq_auxiliary_t *
 get_milc_hisq_links_aux(milc_hisq_links_t *hl){
   if(hl == NULL)return NULL;
   return get_hisq_links_t_aux(hl->hisq);
+}
+
+static fn_links_t *
+get_milc_hisq_links_fn_deps(milc_hisq_links_t *hl){
+  if(hl == NULL)return NULL;
+  return get_hisq_links_t_fn_deps(hl->hisq);
+}
+
+int
+get_n_naiks_hisq(fermion_links_t *fl){
+  ks_action_paths_hisq* ap;
+  if(fl == NULL)return -1;
+  ap = get_action_paths_hisq(fl);
+  return get_n_naiks(ap);
+}
+
+static fn_links_t *
+get_hisq_links_t_fn(hisq_links_t *hl, int i_naik, ferm_links_options_t *options){
+  if(hl == NULL)return NULL;
+  int n_naiks = hl->ap->n_naiks;
+  if(i_naik >= n_naiks){
+    node0_printf("ERROR: Requested Naik epsilon index %d but n_naik = %d\n", i_naik, n_naiks);
+    terminate(1);
+  }
+
+  fn_links_t *fn = create_fn_links();
+
+  /* Just create space.  The copy_fn and scalar_mult_fn will add data  */
+  if(options->want_back){
+    fn->fatback = create_fatlinks();
+    fn->lngback = create_lnglinks();
+  }
+    
+  fn_links_t *fn_deps = get_hisq_links_t_fn_deps(hl);
+  double *eps_naik = hl->ap->eps_naik;
+  if(i_naik == 0){
+    copy_fn(hl->fn0, fn);
+  }
+  else {
+    scalar_mult_fn(fn_deps, eps_naik[i_naik], fn);
+    add_fn(fn, hl->fn0, fn);
+  }
+
+  return fn;
+}
+
+static fn_links_t *
+get_milc_hisq_links_fn(milc_hisq_links_t *hl, int i_naik, ferm_links_options_t *options){
+  if(hl == NULL)return NULL;
+  return get_hisq_links_t_fn(hl->hisq, i_naik, options);
 }
 
 /*********************************************************************/
@@ -352,10 +383,11 @@ restore_fermion_links_hisq(fermion_links_t *fl, int precision,
 /* Accessors                              */
 /*----------------------------------------*/
 
-fn_links_t **
-get_fm_links(fermion_links_t *fl){
+fn_links_t *
+get_fm_links(fermion_links_t *fl, int i_naik){
   if(fl == NULL)return NULL;
-  return get_milc_hisq_links_fn(fl->flg);
+  ferm_links_options_t options = fl->options;
+  return get_milc_hisq_links_fn(fl->flg, i_naik, &options);
 }
 
 fn_links_t *
@@ -368,14 +400,6 @@ ks_action_paths_hisq *
 get_action_paths_hisq(fermion_links_t *fl){
   if(fl == NULL)return NULL;
   return get_milc_hisq_links_ap(fl->flg);
-}
-
-int
-get_n_naiks_hisq(fermion_links_t *fl){
-  ks_action_paths_hisq* ap;
-  if(fl == NULL)return -1;
-  ap = get_action_paths_hisq(fl);
-  return get_n_naiks(ap);
 }
 
 double *
