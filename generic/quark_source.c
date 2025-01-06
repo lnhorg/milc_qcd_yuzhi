@@ -420,7 +420,7 @@ static void scaled_point_source(complex *src, int x0, int y0, int z0, int t0,
                                 double weight){
   int i;
   
-  /* load 1.0 into source at cooordinates given by source_coord */
+  /* load 1.0 into source at coordinates given by source_coord */
   /* initialize src to be a delta function at point x0,y0,z0,t0 */
   /* Save a copy of the source in qs->c_src */
   
@@ -1571,6 +1571,11 @@ int get_v_quark_source(FILE *fp, int prompt, quark_source *qs){
       status++;
     }
   }
+
+  /* When SCALE_PROP is defined, all Dirac sources must specify a scale_factor */
+#ifdef SCALE_PROP
+  IF_OK status += get_f(fp, prompt, "scale_factor", &qs->scale_fact);
+#endif
   
   IF_OK status += get_s(stdin, prompt, "source_label", source_label);
   /* Source label '(null)' suppresses the label */
