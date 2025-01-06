@@ -20,7 +20,7 @@ ARCH ?= # epyc hsw skx clx icx spr knl pow8 pow9
 #----------------------------------------------------------------------
 # 2. Compiler family
 
-COMPILER ?= intel # intel, ibm, cray-intel, rocm
+COMPILER ?= gnu # intel, ibm, cray-intel, rocm
 OFFLOAD ?= # cuda hip sycl openmp
 
 #----------------------------------------------------------------------
