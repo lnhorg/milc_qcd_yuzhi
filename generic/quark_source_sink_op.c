@@ -95,9 +95,9 @@
 #include "../include/openmp_defs.h"
 #include <string.h>
 #ifdef HAVE_QIO
+#include "../include/io_scidac_ks.h"
 #include <qio.h>
 #include "../include/io_scidac.h"
-#include "../include/io_scidac_ks.h"
 #include "../include/io_scidac_w.h"
 #endif
 #ifdef HAVE_DIRAC
@@ -945,7 +945,7 @@ get_spin_taste(void){
   return spin_taste;
 }
 
-
+#if 0 /* Hasn't been used */
 /*------------------------------------------------------------------*/
 /**
     Almost identical to the definitions of sym_shift_field in :    
@@ -989,6 +989,8 @@ one_link_sym_shift_source(int dir, su3_vector *dest, su3_vector *src,
 #endif
   destroy_v_field(tvec0);
 } /* one_link_sym_shift_source */
+
+#endif
 
 /*------------------------------------------------------------------*/
 
@@ -1234,7 +1236,7 @@ static void apply_gamma(wilson_vector *src,
 			quark_source_sink_op *qss_op){
   int i;
   site *s;
-  gammatype gam = qss_op->gamma;
+  enum gammatype gam = qss_op->gamma;
   wilson_vector tmp;
 
   FORALLSITES(i,s){
@@ -1908,7 +1910,8 @@ void ksp_sink_op(quark_source_sink_op *qss_op, ks_prop_field *ksp )
 {
   int color;
   su3_vector *v = create_v_field();
-
+  char *create_ks_XML(void);
+  
   /* Initilize source files if saving as source */
   if (qss_op->type  == SAVE_VECTOR_SRC) {
     if(qss_op->qs_save.saveflag != FORGET){
