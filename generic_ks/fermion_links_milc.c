@@ -67,9 +67,9 @@ restore_fm_ap_links_t(info_t *info, fm_ap_links_t *al, su3_matrix *links,
   load_imp_ferm_links(info, al->fm, al->ap, links, want_back);
 }
 
-static imp_ferm_links_t **
-get_fm_ap_links_t_fm(fm_ap_links_t *al, int i_naik){
-  return &al->fm;
+static imp_ferm_links_t *
+get_fm_ap_links_t_fm(fm_ap_links_t *al){
+  return al->fm;
 }
 
 static ks_action_paths*
@@ -149,11 +149,11 @@ restore_milc_fm_links_t(info_t *info, milc_fm_links_t *al,
 }
 
 static imp_ferm_links_t *
-get_milc_fm_ap_links_fm(milc_fm_links_t *al, int i_naik){
+get_milc_fm_ap_links_fm(milc_fm_links_t *al){
   return get_fm_ap_links_t_fm(al->fm_ap);
 }
 
-static imp_ferm_links_t **
+static imp_ferm_links_t *
 get_milc_fm_ap_du0_links_fm(milc_fm_links_t *al){
   return get_fm_ap_links_t_fm(al->fm_ap_du0);
 }
@@ -293,7 +293,7 @@ get_fm_links(fermion_links_t *fl, int i_naik){
   return get_milc_fm_ap_links_fm(fl->flg);
 }
 
-imp_ferm_links_t **
+imp_ferm_links_t *
 get_fm_du0_links(fermion_links_t *fl){
   return get_milc_fm_ap_du0_links_fm(fl->flg);
 }
