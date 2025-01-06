@@ -264,7 +264,7 @@ void invalidate_fermion_links(fermion_links_t *fl);
 void restore_fermion_links_hisq(fermion_links_t *fl, int precision,
 				int phases_in, su3_matrix *links);
 imp_ferm_links_t *get_fm_links(fermion_links_t *fl, int i_naik);
-imp_ferm_links_t **get_fm_du0_links(fermion_links_t *fl);
+imp_ferm_links_t *get_fm_du0_links(fermion_links_t *fl);
 imp_ferm_links_t *get_fn_deps_links(fermion_links_t *fl);
 ks_action_paths_hisq *get_action_paths_hisq(fermion_links_t *fl);
 int get_n_naiks_hisq(fermion_links_t *fl);
