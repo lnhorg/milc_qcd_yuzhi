@@ -1209,6 +1209,7 @@ void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
     free(tmp);
 }
 
+#if 0 /* Haven't been using these */
 /*****************************************************************************/
 /* Creates an array of vectors for the block-cg solver */
 
@@ -1236,3 +1237,5 @@ static void destroy_su3_vector_array(su3_vector **a, int n){
     if(a[i] != NULL)
       destroy_v_field(a[i]);
 }
+
+#endif
