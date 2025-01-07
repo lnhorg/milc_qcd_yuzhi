@@ -852,7 +852,7 @@ static int v_base_source(su3_vector *src, quark_source *qs)
   /* Unpack structure */
   int source_type           = qs->type;
   int color                 = qs->color;
-  //  int t0                    = qs->t0;
+  int t0                    = qs->t0;
   int status = 0;
 
   /* zero src to be safe */
