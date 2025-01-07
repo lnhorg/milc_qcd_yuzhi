@@ -255,8 +255,8 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
 	 always use CGTYPE if we are startin from an initial guess
       */
 
-  int it = inv_type;
-  int st = set_type;
+  enum inv_type it = inv_type;
+  enum set_type st = set_type;
   if(have_initial_guess){
     if(set_type != SINGLES_SET || my_qic[0].inv_type == CGTYPE)
       node0_printf("Because an initial guess is given, treating as SINGLES and CG\n");
