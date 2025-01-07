@@ -63,14 +63,6 @@ create_hadron_prop(int ncor, int ntime){
 }
 
 /*--------------------------------------------------------------------*/
-void clear_wprop(wilson_propagator *p){
-  int c,s;
-  for(c = 0; c < 3; c++)
-    for(s = 0; s < 4; s++)
-      clear_wvec(&p->c[c].d[s]);
-}
-
-/*--------------------------------------------------------------------*/
 
 static void
 destroy_hadron_prop(complex ***prop, int ncor){
@@ -815,6 +807,22 @@ static int lookup_corr_index(int pair, int m){
   terminate(1);
   return -1;
 }
+
+/*--------------------------------------------------------------------*/
+/* Chase linked list to find the original propagator ancestor */
+
+int get_eve(int iq){
+  int i, ip;
+
+  for(i = 0; i < MAX_HISTORY-1; i++){
+    ip = param.prop_for_qk[iq];
+    if(param.parent_type[iq] == PROP_TYPE) break;
+    iq = ip;
+  }
+
+  return ip;
+}
+  
 /*--------------------------------------------------------------------*/
 static void print_start_fnal_meson_prop(FILE *fp, int pair, int m)
 {
@@ -1050,6 +1058,36 @@ static void close_fnal_baryon_file(FILE *fp, int triplet){
   if(fp != NULL)fclose(fp);
 }
 /*--------------------------------------------------------------------*/
+static double get_meson_scale_factor(int iq0, int iq1){
+  int ip0 = get_eve(iq0);
+  int ip1 = get_eve(iq1);
+  double scale_factor = 1;
+
+  if(param.prop_type[ip0] == KS_TYPE)
+    scale_factor *= param.src_qs[ip0].scale_fact;
+  if(param.prop_type[ip1] == KS_TYPE)
+    scale_factor *= param.src_qs[ip1].scale_fact;
+
+  return 1./scale_factor;
+}
+/*--------------------------------------------------------------------*/
+static double get_baryon_scale_factor(int iq0, int iq1, int iq2){
+  int ip0 = get_eve(iq0);
+  int ip1 = get_eve(iq1);
+  int ip2 = get_eve(iq2);
+  double scale_factor = 1;
+
+  if(param.prop_type[ip0] == KS_TYPE)
+    scale_factor *= param.src_qs[ip0].scale_fact;
+  if(param.prop_type[ip1] == KS_TYPE)
+    scale_factor *= param.src_qs[ip1].scale_fact;
+  if(param.prop_type[ip2] == KS_TYPE)
+    scale_factor *= param.src_qs[ip2].scale_fact;
+
+  return 1./scale_factor;
+}
+
+/*--------------------------------------------------------------------*/
 static void spectrum_ks_print_diag(int pair){
 
   //  Real space_vol;
@@ -1062,6 +1100,10 @@ static void spectrum_ks_print_diag(int pair){
 
   /* Normalization factor */
   //  space_vol = (Real)(nx*ny*nz);
+
+  /* Rescaling */
+  double meson_scale = get_meson_scale_factor(param.qkpair[pair][0],  
+					      param.qkpair[pair][1]);
 
   /* Point sink */
   if(param.do_meson_spect[pair]){
@@ -1079,8 +1121,10 @@ static void spectrum_ks_print_diag(int pair){
 	tp = (t + param.r_offset_m[pair][3]) % nt;
 	prop = pmes_prop[m][tp];
 	CMULREAL(prop, norm_fac, prop);
-	print_meson_prop(pair, t, prop);
-	print_fnal_meson_prop(corr_fp, pair, t, prop);
+	dcomplex dprop = {prop.real, prop.imag}; /* Change to double if float */
+	CMULREAL(dprop, meson_scale, dprop);
+	print_meson_prop(pair, t, dprop);
+	print_fnal_meson_prop(corr_fp, pair, t, dprop);
       }
       print_end_meson_prop(pair);
       print_end_fnal_meson_prop(corr_fp, pair);
@@ -1099,10 +1143,13 @@ static void spectrum_ks_print_offdiag(int pair){
   int num_report = param.num_corr_report[pair];
   complex prop;
   FILE *corr_fp;
-
+  
   /* Normalization factor */
   //  space_vol = (Real)(nx*ny*nz);
 
+  /* Rescaling */
+  double meson_scale = get_meson_scale_factor(param.qkpair[pair][0],  
+					      param.qkpair[pair][1]);
   /* Point sink */
   if(param.do_meson_spect[pair]){
     corr_fp = open_fnal_meson_file(pair);
@@ -1120,8 +1167,10 @@ static void spectrum_ks_print_offdiag(int pair){
 	tp = (t + param.r_offset_m[pair][3]) % nt;
 	prop = pmes_prop[m][tp];
 	CMULREAL(prop, norm_fac, prop);
-	print_meson_prop(pair, t, prop);
-	print_fnal_meson_prop(corr_fp, pair, t, prop);
+	dcomplex dprop = {prop.real, prop.imag};
+	CMULREAL(dprop, meson_scale, dprop);
+	print_meson_prop(pair, t, dprop);
+	print_fnal_meson_prop(corr_fp, pair, t, dprop);
       }
       print_end_meson_prop(pair);
       print_end_fnal_meson_prop(corr_fp, pair);
@@ -1139,6 +1188,10 @@ static void spectrum_ks_print_baryon(int triplet){
   int b;
   complex prop;
   int num_corr = param.num_corr_b[triplet];
+  double baryon_scale = get_baryon_scale_factor(param.qktriplet[triplet][0], 
+						param.qktriplet[triplet][1], 
+						param.qktriplet[triplet][2]);
+
 
   /* Normalization factor */
   //  space_vol = (Real)(nx*ny*nz);
@@ -1163,8 +1216,10 @@ static void spectrum_ks_print_baryon(int triplet){
               - param.r_offset_b[triplet][3]/nt) %2 ) == 1 ){
           CMULREAL(prop,-1.,prop);
         }
-        print_baryon_prop(triplet, t, prop);
-        print_fnal_baryon_prop(corr_fp, triplet, t, prop);
+	dcomplex dprop = {prop.real, prop.imag};
+	CMULREAL(dprop, baryon_scale, dprop);
+        print_baryon_prop(triplet, t, dprop);
+        print_fnal_baryon_prop(corr_fp, triplet, t, dprop);
       }
       print_end_baryon_prop(triplet);
     }
