@@ -659,6 +659,8 @@ int readin(int prompt) {
 
 	/* Propagator parameters */
 
+	param.prop_type[k] = KS_TYPE;  /* Always for ks_spectrum */
+
 	IF_OK {
 	  
 	  if(param.set_type[k]  == MULTISOURCE_SET ||
