@@ -1009,25 +1009,25 @@ static void print_start_baryon_prop(int triplet, int b)
   printf("SINKS: %s\n", param.baryon_label[triplet][b] );
 }
 /*--------------------------------------------------------------------*/
-static void print_meson_prop(int pair, int t, complex c)
+static void print_meson_prop(int pair, int t, dcomplex c)
 {
   if(param.saveflag_m[pair] != FORGET)return;
   node0_printf("%d %e %e\n",t,(double)c.real,(double)c.imag);
 }
 /*--------------------------------------------------------------------*/
-static void print_baryon_prop(int triplet, int t, complex c)
+static void print_baryon_prop(int triplet, int t, dcomplex c)
 {
   if(param.saveflag_b[triplet] != FORGET)return;
   node0_printf("%d %e %e\n",t,(double)c.real,(double)c.imag);
 }
 /*--------------------------------------------------------------------*/
-static void print_fnal_meson_prop(FILE *fp, int pair, int t, complex c)
+static void print_fnal_meson_prop(FILE *fp, int pair, int t, dcomplex c)
 {
   if(this_node != 0 || param.saveflag_m[pair] == FORGET)return;
   fprintf(fp, "%d\t%e\t%e\n", t, (double)c.real, (double)c.imag);
 }
 /*--------------------------------------------------------------------*/
-static void print_fnal_baryon_prop(FILE *fp, int triplet, int t, complex c)
+static void print_fnal_baryon_prop(FILE *fp, int triplet, int t, dcomplex c)
 {
   if(this_node != 0 || param.saveflag_b[triplet] == FORGET)return;
   fprintf(fp, "%d\t%e\t%e\n", t, (double)c.real, (double)c.imag);
