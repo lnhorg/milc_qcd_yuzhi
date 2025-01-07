@@ -1,4 +1,4 @@
-/************************* control.c *******************************/
+j/************************* control.c *******************************/
 /* MIMD version 7 */
 /* Main procedure for SU3 with dynamical staggered fermions        */
 /* general quark action, general gauge action */
@@ -41,11 +41,11 @@ int main( int argc, char **argv ){
   prompt = setup();
   ENDTIME("setup");
 
-  imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
-
   /* loop over input sets */
   while( readin(prompt) == 0){
     
+    imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
+
     if(prompt == 2)continue;
     
     node0_printf("BEGIN\n");
@@ -149,9 +149,11 @@ int main( int argc, char **argv ){
 #endif
 
 #endif
+
+    destroy_fn_links(fn);
+  
   } /* readin(prompt) */
 
-  destroy_fn_links(fn);
 
 #ifdef HAVE_QUDA
   finalize_quda();
