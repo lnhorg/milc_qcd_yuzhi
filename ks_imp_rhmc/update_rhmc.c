@@ -171,7 +171,7 @@ int update() {
   su3_vector *sumvec;
   int iphi, int_alg, inaik, jphi, n;
   Real lambda, alpha, beta; // parameters in integration algorithms
-  imp_ferm_links_t** fn;
+  imp_ferm_links_t* fn;
 
   int_alg = INT_ALG;
   switch(int_alg){
@@ -290,11 +290,12 @@ int update() {
   for( inaik=0; inaik<n; inaik++ ) {
     for( jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
       restore_fermion_links_from_site(fn_links, prec_gr[iphi]);
-      fn = get_fm_links(fn_links);
+      fn = get_fm_links(fn_links, inaik);
       grsource_imp_rhmc( F_OFFSET(phi[iphi]), &(rparam[iphi].GR), EVEN,
 			 multi_x, sumvec, rsqmin_gr[iphi], niter_gr[iphi],
-			 prec_gr[iphi], fn[inaik], inaik, 
+			 prec_gr[iphi], fn, inaik, 
 			 rparam[iphi].naik_term_epsilon);
+      destroy_fn_links(fn);
       iphi++;
     }
   }
