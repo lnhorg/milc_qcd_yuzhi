@@ -181,6 +181,7 @@ r_open_ksprop(int flag, const char *filename)
     /* Create a kspf structure. (No file movement here.) */
     int serpar = interpret_usqcd_ks_reload_flag(flag);
     kspf = create_input_ksprop_file_handle(filename);
+    open_input_usqcd_ksprop_file(kspf, serpar);
     kspf->file_type = file_type;
     if(kspf->infile == NULL){
       printf("r_open_ksprop: Failed to open %s for reading\n", filename);
