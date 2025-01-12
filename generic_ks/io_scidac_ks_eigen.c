@@ -671,7 +671,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
   }
 
   /* Broadcast the typesize to the other nodes */
-  broadcast_bytes((void *)&typesize, sizeof(typesize));
+  broadcast_bytes((char *)&typesize, sizeof(typesize));
   // printf("%s(%d): typesize = %d\n", myname, this_node, typesize);
   
   /* Skip to the binary record data and read it */
@@ -696,7 +696,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
   }
 
   /* Broadcast the file offset to the other nodes */
-  broadcast_bytes((void *)&offset, sizeof(offset));
+  broadcast_bytes((char *)&offset, sizeof(offset));
   // printf("%s(%d): offset = %lu\n", myname, this_node, offset);
 
   /* Read the eigenvector. All nodes participate. */
@@ -734,7 +734,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
     }
   }
   /* Broadcast the status to the other nodes */
-  broadcast_bytes((void *)&status, sizeof(status));
+  broadcast_bytes((char *)&status, sizeof(status));
   // printf("%s(%d): status = %d\n", myname, this_node, status);
 
   fclose(fpt);
