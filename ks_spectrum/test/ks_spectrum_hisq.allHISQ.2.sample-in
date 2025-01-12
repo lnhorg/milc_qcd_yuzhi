@@ -50,7 +50,7 @@ origin 0 0 0 1
 load_source_serial rnd_source
 ncolor 1
 momentum 0 0 0
-scale_factor 1e5
+scale_factor 1e10
 source_label RW
 forget_source
 
@@ -62,7 +62,7 @@ origin 0 0 0 1
 load_source_serial rnd_source
 ncolor 1
 momentum 1 0 0
-scale_factor 1e15
+scale_factor 1e10
 source_label RW
 forget_source
 

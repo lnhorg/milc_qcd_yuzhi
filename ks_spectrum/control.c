@@ -353,7 +353,7 @@ int main(int argc, char *argv[])
 
       /* Move KS phases and apply time boundary condition, based on the
 	 coordinate origin and time_bc */
-      Real bdry_phase[4] = {0.,0.,0.,(double)param.time_bc};
+      Real bdry_phase[4] = {0.,0.,0.,(Real)param.time_bc};
       /* Set values in the structure fn */
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
