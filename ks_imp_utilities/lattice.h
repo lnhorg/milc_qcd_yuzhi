@@ -165,6 +165,7 @@ EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
 EXTERN int refresh_ape_links;
+EXTERN int ape_links_ks_phases;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */
@@ -180,7 +181,7 @@ EXTERN int n_orders_naik[MAX_MASS];
 
 /* For eigenpair calculation */
 EXTERN int Nvecs_tot;
-EXTERN double *eigVal; /* eigenvalues of D^dag D */
+EXTERN Real *eigVal; /* eigenvalues of D^dag D */
 EXTERN su3_vector **eigVec; /* eigenvectors */
 
 #endif /* _LATTICE_H */

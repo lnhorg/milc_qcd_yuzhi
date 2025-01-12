@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
 #if 0
   gethostname(hostname, 128);
   
-  printf("(%d) %s My io_node is %d\n", this_node, hostname, io_node(this_node));  fflush(stdout);
 #endif
 
   /* loop over input sets */
@@ -90,7 +89,9 @@ int main(int argc, char *argv[])
 
       STARTTIME;
       
-      param.eigen_param.parity = EVEN;  /* EVEN is required */
+      /* The usual case */
+      param.eigen_param.parity = EVEN;
+
       /* First set of fn links is always charge 0 and Naik epsilon 0 */
       imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
 
@@ -102,24 +103,23 @@ int main(int argc, char *argv[])
       /* Apply the operation */
       boundary_twist_fn(fn, ON);
       
-
       Nvecs_curr = Nvecs_tot = param.eigen_param.Nvecs;
       
       /* compute eigenpairs if requested */
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
 	total_R_iters=ks_eigensolve(eigVec, eigVal, &param.eigen_param, 1);
-	construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
 	node0_printf("total Rayleigh iters = %d\n", total_R_iters); fflush(stdout);
+	construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       }
 
       /* Check the eigenvectors */
 
       /* Calculate and print the residues and norms of the eigenvectors */
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
+      construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Even site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, EVEN, fn );
-      construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
       
@@ -140,8 +140,9 @@ int main(int argc, char *argv[])
 	  node0_printf("eigenval(%i): %10g\n", i, 0.0);
 	}
       }
+
+      ENDTIME("calculate/reload Dirac eigenpairs"); fflush(stdout);
       
-      ENDTIME("calculate Dirac eigenpairs"); fflush(stdout);
 #endif
     }
     

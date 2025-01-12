@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   ks_prop_field *quark[MAX_QK];
   int prop_nc[MAX_PROP];
   int Nvecs_curr;
-  double *resid = NULL;
+  Real *resid = NULL;
   
   initialize_machine(&argc,&argv);
 
@@ -105,20 +105,250 @@ int main(int argc, char *argv[])
 #ifdef HISQ_SVD_COUNTER
     hisq_svd_counter = 0;
 #endif
-#ifdef HYPISQ_SVD_COUNTER
-    hypisq_svd_counter = 0;
+
+    STARTTIME;
+    
+    /**************************************************************/
+    /* Do whatever is needed to get lattice */
+    if( param.startflag == CONTINUE ){
+      rephase( OFF );
+    }
+    if( param.startflag != CONTINUE ){
+      startlat_p = reload_lattice( param.startflag, param.startfile );
+    }
+    /* if a lattice was read in, put in KS phases and AP boundary condition */
+    phases_in = OFF;
+    rephase( ON );
+
+#ifdef U1_FIELD
+    /* Read the U(1) gauge field, if wanted */
+    start_u1lat_p = reload_u1_lattice( param.start_u1flag, param.start_u1file);
+#endif
+
+    ENDTIME("read lattice");
+
+    /**************************************************************/
+    /* Fix the gauge, but not if we are "continuing"              */
+    
+    if( param.fixflag == COULOMB_GAUGE_FIX && ! (param.startflag == CONTINUE) )
+      {
+	if(this_node == 0) 
+	  printf("Fixing to Coulomb gauge\n");
+
+	rephase( OFF );
+
+	STARTTIME;
+	gaugefix(TUP,(Real)1.8,500,GAUGE_FIX_TOL);
+	//gaugefix(TUP,(Real)1.5,500,GAUGE_FIX_TOL);
+	ENDTIME("gauge fix");
+
+#if 0
+	/* (Re)construct APE smeared links after gauge fixing.  
+	   No KS phases here! */
+	destroy_ape_links_4D(ape_links);
+	ape_links = ape_smear_4D( param.staple_weight, param.ape_iter );
+	if(param.time_bc == 0)apply_apbc( ape_links, param.coord_origin[3] );
+	refresh_ape_links = 1;  // To signal refreshing of any cached links
+	ape_links_ks_phases = OFF;  
+	/* By default, the phases are ON */
+	rephase_field_offset( ape_links, ON, &ape_links_ks_phases, param.coord_origin );
+#endif
+	
+	rephase( ON );
+	invalidate_fermion_links(fn_links);
+
+      }
+    else
+      if(this_node == 0)printf("COULOMB GAUGE FIXING SKIPPED.\n");
+    
+    /**************************************************************/
+    /* Construct APE smeared links without KS phases, but with
+       conventional antiperiodic bc.  This is the same initial setup as
+       the gauge field itself.  Later the phases are adjusted according
+       to boundary phases and momentum twists.  If we are reading from a
+       file, we assume it was saved with the same conventions.
+    */
+#ifdef APE_LINKS_FILE
+    
+    if(param.start_ape_flag == FRESH){
+
+      /* Do APE smearing */
+      rephase( OFF );
+
+      ape_links = ape_smear_4D( param.staple_weight, param.ape_iter );
+      if(param.time_bc == 0)apply_apbc( ape_links, param.coord_origin[3] );
+      refresh_ape_links = 1;
+      ape_links_ks_phases = OFF;
+      /* By default, the KS phases in the APE links are ON */
+      rephase_field_offset( ape_links, ON, &ape_links_ks_phases, param.coord_origin );
+      
+      rephase( ON );
+
+    } else {
+
+      /* Reload APE links from a file */
+      ape_links = create_G();
+      reload_apelinks( param.start_ape_flag, ape_links, param.start_ape_file );
+      ape_links_ks_phases = ON;  /* Because we save them with phases on */
+
+    }
+    
+#else
+
+    rephase( OFF );
+
+    /* Do APE smearing */
+    ape_links = ape_smear_4D( param.staple_weight, param.ape_iter );
+    if(param.time_bc == 0)apply_apbc( ape_links, param.coord_origin[3] );
+    refresh_ape_links = 1;
+    ape_links_ks_phases = OFF;
+    /* By default, the phases are ON */
+    rephase_field_offset( ape_links, ON, &ape_links_ks_phases, param.coord_origin );
+    
+    rephase( ON );
+
+#endif
+  
+    /**************************************************************/
+    /* save lattice if requested */
+
+    STARTTIME;
+    
+    if( param.saveflag != FORGET ){
+      rephase( OFF );
+      savelat_p = save_lattice( param.saveflag, param.savefile, 
+				param.stringLFN );
+      rephase( ON );
+    }
+
+#ifdef U1_FIELD
+    if( param.save_u1flag != FORGET ){
+      save_u1_lattice( param.save_u1flag, param.save_u1file );
+    }
+#endif
+
+#ifdef APE_LINKS_FILE
+
+    /* Save the APE links to a file if requested */
+    if(param.save_ape_flag != FORGET){
+      if(ape_links == NULL){
+	node0_printf("ERROR: main: Requested saving empty APE links\n");
+	terminate(1);
+      }
+      save_apelinks( param.save_ape_flag, ape_links, param.save_ape_file );
+    }
+
+#endif
+
+    ENDTIME("save lattice");
+
+    /**************************************************************/
+    /* Set up fermion links */
+    
+    STARTTIME;
+    
+#ifdef DBLSTORE_FN
+    /* We want to double-store the links for optimization */
+    fermion_links_want_back(1);
+#endif
+    
+    /* Don't need to save HISQ auxiliary links */
+    fermion_links_want_aux(0);
+    
+#if FERM_ACTION == HISQ
+    
+#ifdef DM_DEPS
+    fermion_links_want_deps(1);
+#endif
+    
+    fn_links = create_fermion_links_from_site(MILC_PRECISION, param.n_naiks, param.eps_naik);
+    
+#else
+    
+#ifdef DM_DU0
+    fermion_links_want_du0(1);
+#endif
+    
+    fn_links = create_fermion_links_from_site(MILC_PRECISION, 0, NULL);
+    
+#endif
+    
+    ENDTIME("create fermion links");
+
+    
+    /**************************************************************/
+    /* Set up eigenpairs, if requested */
+
+    STARTTIME;
+      
+#if EIGMODE == EIGCG
+    int Nvecs_max = param.eigcgp.Nvecs_max;
+    if(param.ks_eigen_startflag == FRESH)
+      Nvecs_tot = ((Nvecs_max - 1)/param.eigcgp.Nvecs)*param.eigcgp.Nvecs
+	+ param.eigcgp.m;
+    else
+      Nvecs_tot = Nvecs_max;
+    
+    Nvecs_alloc = Nvecs_tot;
+    eigVal = (double *)malloc(Nvecs_alloc*sizeof(double));
+    eigVec = (su3_vector **)malloc(Nvecs_alloc*sizeof(su3_vector *));
+    for(i = 0; i < Nvecs_alloc; i++)
+      eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
+    
+    /* Do whatever is needed to get eigenpairs */
+    imp_ferm_links_t **fn = get_fm_links(fn_links);
+    int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile,
+				 &Nvecs_tot, eigVal, eigVec, fn[0], 1);
+    
+    if(param.fixflag != NO_GAUGE_FIX){
+      node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors\n");
+    }
+    if(status != 0) normal_exit(0);
+    
+    if(param.ks_eigen_startflag != FRESH){
+      param.eigcgp.Nvecs = 0;
+      param.eigcgp.Nvecs_curr = Nvecs_tot;
+      param.eigcgp.H = (double_complex *)malloc(Nvecs_max*Nvecs_max
+						*sizeof(double_complex));
+      for(i = 0; i < Nvecs_max; i++){
+	for(k = 0; k < i; k++)
+	  param.eigcgp.H[k + Nvecs_max*i] = dcmplx((double)0.0, (double)0.0);
+	param.eigcgp.H[(Nvecs_max+1)*i] = dcmplx(eigVal[i], (double)0.0);
+      }
+    }
+#endif
+    
+#if EIGMODE != EIGCG
+    if(param.eigen_param.Nvecs > 0){
+      /* malloc for eigenpairs */
+      eigVal = (Real *)malloc(param.eigen_param.Nvecs*sizeof(double));
+      eigVec = (su3_vector **)malloc(param.eigen_param.Nvecs*sizeof(su3_vector *));
+      for(i=0; i < param.eigen_param.Nvecs; i++){
+	eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
+	if(eigVec[i] == NULL){
+	  printf("No room for eigenvector\n");
+	  terminate(1);
+	}
+      }
+      
+      /* Do whatever is needed to get eigenpairs */
+      imp_ferm_links_t **fn = get_fm_links(fn_links);
+      int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile, 
+				   &param.eigen_param.Nvecs, eigVal, eigVec, fn[0], 1);
+      if(param.fixflag != NO_GAUGE_FIX){
+	node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors");
+      }
+    }
 #endif
     
     /**************************************************************/
     /* Compute Dirac eigenpairs           */
-
+    
     Nvecs_curr = Nvecs_tot = param.eigen_param.Nvecs;
       
     if(param.eigen_param.Nvecs > 0){
       
 #if EIGMODE != EIGCG
-      
-      STARTTIME;
       
       param.eigen_param.parity = EVEN;  /* Required */
       imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
@@ -135,7 +365,7 @@ int main(int argc, char *argv[])
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
 	total_R_iters=ks_eigensolve(eigVec, eigVal, &param.eigen_param, 1);
-	construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
+	construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
 	node0_printf("total Rayleigh iters = %d\n", total_R_iters);
 	
 #if 0 /* If needed for debugging */
@@ -150,10 +380,10 @@ int main(int argc, char *argv[])
       /* Check the eigenvectors */
 
       /* Calculate and print the residues and norms of the eigenvectors */
-      resid = (double *)malloc(Nvecs_curr*sizeof(double));
+      resid = (Real *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, EVEN, fn );
-      construct_eigen_odd(eigVec, eigVal, &param.eigen_param, fn);
+      construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
       
@@ -174,18 +404,18 @@ int main(int argc, char *argv[])
 	  node0_printf("eigenval(%i): %10g\n", i, 0.0);
 	}
       }
-      
-      ENDTIME("calculate Dirac eigenpairs");
 #endif
     }
     
+    ENDTIME("calculate Dirac eigenpairs");
+
     /**************************************************************/
     /* Compute chiral condensate and related quantities           */
-
+    
     STARTTIME;
-
+    
     /* Make fermion links if not already done */
-
+    
     for(i = 0; i < param.num_pbp_masses; i++){
 #ifdef U1_FIELD
       u1phase_on(param.charge_pbp[i], u1_A);
@@ -212,49 +442,6 @@ int main(int argc, char *argv[])
     }
 
     ENDTIME("calculate pbp, etc");
-
-    /**************************************************************/
-    /* Fix the gauge */
-    
-    if( param.fixflag == COULOMB_GAUGE_FIX)
-      {
-	if(this_node == 0) 
-	  printf("Fixing to Coulomb gauge\n");
-
-	rephase( OFF );
-	STARTTIME;
-	gaugefix(TUP,(Real)1.8,500,GAUGE_FIX_TOL);
-	//gaugefix(TUP,(Real)1.5,500,GAUGE_FIX_TOL);
-	ENDTIME("gauge fix");
-
-	/* (Re)construct APE smeared links after gauge fixing.  
-	   No KS phases here! */
-	destroy_ape_links_4D(ape_links);
-	ape_links = ape_smear_4D( param.staple_weight, param.ape_iter );
-	if(param.time_bc == 0)apply_apbc( ape_links, param.coord_origin[3] );
-	refresh_ape_links = 1;
-	
-	rephase( ON );
-	invalidate_fermion_links(fn_links);
-
-      }
-    else
-      if(this_node == 0)printf("COULOMB GAUGE FIXING SKIPPED.\n");
-    
-    /* save lattice if requested */
-    if( param.saveflag != FORGET ){
-      rephase( OFF );
-      savelat_p = save_lattice( param.saveflag, param.savefile, 
-				param.stringLFN );
-      rephase( ON );
-    }
-
-#ifdef U1_FIELD
-    if( param.save_u1flag != FORGET ){
-      save_u1_lattice( param.save_u1flag, param.save_u1file );
-    }
-#endif
-
 
     if(this_node==0)printf("END OF HEADER\n");
     
@@ -316,6 +503,8 @@ int main(int argc, char *argv[])
 
       for(int color = 0; color < qs->ncolor; color++){
 
+	node0_printf("Creating modified source %d for color %d from parent source %d\n",
+		     is, color, p);
 	/* Apply operator*/
         v_field_op(source[is]->v[color], &(param.src_qs_op[is]), qs->subset, qs->t0);
 
@@ -330,6 +519,12 @@ int main(int argc, char *argv[])
       if(qs->saveflag != FORGET) w_source_close(qs);
 
     } /* is */
+
+
+#if defined(HAVE_QUDA) && defined(USE_GSMEAR_GPU)
+    // delete 2-link current used for smearing
+    gauss_smear_delete_2link_QUDA();
+#endif
 
     ENDTIME("create sources");
 
@@ -552,6 +747,11 @@ int main(int argc, char *argv[])
 	node0_printf("destroy quark[%d]\n",oldiq1);
       }
 #endif
+
+#if defined(HAVE_QUDA) && defined(USE_GSMEAR_GPU)
+    // delete 2-link current used for smearing
+    gauss_smear_delete_2link_QUDA();
+#endif
     
     /* Now destroy all remaining propagator fields */
     
@@ -564,6 +764,14 @@ int main(int argc, char *argv[])
 	}
       }
     }
+
+    // also destroy the source fields here
+    for(is=0; is<param.num_base_source+param.num_modified_source; is++){
+      if(source[is] != NULL)node0_printf("destroy source[%d]\n",is);
+      destroy_ksp_field(source[is]); source[is] = NULL;
+    }
+    
+    
     
     /****************************************************************/
     /* Compute the meson propagators */
@@ -755,12 +963,179 @@ int main(int argc, char *argv[])
       for(i = 0; i < Nvecs_alloc; i++) free(eigVec[i]);
       free(eigVal); free(eigVec); free(resid);
 
-      /* Clean up quark sources, both base and modified */
-      for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
-	clear_qs(&param.src_qs[i]);
-      
       ENDTIME("save eigenvectors (if requested)");
     }
+
+    /* Clean up quark sources, both base and modified */
+    for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
+      clear_qs(&param.src_qs[i]);
+
+
+/****************************************************************/
+/* Compute GB baryon propagators */
+
+#ifdef GB_BARYON
+
+    STARTTIME;
+    int iqo0,iqo1,iqo2;
+    ks_prop_field *qko0[8];
+    ks_prop_field *qko1[8];
+    ks_prop_field *qko2[8];
+    #ifdef GB_BARYON_MMAP
+        int jqo0=0,jqo1=0,jqo2=0;
+        mmap_cache *tmp_cache0; /* Pointers to temporarily retain memory */
+        mmap_cache *tmp_cache1;
+        mmap_cache *tmp_cache2;
+        node0_printf("Creating gb baryon cache container\n");
+        create_gb_qk_cache(3);
+    #endif
+        for(i = 0; i < param.num_gb_triplet; i++){
+
+          /* Index for the quarks making up this gb baryon */
+          iqo0 = param.qk8triplet[i][0];
+          iqo1 = param.qk8triplet[i][1];
+          iqo2 = param.qk8triplet[i][2];
+          node0_printf("Golterman-Bailey baryon for quark octets %d, %d, and %d\n",
+           iqo0,iqo1,iqo2);
+          node0_printf("Octet %d :  ",iqo0);
+          for(j = 0; j < 8; j++){
+            iq0 = param.qk_oct[iqo0][j];
+            node0_printf(" %d ",iq0);
+            if(iq0 == -1) qko0[j] = NULL;
+            else qko0[j] = quark[iq0];
+          }
+          node0_printf("\nOctet %d :  ",iqo1);
+          for(j = 0; j < 8; j++){
+            iq1 = param.qk_oct[iqo1][j];
+            node0_printf(" %d ",iq1);
+            if(iq1 == -1) qko1[j] = NULL;
+            else qko1[j] = quark[iq1];
+          }
+          node0_printf("\nOctet %d :  ",iqo2);
+          for(j = 0; j < 8; j++){
+            iq2 = param.qk_oct[iqo2][j];
+            node0_printf(" %d ",iq2);
+            if(iq2 == -1) qko2[j] = NULL;
+            else qko2[j] = quark[iq2];
+          }
+          node0_printf("\n");
+
+#ifdef GB_BARYON_MMAP
+          node0_printf("Creating gb baryon cache\n");
+	  double gbcachestart = dclock();
+          if (i == 0) {
+            // all new, create or copy
+            create_qk_oct_cache(qko0,0,param.r_offset_gb[i],ape_links);
+            if      (iqo1 == iqo0) { copy_qk_oct_cache(1,0); }
+            else {
+              create_qk_oct_cache(qko1,1,param.r_offset_gb[i],ape_links);
+            }
+            if      (iqo2 == iqo0) { copy_qk_oct_cache(2,0); }
+            else if (iqo2 == iqo1) { copy_qk_oct_cache(2,1); }
+            else {
+              create_qk_oct_cache(qko2,2,param.r_offset_gb[i],ape_links);
+            }
+          } else {
+
+            /* If cache is used again, retain memory in temporary pointers
+               clear all the mmap pointers
+               wipe memory for caches that are no longer necessary */
+            if      (jqo0 != iqo0 && jqo0 != iqo1 && jqo0 != iqo2) {
+              tmp_cache0 = NULL;
+              destroy_qk_oct_cache(0);
+              if (jqo1 == jqo0) { tmp_cache1 = NULL; unmap_qk_oct_cache(1); }
+              if (jqo2 == jqo0) { tmp_cache2 = NULL; unmap_qk_oct_cache(2); }
+            }
+            else { /* Retain cache pointer, unmap caches */
+              tmp_cache0 = get_qk_cache_pointer(0);
+              unmap_qk_oct_cache(0);
+              if (jqo1 == jqo0) { tmp_cache1 = tmp_cache0; unmap_qk_oct_cache(1); }
+              if (jqo2 == jqo0) { tmp_cache2 = tmp_cache0; unmap_qk_oct_cache(2); }
+            }
+            if (jqo0 != jqo1) { /* Already unmapped if jqo0 == jqo1 */
+              if (jqo1 != iqo0 && jqo1 != iqo1 && jqo1 != iqo2) {
+                  tmp_cache1 = NULL;
+                  destroy_qk_oct_cache(1);
+                  if (jqo2 == jqo1) { tmp_cache2 = NULL; unmap_qk_oct_cache(2); }
+              }
+              else {
+                tmp_cache1 = get_qk_cache_pointer(1);
+                unmap_qk_oct_cache(1);
+                if (jqo2 == jqo1) { tmp_cache2 = tmp_cache1; unmap_qk_oct_cache(2); }
+              }
+            }
+            if (jqo0 != jqo2 && jqo1 != jqo2) {
+              if (jqo2 != iqo0 && jqo2 != iqo1 && jqo2 != iqo2) {
+                  tmp_cache2 = NULL;
+                  destroy_qk_oct_cache(2);
+              }
+              else {
+                tmp_cache2 = get_qk_cache_pointer(2);
+                unmap_qk_oct_cache(2);
+              }
+            }
+
+            /* Reassign cache pointers for caches that are reused */
+            if      (iqo0 == jqo0) { assign_qk_cache_pointer(tmp_cache0,0); }
+            else if (iqo0 == jqo1) { assign_qk_cache_pointer(tmp_cache1,0); }
+            else if (iqo0 == jqo2) { assign_qk_cache_pointer(tmp_cache2,0); }
+            if      (iqo1 == jqo0) { assign_qk_cache_pointer(tmp_cache0,1); }
+            else if (iqo1 == jqo1) { assign_qk_cache_pointer(tmp_cache1,1); }
+            else if (iqo1 == jqo2) { assign_qk_cache_pointer(tmp_cache2,1); }
+            if      (iqo2 == jqo0) { assign_qk_cache_pointer(tmp_cache0,2); }
+            else if (iqo2 == jqo1) { assign_qk_cache_pointer(tmp_cache1,2); }
+            else if (iqo2 == jqo2) { assign_qk_cache_pointer(tmp_cache2,2); }
+
+            /* Create new caches */
+            if (iqo0 != jqo0 && iqo0 != jqo1 && iqo0 != jqo2) {
+              create_qk_oct_cache(qko0,0,param.r_offset_gb[i],ape_links);
+            }
+            if (iqo1 != jqo0 && iqo1 != jqo1 && iqo1 != jqo2) {
+              if      (iqo1 == iqo0) { copy_qk_oct_cache(1,0); }
+              else {
+                create_qk_oct_cache(qko1,1,param.r_offset_gb[i],ape_links);
+              }
+            }
+            if (iqo2 != jqo0 && iqo2 != jqo1 && iqo2 != jqo2) {
+              if      (iqo2 == iqo0) { copy_qk_oct_cache(2,0); }
+              else if (iqo2 == iqo1) { copy_qk_oct_cache(2,1); }
+              else {
+                create_qk_oct_cache(qko2,2,param.r_offset_gb[i],ape_links);
+              }
+            }
+          }
+
+          /* Copy octet indices for next iteration */
+          jqo0 = iqo0;
+          jqo1 = iqo1;
+          jqo2 = iqo2;
+          endtime=dclock();
+          node0_printf("Done creating gb baryon cache\n");
+          //node0_printf("Time = %e seconds\n",(double)(endtime-starttime));
+          node0_printf("Time to create gb baryon cache %e sec\n",endtime-gbcachestart);
+    #endif
+
+          /* Tie together to generate hadron spectrum */
+          spectrum_ks_gb_baryon(qko0,qko1,qko2,ape_links,i);
+
+    #ifdef GB_BARYON_MMAP
+          if (i == param.num_gb_triplet-1) { /* Done, remove all */
+            destroy_qk_oct_cache(0);
+            if (iqo0 != iqo1)                 { destroy_qk_oct_cache(1); }
+            if (iqo0 != iqo2 && iqo1 != iqo2) { destroy_qk_oct_cache(2); }
+          }
+    #endif
+        }
+    #ifdef GB_BARYON_MMAP
+        node0_printf("Destroying gb baryon cache container\n");
+        destroy_gb_qk_cache();
+    #endif
+    ENDTIME("tie gb baryon correlators");
+    endtime=dclock();
+
+    node0_printf("GB BARYON COMPLETED\n");
+    //node0_printf("Time = %e seconds\n",(double)(endtime-starttime));
+#endif 
 
     node0_printf("RUNNING COMPLETED\n");
     endtime=dclock();
@@ -771,9 +1146,6 @@ int main(int argc, char *argv[])
 #ifdef HISQ_SVD_COUNTER
     printf("hisq_svd_counter = %d\n",hisq_svd_counter);
 #endif
-#ifdef HYPISQ_SVD_COUNTER
-    printf("hypisq_svd_counter = %d\n",hypisq_svd_counter);
-#endif
     fflush(stdout);
     
     for(i = 0; i < param.num_qk; i++){
@@ -781,20 +1153,16 @@ int main(int argc, char *argv[])
       destroy_ksp_field(quark[i]); quark[i] = NULL;
     }
     
-    destroy_ape_links_3D(ape_links);
-    
+    destroy_ape_links_4D(ape_links);
 
-    for(is=0; is<param.num_base_source+param.num_modified_source; is++){
-      if(source[is] != NULL)node0_printf("destroy source[%d]\n",is);
-      destroy_ksp_field(source[is]); source[is] = NULL;
-    }
+#if ! defined(HAVE_QUDA) && defined(GAUSS_SMEAR_KS_TWOLINK)
+    gauss_smear_delete_2link_cpu();
+#endif
     
     /* Destroy fermion links (created in readin() */
     
 #if FERM_ACTION == HISQ
     destroy_fermion_links_hisq(fn_links);
-#elif FERM_ACTION == HYPISQ
-    destroy_fermion_links_hypisq(fn_links);
 #else
     destroy_fermion_links(fn_links);
 #endif

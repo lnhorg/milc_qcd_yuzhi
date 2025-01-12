@@ -10,7 +10,7 @@
 #ifdef QCDOC
 #define special_alloc qcdoc_alloc
 #define special_free qfree
-#elif defined(USE_FL_GPU)
+#elif defined(USE_FL_GPU) && defined(HAVE_QUDA)
 #include "../include/generic_quda.h"
 #define special_alloc qudaAllocatePinned
 #define special_free qudaFreePinned
@@ -238,7 +238,7 @@ init_ferm_links(fn_links_t *fn){
   fn->fatback = NULL;
   fn->lngback = NULL;
   fn->eps_naik = 0.0;
-  fn->notify_quda_new_links = 1;
+  fn->notify_quda_new_links = 1; /* Tell QUDA to refresh its cached links */
 }
 /* The fat/long members are not created */
 

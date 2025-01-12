@@ -24,6 +24,7 @@ extern "C" {
 
 typedef STRUCT GRID_D3_ColorVector_struct		GRID_D3_ColorVector;
 typedef STRUCT GRID_D3_ColorVectorBlock_struct		GRID_D3_ColorVectorBlock;
+typedef STRUCT GRID_D3_ColorMatrix_struct	        GRID_D3_ColorMatrix;
 typedef STRUCT GRID_D3_FermionLinksAsqtad_struct	GRID_D3_FermionLinksAsqtad;
 
 // create color vectors
@@ -51,14 +52,24 @@ void GRID_D3_extract_V_to_vec( su3_vector *dest, GRID_D3_ColorVector *src, int m
 void GRID_D3_extract_nV_to_vecs( su3_vector *dest[], int n, GRID_D3_ColorVectorBlock *src, int milc_parity);
 
   /*********************/
-  /*  Asqtad routines  */
+  /*  FN routines  */
   /*********************/
 
   /* fermion matrix link routines */
 
+// link fattening
+void GRID_D3_fn_links(GRID_info_t *info,
+		      GRID_D3_FermionLinksAsqtad *out,
+		      su3_matrix *in,
+		      GRID_4Dgrid *grid_full);
+  
 // create asqtad fermion links from MILC
 GRID_D3_FermionLinksAsqtad  *GRID_D3_asqtad_create_L_from_MILC( su3_matrix *thn, su3_matrix *fat, 
 								su3_matrix *lng, GRID_4Dgrid *grid_full);
+
+// extract MILC links from the asqtad link structure
+void GRID_D3_extract_MILC_from_L( su3_matrix *fat, su3_matrix *lng, GRID_D3_FermionLinksAsqtad  *fn,
+				  GRID_4Dgrid *grid_full );
 
 // free asqtad fermion links
 void GRID_D3_asqtad_destroy_L(GRID_D3_FermionLinksAsqtad *L);
@@ -90,7 +101,18 @@ void GRID_D3_asqtad_invert_multi (GRID_info_t *info,
 				  GRID_D3_ColorVector *in,
 				  GRID_4Dgrid *grid_full, GRID_4DRBgrid *grid_rb);
 
-// block CG inverter
+  // mixed-precision CG inverter
+void GRID_D3_asqtad_invert_mixed(GRID_info_t *info,
+				 GRID_F3_FermionLinksAsqtad *asqtad_f,
+				 GRID_D3_FermionLinksAsqtad *asqtad_d,
+				 GRID_invert_arg_t *inv_arg,
+				 GRID_resid_arg_t *res_arg,
+				 double mass,
+				 GRID_D3_ColorVector *out,
+				 GRID_D3_ColorVector *in,
+				 GRID_4Dgrid *grid_full, GRID_4DRBgrid *grid_rb);
+
+  // block CG inverter
 void GRID_D3_asqtad_invert_block (GRID_info_t *info,
 				  GRID_D3_FermionLinksAsqtad *asqtad,
 				  GRID_invert_arg_t *inv_arg,
@@ -101,10 +123,40 @@ void GRID_D3_asqtad_invert_block (GRID_info_t *info,
 				  GRID_5Dgrid *grid_5D, GRID_5DRBgrid *grid_5Drb, 
 				  GRID_4Dgrid *grid_full, GRID_4DRBgrid *grid_rb);
 
+  // block mixed-precision CG inverter
+void GRID_D3_asqtad_invert_mixed_block(GRID_info_t *info,
+				       GRID_F3_FermionLinksAsqtad *asqtad_f,
+				       GRID_D3_FermionLinksAsqtad *asqtad_d,
+				       GRID_invert_arg_t *inv_arg,
+				       GRID_resid_arg_t *res_arg,
+				       double mass, int nrhs,
+				       GRID_D3_ColorVectorBlock *out,
+				       GRID_D3_ColorVectorBlock *in,
+				       GRID_5Dgrid *grid_5D, GRID_5DRBgrid *grid_5Drb, 
+				       GRID_4Dgrid *grid_full, GRID_4DRBgrid *grid_rb);
+
+  /*********************/
+  /*  HISQ routines  */
+  /*********************/
+void GRID_D3_hisq_links(GRID_info_t *info,
+			double path_coeff[],
+			su3_matrix *fat,
+			su3_matrix *lng,
+			su3_matrix *in,
+			GRID_4Dgrid *grid_full);
+
+void GRID_D3_hisq_aux_links(GRID_info_t *info,
+			    double path_coeff[],
+			    su3_matrix *U, su3_matrix *V, su3_matrix *W,
+			    GRID_4Dgrid *grid_full);
+
+void GRID_D3_reunit_deriv(GRID_info_t *info, su3_matrix *V, su3_matrix *dW,
+			  su3_matrix *Q, GRID_4Dgrid * grid_full);
+
+/* implicitly restarted Lanczos */
 
 typedef STRUCT GRID_D3_ColorVectorArray_struct GRID_D3_ColorVectorArray;
 
-/* implicitly restarted Lanczos */
 void GRID_D3_implicitly_restarted_lanczos(
   GRID_D3_ColorVectorArray * eigVecs,
   double * eigVals,

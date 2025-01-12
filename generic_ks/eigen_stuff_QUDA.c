@@ -6,7 +6,7 @@
 
 #include "generic_ks_includes.h"
 
-#ifdef USE_EIG_QUDA
+#ifdef USE_EIG_GPU
 
 #include <string.h>
 #include <assert.h>
@@ -99,8 +99,6 @@ int ks_eigensolve_QUDA( su3_vector ** eigVec,
 
   qip.input_location = QUDA_CPU_FIELD_LOCATION;
   qip.output_location = QUDA_CPU_FIELD_LOCATION;
-
-  qip.sp_pad = 0;
 
   qip.native_blas_lapack = QUDA_BOOLEAN_TRUE;
   
@@ -219,7 +217,8 @@ int ks_eigensolve_QUDA( su3_vector ** eigVec,
   qep.check_interval = 1;
 
   qep.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  
+  qep.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;  
+
   qep.use_dagger = QUDA_BOOLEAN_FALSE;
   qep.compute_gamma5 = QUDA_BOOLEAN_FALSE;
   qep.compute_svd = QUDA_BOOLEAN_FALSE;

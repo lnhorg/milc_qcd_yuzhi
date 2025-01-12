@@ -208,8 +208,10 @@ initial_set(void)
 #endif
     {
       int iseed;
-      IF_OK status += get_i(stdin, prompt,"iseed", &iseed );
-      param.iseed = iseed;  /* implicitly convert int to unsigned */
+      IF_OK {
+	status += get_i(stdin, prompt,"iseed", &iseed );
+	param.iseed = iseed;  /* implicitly convert int to unsigned */
+      }
     }
     /* Number of pseudofermions */
     IF_OK status += get_i(stdin, prompt,"n_pseudo", &param.n_pseudo );
@@ -269,16 +271,8 @@ initial_set(void)
   hisq_svd_counter = 0;
 #endif
       
-#ifdef HYPISQ_SVD_COUNTER
-  hypisq_svd_counter = 0;
-#endif
-      
 #ifdef HISQ_FORCE_FILTER_COUNTER
   hisq_force_filter_counter = 0;
-#endif
-
-#ifdef HYPISQ_FORCE_FILTER_COUNTER
-  hypisq_force_filter_counter = 0;
 #endif
 
   /* Load rational function parameters */

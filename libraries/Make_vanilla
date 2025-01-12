@@ -36,10 +36,12 @@ else ifeq ($(strip ${COMPILER}),cray-intel)
   CC = icc
 else ifeq ($(strip ${COMPILER}),ibm)
   CC = xlc_r
+else ifeq ($(strip ${COMPILER}),amdclang)
+  CC = amdclang
 endif
 
 # Override
-# CC = # ( cc89 gcc xlc gcc pgcc cl g++ )
+CC = cc # ( cc89 gcc xlc gcc pgcc cl g++ )
 
 #----------------------------------------------------------------------
 # 2. Compiler optimization level
@@ -60,21 +62,25 @@ endif
 #-------------- Intel icc/ecc -----------------------------------
 ifeq ($(strip ${COMPILER}),cray-intel)
 
-  # Architecture choices: knl, skx, knc, hsw
+  # Architecture choices: knl, skx, clx, icx, knc, hsw
   ifeq ($(strip ${ARCH}),knl)
     OCFLAGS += -xMIC-AVX512
   else ifeq ($(strip ${ARCH}),knc)
     OCFLAGS += -mmic
   else ifeq ($(strip ${ARCH}),skx)
     OCFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+  else ifeq ($(strip ${ARCH}),clx)
+    OCFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
+  else ifeq ($(strip ${ARCH}),icx)
+    OCFLAGS += -xCORE-AVX512 -qopt-zmm-usage=high
   else ifeq ($(strip ${ARCH}),hsw)
-    OCFLAGS += -xCORE-AVX2
+    OCFLAGS += -mavx2
   else
-    OCFLAGS += -xavx
+    OCFLAGS += -mavx
   endif
 
   # Debugging and optimization
-  OCFLAGS += -parallel-source-info=2 -debug inline-debug-info -qopt-report=5
+  OCFLAGS += #-parallel-source-info=2 -debug inline-debug-info -qopt-report=5
 
 else ifeq ($(strip ${COMPILER}),intel)
 
@@ -92,7 +98,7 @@ else ifeq ($(strip ${COMPILER}),intel)
   endif
 
   # Debugging and optimization
-  OCFLAGS += -parallel-source-info=2 -debug inline-debug-info -fsave-optimization-record
+  OCFLAGS += #-parallel-source-info=2 -debug inline-debug-info -fsave-optimization-record
 
 endif
 

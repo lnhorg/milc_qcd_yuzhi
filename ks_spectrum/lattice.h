@@ -40,7 +40,7 @@ typedef struct {
 	/* gauge field */
 	su3_matrix link[4] ALIGNMENT;
 
-	/* The Kogut-Susskind phases, which have been absorbed into 
+	/* The Kogut-Susskind phases, which have been absorbed into
 		the matrices.  Also the antiperiodic boundary conditions.  */
  	Real phase[4];
 
@@ -54,7 +54,7 @@ typedef struct {
 
 
 #ifdef CONTROL
-#define EXTERN 
+#define EXTERN
 #else
 #define EXTERN extern
 #endif
@@ -125,10 +125,12 @@ EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
 EXTERN int refresh_ape_links;
+EXTERN int ape_links_ks_phases;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */
-#define N_POINTERS 16	/* Number of generic pointers */
+#define P_OFFSET 8
+#define N_POINTERS 26+P_OFFSET	/* Number of generic pointers */
 /* NEED 8 WHEN GAUGEFIXING */
 EXTERN char ** gen_pt[N_POINTERS];
 
@@ -141,7 +143,7 @@ EXTERN Real g_splaq,g_tplaq;	/* global U(1) plaquette measures */
 /* For eigenpair calculation */
 EXTERN int Nvecs_tot;
 EXTERN int Nvecs_alloc;
-EXTERN double *eigVal; /* eigenvalues of D^dag D */
+EXTERN Real *eigVal; /* eigenvalues of D^dag D */
 EXTERN su3_vector **eigVec; /* eigenvectors */
 
 #endif /* _LATTICE_H */
