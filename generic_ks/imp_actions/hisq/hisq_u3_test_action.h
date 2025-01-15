@@ -87,7 +87,7 @@
 //       (-2.0/16 ),                  /* Correct O(a^2) errors, 2X as much as Asqtad  */
 //    };
     static Real path_coeff_2[NUM_BASIC_PATHS_2] = {
-       (0),        /* one link */
+       (1.),        /* one link */
                     /* One link is 1/8 as in fat7 + 2*3/8 for Lepage + 1/8 for Naik */
        (0),         /* Naik */
        (0),         /* simple staple */
