@@ -27,7 +27,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 #if (MILC_PRECISION == 1)
   Real tol = 1e-3;
 #else
-  Real tol = 1e-5;
+  Real tol = 1e-9;
 #endif
   int ff_prec = MILC_PRECISION;  /* Just use prevailing precision for now */
   /* Supports only asqtad at the moment */
@@ -161,8 +161,8 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 	
 	/*Then compute multi_x = M * multi_x  = Dslash * multi_x on odd sites */
 	for(int j=0;j<order;j++){
-	  dslash_field( multi_x[tmporder+j], multi_x[tmporder+j],  ODD,
-			fn[inaik]);
+	  dslash_fn_field( multi_x[tmporder+j], multi_x[tmporder+j],  ODD,
+			   fn[inaik]);
 	  allresidues[tmporder+j] = residues[j+1];
 	  // remember that residues[0] is constant, no force contribution.
 	}
