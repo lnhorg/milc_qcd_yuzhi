@@ -50,7 +50,7 @@ double fermion_action( su3_vector **multi_x, su3_vector *sumvec) {
   Real final_rsq;
   double sum;
   int iphi, inaik, jphi, n; 
-  imp_ferm_links_t **fn;
+  imp_ferm_links_t *fn;
   sum=0.0;
   iphi=0;
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
@@ -59,13 +59,13 @@ double fermion_action( su3_vector **multi_x, su3_vector *sumvec) {
   n = 1;
 #endif
   for( inaik=0; inaik<n; inaik++ ) {
+    fn = get_fm_links(fn_links, inaik);
     for( jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
       restore_fermion_links_from_site(fn_links, prec_fa[iphi]);
-      fn = get_fm_links(fn_links);
       ks_ratinv( F_OFFSET(phi[iphi]), multi_x,
                  rparam[iphi].FA.pole, rparam[iphi].FA.res,
 		 rparam[iphi].FA.order, niter_fa[iphi], rsqmin_fa[iphi], 
-		 prec_fa[iphi], EVEN, &final_rsq, fn[inaik], 
+		 prec_fa[iphi], EVEN, &final_rsq, fn, 
 		 inaik, rparam[iphi].naik_term_epsilon );
       ks_rateval( sumvec, F_OFFSET(phi[iphi]), multi_x, 
   		rparam[iphi].FA.res, rparam[iphi].FA.order, EVEN );
@@ -74,6 +74,7 @@ double fermion_action( su3_vector **multi_x, su3_vector *sumvec) {
       } END_LOOP_OMP
       iphi++;
     }
+    destroy_fn_links(fn);
   }
   
   g_doublesum( &sum );

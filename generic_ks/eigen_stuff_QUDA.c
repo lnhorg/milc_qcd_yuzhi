@@ -178,7 +178,7 @@ int ks_eigensolve_QUDA( su3_vector ** eigVec,
   /*****************************************************/
 
   /* load gauge field ********************************/
-  imp_ferm_links_t * fn = get_fm_links( fn_links )[0];
+  imp_ferm_links_t * fn = get_fm_links( fn_links, 0);
   su3_matrix * fatLinks = get_fatlinks(fn);
   su3_matrix * longLinks = get_lnglinks(fn);
 
@@ -193,7 +193,8 @@ int ks_eigensolve_QUDA( su3_vector ** eigVec,
     qgp.scale = - ( 1.0 + fn->eps_naik ) / ( 24.0 * qgp.tadpole_coeff * qgp.tadpole_coeff );
   
     loadGaugeQuda( (void*) longLinks, &qgp );
-  }  
+  }
+  destroy_fn_links(fn);
   /***************************************************/
   
   /* quda eigensolver setup *************************/  

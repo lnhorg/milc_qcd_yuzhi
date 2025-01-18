@@ -20,7 +20,7 @@ ARCH ?= # epyc hsw skx clx icx spr knl pow8 pow9
 #----------------------------------------------------------------------
 # 2. Compiler family
 
-COMPILER ?= intel # intel, ibm, cray-intel, rocm
+COMPILER ?= gnu # intel, ibm, cray-intel, rocm
 OFFLOAD ?= # cuda hip sycl openmp
 
 #----------------------------------------------------------------------
@@ -832,7 +832,7 @@ CGITVER = -DMILC_CODE_VERSION=\"$(GIT_VERSION)\"
 
 # REMAP  report remapping time for QDP, QOP in conjunction with above
 
-CTIME ?= -DNERSC_TIME -DCGTIME -DFFTIME -DFLTIME -DGFTIME -DREMAP -DPRTIME -DIOTIME
+CTIME ?= -DNERSC_TIME -DCGTIME -DFFTIME -DFLTIME -DGFTIME -DREMAP -DPRTIME -DIOTIME -DWMTIME
 
 #------------------------------
 # Profiling
@@ -1073,7 +1073,7 @@ KSSHIFT = # -DONE_SIDED_SHIFT
 # MAX_MIXED   Do double-precision inversion with half-precision (if supported)
 # SCALE_PROP  Do rescaling for the clover propagator
 
-CLCG = -DCL_CG=BICG 
+CLCG ?= # -DCL_CG=BICG 
 
 #------------------------------
 # Propagator storage

@@ -194,7 +194,7 @@ int ks_multicg_field(   /* Return value is number of iterations taken */
     ks_param *ksp,	/* KS parameters with offsets defined */
     int num_offsets,	/* number of offsets */
     quark_invert_control qic[], /* inversion parameters */
-    imp_ferm_links_t *fn[]    /* Storage for fat and Naik links */
+    imp_ferm_links_t *fn /* Storage for fat and Naik links */
     );
 
 int ks_multicg_offset_field_cpu(	/* Return value is number of iterations taken */
@@ -240,7 +240,7 @@ int ks_multicg_mass_field(	/* Return value is number of iterations taken */
     ks_param *ksp,	/* the KS parameters, including masses */
     int num_masses,	/* number of masses */
     quark_invert_control qic[],  /* inversion parameters */
-    imp_ferm_links_t *fn[]     /* Storage for fat and Naik links */
+    imp_ferm_links_t *fn /* Storage for fat and Naik links */
     );
 
 
@@ -254,7 +254,7 @@ int ks_multicg_mass_site(	/* Return value is number of iterations taken */
     int prec,           /* internal precision for inversion (ignored) */
     int parity,		/* parity to be worked on */
     Real *final_rsq_ptr, /* final residue squared */
-    imp_ferm_links_t *fn[]     /* Storage for fat and Naik links */
+    imp_ferm_links_t *fn /* Storage for fat and Naik links */
 );
 
 
@@ -267,8 +267,8 @@ int mat_invert_multi(
     ks_param *ksp,	/* KS parameters, including masses */
     int num_masses,	/* number of masses */
     quark_invert_control qic[],  /* inversion parameters */
-    imp_ferm_links_t *fn[]   /* Storage for fat and Naik links */
-     );
+    imp_ferm_links_t *fn /* Storage for fat and Naik links */
+    );
 
 /*
   Return the most recent fermion link field passed to QUDA

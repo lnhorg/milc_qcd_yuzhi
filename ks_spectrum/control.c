@@ -275,6 +275,7 @@ int main(int argc, char *argv[])
     
     ENDTIME("create fermion links");
 
+    imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
     
     /**************************************************************/
     /* Set up eigenpairs, if requested */
@@ -296,9 +297,8 @@ int main(int argc, char *argv[])
       eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
     
     /* Do whatever is needed to get eigenpairs */
-    imp_ferm_links_t **fn = get_fm_links(fn_links);
     int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile,
-				 &Nvecs_tot, eigVal, eigVec, fn[0], 1);
+				 &Nvecs_tot, eigVal, eigVec, fn, 1);
     
     if(param.fixflag != NO_GAUGE_FIX){
       node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors\n");
@@ -332,9 +332,8 @@ int main(int argc, char *argv[])
       }
       
       /* Do whatever is needed to get eigenpairs */
-      imp_ferm_links_t **fn = get_fm_links(fn_links);
       int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile, 
-				   &param.eigen_param.Nvecs, eigVal, eigVec, fn[0], 1);
+				   &param.eigen_param.Nvecs, eigVal, eigVec, fn, 1);
       if(param.fixflag != NO_GAUGE_FIX){
 	node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors");
       }
@@ -351,11 +350,10 @@ int main(int argc, char *argv[])
 #if EIGMODE != EIGCG
       
       param.eigen_param.parity = EVEN;  /* Required */
-      imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
 
       /* Move KS phases and apply time boundary condition, based on the
 	 coordinate origin and time_bc */
-      Real bdry_phase[4] = {0.,0.,0.,(double)param.time_bc};
+      Real bdry_phase[4] = {0.,0.,0.,(Real)param.time_bc};
       /* Set values in the structure fn */
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
@@ -935,7 +933,6 @@ int main(int argc, char *argv[])
     if(param.eigcgp.Nvecs_max > 0){
       STARTTIME;
       
-      imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       
       if(param.ks_eigen_startflag == FRESH)
@@ -970,6 +967,8 @@ int main(int argc, char *argv[])
     for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
       clear_qs(&param.src_qs[i]);
 
+    /* Free fn space */
+    destroy_fn_links(fn);
 
 /****************************************************************/
 /* Compute GB baryon propagators */

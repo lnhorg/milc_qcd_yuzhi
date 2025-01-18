@@ -345,7 +345,7 @@ int reload_ks_eigen(int flag, char *eigfile, int *Nvecs, Real *eigVal,
 */
  
 int save_ks_eigen(int flag, char *savefile, int Nvecs, Real *eigVal,
-		  su3_vector **eigVec, Real *resid, int timing){
+		  su3_vector **eigVec, double *resid, int timing){
 
   QIO_Writer *outfile;
   int status = 0;

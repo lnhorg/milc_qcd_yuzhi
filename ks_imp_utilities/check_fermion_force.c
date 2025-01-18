@@ -31,7 +31,6 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 #endif
   int ff_prec = MILC_PRECISION;  /* Just use prevailing precision for now */
   /* Supports only asqtad at the moment */
-  imp_ferm_links_t **fn = get_fm_links(fn_links);
   Real *residues = (Real *)malloc(n_naik*sizeof(Real));;
   if(residues == NULL){
     node0_printf("No room for residues\n");
@@ -122,13 +121,13 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
       Real rsqmin_gr = param.qic[inaik].resid * param.qic[inaik].resid;
       int  niter_gr  = param.qic[inaik].max;
       int  prec_gr   = MILC_PRECISION;
-      imp_ferm_links_t **fn = get_fm_links(fn_links);
+      imp_ferm_links_t *fn = get_fm_links(fn_links, inaik);
       
       for( int jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
 	node0_printf("Generating random sources\n");
 	grsource_imp_rhmc_field( phi[iphi], &rf[iphi].GR, EVEN,
 				 multi_x, sumvec, rsqmin_gr, niter_gr,
-				 prec_gr, fn[inaik], inaik, 
+				 prec_gr, fn, inaik, 
 				 rf[iphi].naik_term_epsilon);
 	iphi++;
       }
@@ -142,7 +141,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
     
     for( int inaik=0; inaik < n_naik; inaik++ ) {
       for( int jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
-	fn = get_fm_links(fn_links);
+	e	fn = get_fm_links(fn_links, inaik);
 	
 	// Add the current pseudofermion to the current set
 	int order      = rf[iphi].MD.order;
@@ -156,13 +155,13 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 	int iters = 0;
 	iters += ks_ratinv_field( phi[iphi], multi_x+tmporder, roots, residues,
 				  order, niter_md, rsqmin_md, MILC_PRECISION, EVEN,
-				  &final_rsq, fn[inaik], 
+				  &final_rsq, fn, 
 				  inaik, rf[iphi].naik_term_epsilon );
 	
 	/*Then compute multi_x = M * multi_x  = Dslash * multi_x on odd sites */
 	for(int j=0;j<order;j++){
 	  dslash_fn_field( multi_x[tmporder+j], multi_x[tmporder+j],  ODD,
-			   fn[inaik]);
+			   fn);
 	  allresidues[tmporder+j] = residues[j+1];
 	  // remember that residues[0] is constant, no force contribution.
 	}
@@ -194,6 +193,8 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
   eo_fermion_force_multi( 0.02, allresidues, multi_x,
 			  n_order_naik_total, ff_prec, fn_links );
 
+  destroy_fn_links(fn);
+  
   /* If the answer file is given, read it for comparison */
   if(ansflag == RELOAD_SERIAL){
     restore_color_matrix_scidac_to_field(ansfile, ansmom, 4, MILC_PRECISION);

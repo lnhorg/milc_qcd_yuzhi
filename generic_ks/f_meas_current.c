@@ -1667,18 +1667,6 @@ destroy_jhi(int n_masses, int nr, Real **j_mu[]){
 }
 
 /*********************************************************************/
-/* Load arrays with masses and the HISQ link structure for each */
-static void
-load_inv_params(fermion_links_t *fl, imp_ferm_links_t *fn_mass[],
-		int n_masses, Real masses[], ks_param *ksp){
-  imp_ferm_links_t **fn = get_fm_links(fl);
-  for(int j = 0; j < n_masses; j++){
-    masses[j] = ksp[j].mass;
-    fn_mass[j] = fn[ksp[j].naik_term_epsilon_index];
-  }
-}
-
-/*********************************************************************/
 /* Compute exact low-mode current density if we have eigenvectors to do it */
 static void
 compute_jlow(int Nvecs, int n_masses, Real *jlow_mu[], Real masses[],
