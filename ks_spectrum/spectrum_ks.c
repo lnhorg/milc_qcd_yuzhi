@@ -652,9 +652,10 @@ static FILE* open_fnal_meson_file(int pair){
 
   fprintf(fp,"antiquark_type:               staggered\n");
 
-  print_source_info(fp, "antiquark_source", &param.src_qs[isrc0]);
+  char aqs[] = "antiquark_source";
+  print_source_info(fp, aqs, &param.src_qs[isrc0]);
   fprintf(fp,"antiquark_source_label:       %s\n",param.src_qs[isrc0].label);
-  print_field_op_info(fp, "antiquark_source", param.src_qs[isrc0].op);
+  print_field_op_info(fp, aqs, param.src_qs[isrc0].op);
   fprintf(fp,"antiquark_sink_label:         %s\n",param.snk_qs_op[iq0].label);
 
   {
@@ -676,9 +677,10 @@ static FILE* open_fnal_meson_file(int pair){
 
   fprintf(fp,"quark_type:                   staggered\n");
 
-  print_source_info(fp, "quark_source", &param.src_qs[isrc1]);
+  char qs[] = "quark_source";
+  print_source_info(fp, qs, &param.src_qs[isrc1]);
   fprintf(fp,"quark_source_label:           %s\n",param.src_qs[isrc1].label);
-  print_field_op_info(fp, "quark_source", param.src_qs[isrc1].op);
+  print_field_op_info(fp, qs, param.src_qs[isrc1].op);
   fprintf(fp,"quark_sink_label:             %s\n",param.snk_qs_op[iq1].label);
   {
     quark_source_sink_op **op_list = (quark_source_sink_op **)
@@ -1067,6 +1069,8 @@ static double get_meson_scale_factor(int iq0, int iq1){
     scale_factor *= param.src_qs[ip0].scale_fact;
   if(param.prop_type[ip1] == KS_TYPE)
     scale_factor *= param.src_qs[ip1].scale_fact;
+
+  printf("For iq0 %d iq1 %d ip0 %d ip1 %d sf %g\n", iq0, iq1, ip0, ip1, scale_factor);
 
   return 1./scale_factor;
 }

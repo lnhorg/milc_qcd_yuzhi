@@ -471,7 +471,7 @@ int gamma_index(char *label){
 /* Map an index to the label */
 
 char *gamma_label(enum gammatype index){
-  return gammalabel[(int)index];
+  return gammalabel[index];
 }
 
 /* Convert to hexadecimal representation */

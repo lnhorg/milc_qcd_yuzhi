@@ -387,7 +387,7 @@ gauge_file *restore_parallel_scidac(su3_matrix *field, const char *filename);
 FILE *g_open(const char *filename, const char *mode);
 int g_seek(FILE *stream, off_t offset, int whence);
 size_t g_write(const void *ptr, size_t size, size_t nmemb,FILE *stream);
-size_t g_read(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+size_t g_read(void *ptr, size_t size, size_t nmemb, FILE *stream);
 int g_close(FILE *stream);
 
 /**********************************************************************/
