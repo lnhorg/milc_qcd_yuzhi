@@ -219,7 +219,7 @@ static void w_serial(gauge_file *gf)
   fsu3_matrix *lbuf = NULL;
   fsu3_matrix *tbuf = NULL;
   int buf_length, tbuf_length;
-  register int i,j;
+  int i,j;
   off_t offset;             /* File stream pointer */
   off_t coord_list_size;    /* Size of coordinate list in bytes */
   off_t head_size;          /* Size of header plus coordinate list */
@@ -491,7 +491,7 @@ static void r_serial(gauge_file *gf)
 	    if(buf_length > MAX_BUF_LENGTH)buf_length = MAX_BUF_LENGTH;
 	    /* then do read */
 	    
-	    if( (int)g_read(lbuf,4*sizeof(fsu3_matrix),buf_length,fp) 
+	    if( (size_t)g_read(lbuf,4*sizeof(fsu3_matrix),buf_length,fp) 
 		!= buf_length)
 	      {
 		printf("%s: node %d gauge configuration read error %d file %s\n",
@@ -833,7 +833,7 @@ static void w_parallel(gauge_file *gf)
   u_int32type *val;
   size_t rank29,rank31;
   off_t checksum_offset;
-  register int i;
+  size_t i;
   int j,k;
   int x,y,z,t;
   struct {
@@ -1030,8 +1030,8 @@ static void w_checkpoint(gauge_file *gf)
   int rank29,rank31;
   off_t checksum_offset;
   int buf_length;
-  register site *s;
-  register int i;
+  site *s;
+  size_t i;
   char myname[] = "w_checkpoint";
 
   fp = gf->fp;
@@ -1198,7 +1198,7 @@ static void r_parallel(gauge_file *gf)
   size_t isite,ksite,site_block;
   int x,y,z,t;
   size_t rcv_rank,rcv_coords;
-  register int i,k;
+  int i,k;
 
   off_t offset ;            /* File stream pointer */
   off_t gauge_node_size;    /* Size of a gauge configuration block for
@@ -1450,7 +1450,8 @@ gauge_file *restore_ascii(const char *filename) {
   gauge_file *gf;
   FILE *fp = NULL;
   int destnode;
-  int version_number,i,j,x,y,z,t,dir;
+  int version_number,i,j,dir;
+  size_t x,y,z,t;
   fsu3_matrix lbuf[4];
   
   /* Set up a gauge file and guage header structure for reading */
@@ -1489,7 +1490,7 @@ gauge_file *restore_ascii(const char *filename) {
       printf("count %d time_stamp %s\n",i,gh->time_stamp);
       terminate(1);
     }
-    if( (fscanf(fp,"%d%d%d%d",&x,&y,&z,&t))!=4 ){
+    if( (fscanf(fp,"%ld%ld%ld%ld",&x,&y,&z,&t))!=4 ){
       printf("restore_ascii: Error in reading dimensions\n"); terminate(1);
     }
     gh->dims[0] = x; gh->dims[1] = y; gh->dims[2] = z; gh->dims[3] = t;

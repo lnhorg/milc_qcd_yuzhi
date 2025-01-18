@@ -333,7 +333,8 @@ reload_ksprop_c_to_field( int flag, ks_prop_file *kspf,
      1 read error */
 
   double dtime = 0;
-  int i,status;
+  size_t i;
+  int status;
   site *s;
   su3_vector *prop;
   su3_vector *cv;

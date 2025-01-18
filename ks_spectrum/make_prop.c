@@ -40,7 +40,9 @@ save_ksprops(int num_prop, int saveflag[], char savefile[][MAXFILENAME],
 {
   /* Save solutions if requested */
   for(int j = 0; j < num_prop; j++){
-    int status = save_ksprop_from_ksp_field( saveflag[j], savefile[j], "",
+    char recxml[] = "";
+    int status = save_ksprop_from_ksp_field( saveflag[j], savefile[j],
+					     recxml,
 					     my_ksqs[j], source[j], ksprop[j], 1);
     if(status != 0){
       node0_printf("Failed to write propagator\n");
@@ -385,10 +387,11 @@ void dump_ksprop_from_ksp_field(int saveflag, char savefile[],
 
   /* Set up an empty source */
   ks_prop_field *dummy_src = create_ksp_field(ksprop->nc);
+  char recxml[] = "";
 
   init_qs(&dummy_ksqs);
   ksqstmp = dummy_ksqs;   /* For ksprop_info.c */
-  save_ksprop_from_ksp_field(saveflag, savefile, "", &dummy_ksqs, dummy_src, ksprop, 1);
+  save_ksprop_from_ksp_field(saveflag, savefile, recxml, &dummy_ksqs, dummy_src, ksprop, 1);
   clear_qs(&dummy_ksqs); /* Free any allocations */
 
   destroy_ksp_field(dummy_src);
