@@ -153,6 +153,14 @@ void GRID_D3_hisq_aux_links(GRID_info_t *info,
 void GRID_D3_reunit_deriv(GRID_info_t *info, su3_matrix *V, su3_matrix *dW,
 			  su3_matrix *Q, GRID_4Dgrid * grid_full);
 
+void GRID_D3_hisq_force(GRID_info_t *info,
+			void *fl,
+			double residues[],
+			su3_vector *multi_x[],
+			int n_orders_naik[],
+			su3_matrix *deriv[],
+			GRID_4Dgrid *grid_full);
+
 /* implicitly restarted Lanczos */
 
 typedef STRUCT GRID_D3_ColorVectorArray_struct GRID_D3_ColorVectorArray;

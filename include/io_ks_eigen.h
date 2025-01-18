@@ -139,7 +139,7 @@ void w_close_ks_eigen(int flag, ks_eigen_file *kseigf);
 int reload_ks_eigen(int flag, char *eigfile, int *Nvecs, Real *eigVal,
 		    su3_vector **eigVec, imp_ferm_links_t *fn, int timing);
 int save_ks_eigen(int flag, char *savefile, int Nvecs, Real *eigVal, 
-		  su3_vector **eigVec, Real *resid, int timing);
+		  su3_vector **eigVec, double *resid, int timing);
 
 int convert_outflag_to_inflag_ks_eigen(int out_flag);
 

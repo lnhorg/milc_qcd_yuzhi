@@ -75,45 +75,6 @@ void update_h_gauge( Real eps );
 int update_h_fermion( Real eps, su3_vector **multi_x );
 void update_u( Real eps );
 
-/* grsource_rhmc.c */
-
-void grsource_imp_rhmc( field_offset dest, params_ratfunc *rf,
-			int parity, su3_vector **multi_x, su3_vector *sumvec,
-			Real my_rsqmin, int my_niter, int my_prec,
-			imp_ferm_links_t *fn, int naik_term_epsilon_index,
-			Real naik_term_epsilon);
-
-/* ks_ratinv.c */
-
-int ks_ratinv(	/* Return value is number of iterations taken */
-    field_offset src,	/* source vector (type su3_vector) */
-    su3_vector **psim,	/* solution vectors */
-    Real *roots,	/* the roots */
-    Real *residues,	/* the residues (if not zero, there are used to scale the shifted target residual) */
-    int order,		/* order of rational function approx */
-    int my_niter,	/* maximal number of CG interations */
-    Real rsqmin,	/* desired residue squared */
-    int prec,           /* desired intermediate precicion */
-    int parity,		/* parity to be worked on */
-    Real *final_rsq_ptr,/* final residue squared */
-    imp_ferm_links_t *fn,     /* Fermion links */
-    int naik_term_epsilon_index, /* Index of naik term common to this set */
-    Real naik_term_epsilon /* Epsilon common to this set */
-		);
-
-int ks_rateval(
-    su3_vector *dest,   /* answer vector */
-    field_offset src,   /* source vector (for a_0 term) */
-    su3_vector **psim,  /* solution vectors  from multiroot CG */
-    Real *residues,     /* the residues */
-    int order,          /* order of approximation */
-    int parity          /* parity to be worked on */
-    );
-
-/* load_rhmc_params */
-
-params_rhmc *load_rhmc_params(char filename[], int n_pseudo);
-
 /* d_action_rhmc.c */
 double d_action_rhmc(su3_vector **multi_x, su3_vector *sumvec );
 void gauge_field_copy(field_offset src,field_offset dest);

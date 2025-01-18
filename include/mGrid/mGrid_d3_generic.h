@@ -20,6 +20,7 @@
 #define GRID_extract_V_to_vec		GRID_D3_extract_V_to_vec
 #define GRID_extract_nV_to_vecs	        GRID_D3_extract_nV_to_vecs
 #define GRID_hisq_aux_links             GRID_D3_hisq_aux_links
+#define GRID_hisq_force                 GRID_D3_hisq_force
 #define GRID_hisq_links                 GRID_D3_hisq_links
 #define GRID_ColorMatrix                GRID_D3_ColorMatrix
 #define GRID_ColorVector                GRID_D3_ColorVector

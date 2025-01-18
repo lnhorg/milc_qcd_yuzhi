@@ -106,6 +106,7 @@ G_KS_ALL = \
   gauss_smear_ks_cpu.o \
   gauss_smear_ks_QUDA.o \
   gridHISQLinks.o \
+  grsource_rhmc.o \
   gb_baryon_mmap.o \
   gb_baryon_snk.o \
   gb_baryon_3pt.o \
@@ -146,9 +147,11 @@ G_KS_ALL = \
   ks_multicg_offset_qphix.o \
   ks_multicg_qop_milc_D.o \
   ks_multicg_qop_milc_F.o \
+  ks_ratinv.o \
   ks_utilities.o \
   load_qop_asqtad_coeffs_D.o \
   load_qop_asqtad_coeffs_F.o \
+  load_rhmc_params.o \
   mat_invert.o \
   mu.o \
   mu_fast.o \
@@ -398,8 +401,6 @@ gauss_smear_ks_cpu.o: ../generic_ks/gauss_smear_ks_cpu.c
 	${CC} -c ${CFLAGS} $<
 gauss_smear_ks_QUDA.o: ../generic_ks/gauss_smear_ks_QUDA.c
 	${CC} -c ${CFLAGS} $<
-gridHISQLinks.o: ../generic_ks/gridHISQLinks.cc
-	${CXX} -c ${CXXFLAGS} $<
 gb_baryon_mmap.o: ../generic_ks/gb_baryon_mmap.c
 	${CC} -c ${CFLAGS} $<
 gb_baryon_snk.o: ../generic_ks/gb_baryon_snk.c
@@ -410,6 +411,8 @@ gb_baryon_src.o: ../generic_ks/gb_baryon_src.c
 	${CC} -c ${CFLAGS} $<
 gb_ops.o: ../generic_ks/gb_ops.c
 	${CC} -c ${CFLAGS} $<
+gridHISQLinks.o: ../generic_ks/gridHISQLinks.cc
+	${CXX} -c ${CXXFLAGS} $<
 gridStaggEigen.o: ../generic_ks/gridStaggEigen.cc
 	${CXX} -c ${CXXFLAGS} $<
 gridStaggInvert.o: ../generic_ks/gridStaggInvert.cc
@@ -417,6 +420,8 @@ gridStaggInvert.o: ../generic_ks/gridStaggInvert.cc
 grsource.o: ../generic_ks/grsource.c
 	${CC} -c ${CFLAGS} $<
 grsource_imp.o: ../generic_ks/grsource_imp.c
+	${CC} -c ${CFLAGS} $<
+grsource_rhmc.o: ../generic_ks/grsource_rhmc.c
 	${CC} -c ${CFLAGS} $<
 hisq_links_qop.o: ../generic_ks/hisq_links_qop.c
 	${CC} -c ${CFLAGS} $<
@@ -486,6 +491,8 @@ ks_multicg_qop_milc_D.o: ../generic_ks/ks_multicg_qop_milc_D.c ../generic_ks/ks_
 	${CC} -c ${CFLAGS} $<
 ks_multicg_qop_milc_F.o: ../generic_ks/ks_multicg_qop_milc_F.c ../generic_ks/ks_multicg_qop_milc_P.c
 	${CC} -c ${CFLAGS} $<
+ks_ratinv.o: ../generic_ks/ks_ratinv.c
+	${CC} -c ${CFLAGS} $<
 ks_utilities.o: ../generic_ks/ks_utilities.c
 	${CC} -c ${CFLAGS} $<
 load_qop_asqtad_coeffs_D.o: ../generic_ks/load_qop_asqtad_coeffs_D.c ../generic_ks/load_qop_asqtad_coeffs_P.c
@@ -495,6 +502,8 @@ load_qop_asqtad_coeffs_F.o: ../generic_ks/load_qop_asqtad_coeffs_F.c ../generic_
 load_qop_hisq_coeffs_D.o: ../generic_ks/load_qop_hisq_coeffs_D.c ../generic_ks/load_qop_hisq_coeffs_P.c
 	${CC} -c ${CFLAGS} $<
 load_qop_hisq_coeffs_F.o: ../generic_ks/load_qop_hisq_coeffs_F.c ../generic_ks/load_qop_hisq_coeffs_P.c
+	${CC} -c ${CFLAGS} $<
+load_rhmc_params.o: ../generic_ks/load_rhmc_params.c
 	${CC} -c ${CFLAGS} $<
 mat_invert.o: ../generic_ks/mat_invert.c
 	${CC} -c ${CFLAGS} $<
