@@ -20,7 +20,6 @@
 #ifdef HAVE_MPI
 #include <mpi.h>
 #endif
-#include <qio.h>
 /*------------------------------------------------------------------*/
 /* Convert rank to coordinates */
 static void lex_coords(int coords[], const int dim, const int size[], 
