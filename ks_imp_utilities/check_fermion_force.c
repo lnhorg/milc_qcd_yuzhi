@@ -66,6 +66,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
   int tmporder = 0;
   int n_naiks = 0;
   double eps_naik[MAX_NAIK];
+  imp_ferm_links_t *fn;
 
   n_order_naik_total = 0;
   for( i=0; i<n_pseudo; i++ ) {
@@ -139,9 +140,10 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
     iphi = 0;
     n_naik = fermion_links_get_n_naiks(fn_links);
     
+
     for( int inaik=0; inaik < n_naik; inaik++ ) {
       for( int jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
-	e	fn = get_fm_links(fn_links, inaik);
+	fn  = get_fm_links(fn_links, inaik);
 	
 	// Add the current pseudofermion to the current set
 	int order      = rf[iphi].MD.order;
