@@ -1,4 +1,4 @@
-j/************************* control.c *******************************/
+/************************* control.c *******************************/
 /* MIMD version 7 */
 /* Main procedure for SU3 with dynamical staggered fermions        */
 /* general quark action, general gauge action */
