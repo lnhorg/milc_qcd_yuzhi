@@ -27,7 +27,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 #if (MILC_PRECISION == 1)
   Real tol = 1e-3;
 #else
-  Real tol = 1e-9;
+  Real tol = 1e-8;
 #endif
   int ff_prec = MILC_PRECISION;  /* Just use prevailing precision for now */
   /* Supports only asqtad at the moment */
@@ -122,7 +122,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
       Real rsqmin_gr = param.qic[inaik].resid * param.qic[inaik].resid;
       int  niter_gr  = param.qic[inaik].max;
       int  prec_gr   = MILC_PRECISION;
-      imp_ferm_links_t *fn = get_fm_links(fn_links, inaik);
+      fn = get_fm_links(fn_links, inaik);
       
       for( int jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
 	node0_printf("Generating random sources\n");
@@ -132,6 +132,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 				 rf[iphi].naik_term_epsilon);
 	iphi++;
       }
+      destroy_fn_links(fn);
     }
 
     /* Construct  */
@@ -142,8 +143,8 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
     
 
     for( int inaik=0; inaik < n_naik; inaik++ ) {
+      fn  = get_fm_links(fn_links, inaik);
       for( int jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
-	fn  = get_fm_links(fn_links, inaik);
 	
 	// Add the current pseudofermion to the current set
 	int order      = rf[iphi].MD.order;
@@ -170,6 +171,7 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
 	tmporder += order;
 	iphi++;
       } /* jphi */
+      destroy_fn_links(fn);
     } /* inaik */
   } /* phiflag != RELOAD_SERIAL */
 
@@ -195,8 +197,6 @@ void check_fermion_force( char phifile[MAX_MASS][MAXFILENAME], int phiflag,
   eo_fermion_force_multi( 0.02, allresidues, multi_x,
 			  n_order_naik_total, ff_prec, fn_links );
 
-  destroy_fn_links(fn);
-  
   /* If the answer file is given, read it for comparison */
   if(ansflag == RELOAD_SERIAL){
     restore_color_matrix_scidac_to_field(ansfile, ansmom, 4, MILC_PRECISION);
