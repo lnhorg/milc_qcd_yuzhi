@@ -968,6 +968,7 @@ int main(int argc, char *argv[])
       clear_qs(&param.src_qs[i]);
 
     /* Free fn space */
+    fn->preserve = 0;
     destroy_fn_links(fn);
 
 /****************************************************************/
