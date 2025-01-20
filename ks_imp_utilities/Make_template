@@ -170,7 +170,7 @@ check_fermion_force_asqtad::
 	"GAUGE = symanzik_1loop_action.h" \
 	"QUARK = asqtad_action.h" \
 	"EXTRA_OBJECTS=  ${FN_OBJECTS} ${ASQ_FORCE} check_fermion_force.o \
-	control_fermion_force.o setup_fermion_force.o"
+	load_rhmc_params.o grsource_rhmc.o ks_ratinv.o"
 
 check_fermion_force_hisq::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@" \
