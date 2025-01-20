@@ -1071,7 +1071,7 @@ KSSHIFT = # -DONE_SIDED_SHIFT
 
 # HALF_MIXED  Do double-precision inversion with single, or single with half (if supported)
 # MAX_MIXED   Do double-precision inversion with half-precision (if supported)
-# SCALE_PROP  Do rescaling for the clover propagator
+# SCALE_PROP  Do rescaling for the propagator
 
 CLCG ?= # -DCL_CG=BICG 
 
