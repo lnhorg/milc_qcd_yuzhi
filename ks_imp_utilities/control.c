@@ -150,6 +150,7 @@ int main( int argc, char **argv ){
 
 #endif
 
+    fn->preserve = 0;
     destroy_fn_links(fn);
   
   } /* readin(prompt) */
