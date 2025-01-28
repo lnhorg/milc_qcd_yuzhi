@@ -160,9 +160,6 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
   eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
   eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  if(param.eigen_param.eigPrec == 2)eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
-  else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
-  else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   eig_args.tol_restart = param.eigen_param.tol_restart;
   eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
   eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
@@ -177,6 +174,18 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
   eig_args.compute_evals_batch_size = 16;
   eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
+  
+  if(param.eigen_param.eigPrec == 2) {
+    eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 1) {
+    eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 0) {
+    eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
+  } else {
+    /** If not doing eigensolve (i.e. if loading from file) 
+    then prec_eigensolver should be quda_precision **/
+    eig_args.prec_eigensolver = quda_precision;
+  }
 
   previous_mass = mass;
   first_solve = false;
@@ -356,9 +365,6 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
   eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
   eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  if(param.eigen_param.eigPrec == 2)eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
-  else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
-  else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   eig_args.tol_restart = param.eigen_param.tol_restart;
   eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
   eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
@@ -373,6 +379,18 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
   eig_args.compute_evals_batch_size = 16;
   eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
+  
+  if(param.eigen_param.eigPrec == 2) {
+    eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 1) {
+    eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 0) {
+    eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
+  } else {
+    /** If not doing eigensolve (i.e. if loading from file) 
+    then prec_eigensolver should be quda_precision **/
+    eig_args.prec_eigensolver = quda_precision;
+  }
 
   previous_mass = mass;
   first_solve = false;
