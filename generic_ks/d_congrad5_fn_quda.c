@@ -163,6 +163,19 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
   else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   eig_args.tol_restart = param.eigen_param.tol_restart;
+  eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  eig_args.qr_tol = eig_args.tol;
+  eig_args.require_convergence = QUDA_BOOLEAN_TRUE;
+  eig_args.check_interval = 10;
+  eig_args.use_dagger = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_svd = QUDA_BOOLEAN_FALSE;
+  eig_args.use_eigen_qr = QUDA_BOOLEAN_TRUE;
+  eig_args.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_evals_batch_size = 16;
+  eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
 
   previous_mass = mass;
   first_solve = false;
@@ -345,6 +358,19 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
   else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   eig_args.tol_restart = param.eigen_param.tol_restart;
+  eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  eig_args.qr_tol = eig_args.tol;
+  eig_args.require_convergence = QUDA_BOOLEAN_TRUE;
+  eig_args.check_interval = 10;
+  eig_args.use_dagger = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_svd = QUDA_BOOLEAN_FALSE;
+  eig_args.use_eigen_qr = QUDA_BOOLEAN_TRUE;
+  eig_args.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_evals_batch_size = 16;
+  eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
 
   previous_mass = mass;
   first_solve = false;
