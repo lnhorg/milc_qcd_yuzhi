@@ -152,6 +152,7 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   eig_args.a_max = param.eigen_param.poly.maxE;
   strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
   strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
+  eig_args.vec_in_parity = QUDA_EVEN_PARITY; // TODO: Update when we add support for odd parity eigenvector files
   eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
   eig_args.batched_rotate = param.eigen_param.batchedRotate;
   eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
@@ -347,6 +348,7 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   eig_args.a_max = param.eigen_param.poly.maxE;
   strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
   strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
+  eig_args.vec_in_parity = QUDA_EVEN_PARITY; // TODO: Update when we add support for odd parity eigenvector files
   eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
   eig_args.batched_rotate = param.eigen_param.batchedRotate;
   eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
