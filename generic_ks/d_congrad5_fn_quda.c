@@ -140,6 +140,7 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   static bool first_solve=true;
 
   QudaEigensolverArgs_t eig_args;
+  eig_args.struct_size = 1192; // Could also use sizeof(QudaEigensolverArgs_t) to automagically update, but using a static number will catch the case when the struct is updated by QUDA but MILC is not updated
   eig_args.block_size = blockSize;
   eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
   eig_args.n_ev_deflate = ( parity == EVEN ) ? param.eigen_param.Nvecs : 0; // Only deflate even solves for now
@@ -345,6 +346,7 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   static bool first_solve=true;
 
   QudaEigensolverArgs_t eig_args;
+  eig_args.struct_size = 1192; // Could also use sizeof(QudaEigensolverArgs_t) to automagically update, but using a static number will catch the case when the struct is updated by QUDA but MILC is not updated
   eig_args.block_size = blockSize;
   eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
   eig_args.n_ev_deflate = ( parity == EVEN ) ? param.eigen_param.Nvecs : 0; // Only deflate even solves for now
