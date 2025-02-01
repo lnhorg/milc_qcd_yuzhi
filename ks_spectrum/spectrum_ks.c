@@ -495,11 +495,32 @@ static void spectrum_ks_baryon_nd(int nc, int type[],
 
 /*--------------------------------------------------------------------*/
 
+static int ape_only(int ** corr_table, int n, int spin_taste[]){
+  int fn = 0;
+  for(int g = 0; g < n; g++){
+    int c = corr_table[g][0];
+    fn = fn || is_fn_index(spin_taste[c]);
+  }
+
+  node0_printf("ape_only returns %d\n", !fn);
+
+  return !fn;
+}
+
+/*--------------------------------------------------------------------*/
+
 static void accum_gen_meson(complex **mp, su3_vector *qp0, int naik_index0,
 			    su3_vector *qp1, int naik_index1, int pair){
+  imp_ferm_links_t *fn_index0;
+  imp_ferm_links_t *fn_index1;
 
-  imp_ferm_links_t *fn_index0 = get_fm_links(fn_links, naik_index0);
-  imp_ferm_links_t *fn_index1 = get_fm_links(fn_links, naik_index1);
+  if(ape_only(corr_table, num_spin_taste_indices, param.spin_taste_snk[pair])){
+      fn_index0 = NULL;
+      fn_index1 = NULL;
+    } else {
+      fn_index0 = get_fm_links(fn_links, naik_index0);
+      fn_index1 = get_fm_links(fn_links, naik_index1);
+    }
 
   ks_meson_cont_mom(mp, qp0, qp1,
 		    num_mom_parities, momentum, parity,
