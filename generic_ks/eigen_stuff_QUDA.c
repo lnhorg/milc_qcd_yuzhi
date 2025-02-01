@@ -22,7 +22,7 @@
 /* Compute eigenvalues and eigenvectors of the Kogut-Susskind
  * dslash^2. */
 int ks_eigensolve_QUDA( su3_vector ** eigVec,
-                        double * eigVal,
+                        Real * eigVal,
                         ks_eigen_param * eigen_param,
                         int init )
 {
@@ -314,7 +314,7 @@ int ks_eigensolve_QUDA( su3_vector ** eigVec,
 
 #else /* #ifdef QUDA_EIG */
 
-int ks_eigensolve_QUDA( su3_vector ** eigeVec, double * eigVal, ks_eigen_param * eigen_param, int init )
+int ks_eigensolve_QUDA( su3_vector ** eigeVec, Real * eigVal, ks_eigen_param * eigen_param, int init )
 {
   char myname[] = "ks_eigensolve_QUDA";
   node0_printf( "%s: Requires compilation with the QUDA library\n", myname );
