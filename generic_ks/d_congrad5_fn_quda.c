@@ -183,9 +183,8 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   } else if(param.eigen_param.eigPrec == 0) {
     eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   } else {
-    /** If not doing eigensolve (i.e. if loading from file) 
-    then prec_eigensolver should be quda_precision **/
-    eig_args.prec_eigensolver = quda_precision;
+    printf("%s: Unrecognized eigensolver precision\n",myname);
+    terminate(2);
   }
 
   previous_mass = mass;
@@ -389,9 +388,8 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   } else if(param.eigen_param.eigPrec == 0) {
     eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
   } else {
-    /** If not doing eigensolve (i.e. if loading from file) 
-    then prec_eigensolver should be quda_precision **/
-    eig_args.prec_eigensolver = quda_precision;
+    printf("%s: Unrecognized eigensolver precision\n",myname);
+    terminate(2);
   }
 
   previous_mass = mass;
