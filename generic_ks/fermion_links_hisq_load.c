@@ -727,7 +727,6 @@ destroy_hisq_auxiliary_t(hisq_auxiliary_t *aux){
     destroy_m4_special(aux->Y_unitlink);
   destroy_m4_special(aux->V_link);
   destroy_m4_special(aux->U_link);
-
   free(aux);
 }
 
@@ -772,8 +771,17 @@ destroy_hisq_links_milc(ks_action_paths_hisq *ap, hisq_auxiliary_t *aux,
 			fn_links_t *fn0, fn_links_t *fn_deps){
 
   destroy_hisq_auxiliary_t(aux);
-  destroy_fn_links(fn0);
-  destroy_fn_links(fn_deps);
+
+  if(fn0 != NULL){
+    fn0->preserve = 0;
+    destroy_fn_links(fn0);
+  }
+
+  if(fn_deps != NULL){
+    fn_deps->preserve = 0;
+    destroy_fn_links(fn_deps);
+  }
+
 }
 
 /* fermion_links_hisq_load.c */
