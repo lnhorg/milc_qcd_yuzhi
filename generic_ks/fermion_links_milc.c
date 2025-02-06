@@ -30,7 +30,9 @@ create_fm_ap_links_t(info_t *info, ks_action_paths *ap, su3_matrix *links,
   
   al->ap = ap;
   al->fm = create_imp_ferm_links();
+  al->fm->preserve = 1;
   load_imp_ferm_links(info, al->fm, ap, links, options->want_back);
+  
 
   return al;
 }
@@ -65,6 +67,7 @@ restore_fm_ap_links_t(info_t *info, fm_ap_links_t *al, su3_matrix *links,
 
   al->fm = create_imp_ferm_links();
   load_imp_ferm_links(info, al->fm, al->ap, links, want_back);
+  al->fm->preserve = 1;
 }
 
 static imp_ferm_links_t *
@@ -260,7 +263,7 @@ invalidate_fermion_links(fermion_links_t *fl){
 void 
 restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_matrix *links){
 
-  char myname[] = "restore_fermion_links_fm";
+  char myname[] = "restore_fermion_links";
   info_t info = INFO_ZERO;
 
   if(fl == NULL){
@@ -290,6 +293,7 @@ restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_mat
 
 imp_ferm_links_t *
 get_fm_links(fermion_links_t *fl, int i_naik){
+  /* The non-HISQ actions have no Naik epsilon */
   return get_milc_fm_ap_links_fm(fl->flg);
 }
 
