@@ -462,12 +462,9 @@ int readin(int prompt) {
 	  char *op_descrp = param.src_qs_op[is].descrp;
 	  char *label = param.src_qs[is].label;
 	  char *op_label = param.src_qs_op[is].label;
-	  int bytes_left = MAXDESCRP-strlen(descrp)-1;
-	  strncat(descrp, "/", bytes_left);
-	  bytes_left = MAXDESCRP-strlen(descrp)-1;
-	  strncat(descrp, op_descrp, bytes_left);
-	  bytes_left = MAXDESCRP-strlen(descrp)-1;
-	  strncpy(label,  op_label, bytes_left);
+          strncat(descrp, "/", MAXDESCRP-strlen(descrp)-1);
+	  strncat(descrp, op_descrp, MAXDESCRP-strlen(descrp)-1);
+	  strncpy(label,  op_label, MAXSRCLABEL-strlen(label)-1);
 	}
       }
 
