@@ -487,7 +487,8 @@ int main(int argc, char *argv[])
     for(is=param.num_base_source; is<param.num_base_source+param.num_modified_source; is++){
 
       quark_source *qs = &param.src_qs[is];
-      source[is] = create_ksp_field(qs->ncolor);
+      int p = param.parent_source[is];
+      source[is] = create_ksp_field(source[p]->nc);
       
       if(qs->saveflag != FORGET){
 	char *fileinfo = create_ks_XML();
@@ -496,7 +497,6 @@ int main(int argc, char *argv[])
       }
       
       /* Copy parent source */
-      int p = param.parent_source[is];
       copy_ksp_field(source[is],  source[p]);
 
       for(int color = 0; color < qs->ncolor; color++){
@@ -548,9 +548,16 @@ int main(int argc, char *argv[])
 	/* Read and/or generate quark propagator */
 	
 	is = param.source[i];  /* source index for this propagator */
-	prop_nc[i] = param.src_qs[is].ncolor;
+	//	prop_nc[i] = param.src_qs[is].ncolor;
+	/* Get number of colors from the parent */
+	int p = param.parent_source[is];
+	if(p == BASE_SOURCE_PARENT)
+	  prop_nc[i] = param.src_qs[is].ncolor;
+	else
+	  prop_nc[i] = source[p]->nc;
 	
 	/* Allocate propagator */
+	  
 	prop[i] = create_ksp_field(prop_nc[i]);
 	if(prop[i] == NULL){
 	  printf("main(%d): No room for prop\n",this_node);
@@ -967,9 +974,13 @@ int main(int argc, char *argv[])
     for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
       clear_qs(&param.src_qs[i]);
 
-    /* Free fn space */
+    /* Free links */
     fn->preserve = 0;
-    destroy_fn_links(fn);
+#if FERM_ACTION == HISQ
+    destroy_fermion_links_hisq(fn_links);
+#else
+    destroy_fermion_links(fn_links);
+#endif
 
 /****************************************************************/
 /* Compute GB baryon propagators */
@@ -1161,11 +1172,6 @@ int main(int argc, char *argv[])
     
     /* Destroy fermion links (created in readin() */
     
-#if FERM_ACTION == HISQ
-    destroy_fermion_links_hisq(fn_links);
-#else
-    destroy_fermion_links(fn_links);
-#endif
     fn_links = NULL;
     starttime = endtime;
   } /* readin(prompt) */
