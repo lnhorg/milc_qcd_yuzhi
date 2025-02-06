@@ -32,10 +32,15 @@
 */
 
 #include "generic_ks_includes.h"	/* definitions files and prototypes */
+#ifdef HAVE_QOP
+#include "../include/fn_links_qop.h"
+#else
 #include "../include/fn_links.h"
+#endif
 
-#if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ ) & defined(DM_DU0)
-BOMB THE COMPILATION No dM_du0 support for HISQ actions
+
+#if ( FERM_ACTION == HISQ && defined(DM_DU0) )
+#error "No dM_du0 support for HISQ actions"
 #endif
 
 static Real *create_real_array(int n){
@@ -156,7 +161,7 @@ void f_meas_imp_field( int npbp_reps, quark_invert_control *qic, Real mass,
   imp_ferm_links_t* fn = get_fm_links(fl, naik_term_epsilon_index);
 
 #ifdef DM_DU0
-  imp_ferm_links_t* fn_du0 = get_fm_du0_links(fl)[naik_term_epsilon_index];
+  imp_ferm_links_t* fn_du0 = get_fm_du0_links(fl);
 #endif
 
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ ) & defined(DM_DEPS)
@@ -420,7 +425,7 @@ void f_meas_imp_multi( int n_masses, int npbp_reps, quark_invert_control *qic,
   Real *mass = create_real_array(n_masses);
 
 #ifdef DM_DU0
-  imp_ferm_links_t *fn_du0 = get_fm_du0_links(fl)[0];
+  imp_ferm_links_t *fn_du0 = get_fm_du0_links(fl);
   su3_vector **dMdu_x = NULL;
 #endif
 
