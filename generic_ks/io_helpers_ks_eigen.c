@@ -433,7 +433,7 @@ int save_ks_eigen(int flag, char *savefile, int Nvecs, Real *eigVal,
    FORGET, SAVE_ASCII, SAVE_SERIAL
 */
 int save_ks_eigen(int flag, char *savefile, int Nvecs, Real *eigVal,
-		   su3_vector **eigVec, Real *resid, int timing){
+		   su3_vector **eigVec, double *resid, int timing){
 
   int status = 0;
   ks_eigen_file *kseigf;

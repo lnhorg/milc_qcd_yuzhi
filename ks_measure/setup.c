@@ -246,9 +246,10 @@ int readin(int prompt) {
 	status += read_ks_eigen_param(&param.eigen_param, status, prompt);
 
       }
-    }
 
 #endif
+
+    }
 
     /*------------------------------------------------------------*/
     /* Chiral condensate and related quantities                   */

@@ -424,7 +424,7 @@ ks_eigen_file *w_serial_ks_eigen_i(char *filename, int parity){
 
 /* Here only node 0 writes eigenvectors to a serial file */
 void w_serial_ks_eigen(ks_eigen_file *kseigf, int Nvecs, Real *eigVal, su3_vector **eigVec,
-		       Real *resid){
+		       double *resid){
 
   FILE *fp = NULL;
   u_int32type *val;
@@ -929,7 +929,7 @@ ks_eigen_file *w_ascii_ks_eigen_i(char *filename, int parity){
 
 /* Write ASCII KS eigenvector from field */
 void w_ascii_ks_eigen(ks_eigen_file *kseigf, int  Nvecs, Real *eigVal, su3_vector **eigVec,
-		      Real *resid){
+		      double *resid){
 
   FILE *fp;
   int currentnode, newnode;
