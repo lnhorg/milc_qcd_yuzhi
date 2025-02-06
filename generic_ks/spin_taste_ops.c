@@ -1011,6 +1011,14 @@ is_rhosbape_index(int index){
     index == rhotsbape;
 }
 
+int
+is_fn_index(int index){
+  return
+    is_rhosfn_index(index) ||
+    is_rhosffn_index(index) ||
+    is_rhosbfn_index(index);
+}
+    
 /*------------------------------------------------------------------*/
 
 int

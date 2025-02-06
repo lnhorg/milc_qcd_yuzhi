@@ -495,11 +495,32 @@ static void spectrum_ks_baryon_nd(int nc, int type[],
 
 /*--------------------------------------------------------------------*/
 
+static int ape_only(int ** corr_table, int n, int spin_taste[]){
+  int fn = 0;
+  for(int g = 0; g < n; g++){
+    int c = corr_table[g][0];
+    fn = fn || is_fn_index(spin_taste[c]);
+  }
+
+  node0_printf("ape_only returns %d\n", !fn);
+
+  return !fn;
+}
+
+/*--------------------------------------------------------------------*/
+
 static void accum_gen_meson(complex **mp, su3_vector *qp0, int naik_index0,
 			    su3_vector *qp1, int naik_index1, int pair){
+  imp_ferm_links_t *fn_index0;
+  imp_ferm_links_t *fn_index1;
 
-  imp_ferm_links_t *fn_index0 = get_fm_links(fn_links, naik_index0);
-  imp_ferm_links_t *fn_index1 = get_fm_links(fn_links, naik_index1);
+  if(ape_only(corr_table, num_spin_taste_indices, param.spin_taste_snk[pair])){
+      fn_index0 = NULL;
+      fn_index1 = NULL;
+    } else {
+      fn_index0 = get_fm_links(fn_links, naik_index0);
+      fn_index1 = get_fm_links(fn_links, naik_index1);
+    }
 
   ks_meson_cont_mom(mp, qp0, qp1,
 		    num_mom_parities, momentum, parity,
@@ -811,7 +832,7 @@ static int lookup_corr_index(int pair, int m){
 }
 
 /*--------------------------------------------------------------------*/
-/* Chase linked list to find the original propagator ancestor */
+/* Chase linked list to find the original propagator ancestor and then its source */
 
 int get_eve(int iq){
   int i, ip;
@@ -1063,14 +1084,16 @@ static void close_fnal_baryon_file(FILE *fp, int triplet){
 static double get_meson_scale_factor(int iq0, int iq1){
   int ip0 = get_eve(iq0);
   int ip1 = get_eve(iq1);
+  int is0 = param.source[ip0];
+  int is1 = param.source[ip1];
   double scale_factor = 1;
 
   if(param.prop_type[ip0] == KS_TYPE)
-    scale_factor *= param.src_qs[ip0].scale_fact;
+    scale_factor *= param.src_qs[is0].scale_fact;
   if(param.prop_type[ip1] == KS_TYPE)
-    scale_factor *= param.src_qs[ip1].scale_fact;
+    scale_factor *= param.src_qs[is1].scale_fact;
 
-  printf("For iq0 %d iq1 %d ip0 %d ip1 %d sf %g\n", iq0, iq1, ip0, ip1, scale_factor);
+  printf("For iq0 %d iq1 %d ip0 %d ip1 %d is0 %d is1 %d sf %g \n", iq0, iq1, ip0, ip1, is0, is1, scale_factor);
 
   return 1./scale_factor;
 }
@@ -1079,14 +1102,17 @@ static double get_baryon_scale_factor(int iq0, int iq1, int iq2){
   int ip0 = get_eve(iq0);
   int ip1 = get_eve(iq1);
   int ip2 = get_eve(iq2);
+  int is0 = param.source[ip0];
+  int is1 = param.source[ip1];
+  int is2 = param.source[ip2];
   double scale_factor = 1;
 
   if(param.prop_type[ip0] == KS_TYPE)
-    scale_factor *= param.src_qs[ip0].scale_fact;
+    scale_factor *= param.src_qs[is0].scale_fact;
   if(param.prop_type[ip1] == KS_TYPE)
-    scale_factor *= param.src_qs[ip1].scale_fact;
+    scale_factor *= param.src_qs[is1].scale_fact;
   if(param.prop_type[ip2] == KS_TYPE)
-    scale_factor *= param.src_qs[ip2].scale_fact;
+    scale_factor *= param.src_qs[is2].scale_fact;
 
   return 1./scale_factor;
 }
@@ -1109,6 +1135,7 @@ static void spectrum_ks_print_diag(int pair){
   double meson_scale = get_meson_scale_factor(param.qkpair[pair][0],  
 					      param.qkpair[pair][1]);
 
+  printf("meson_scale %d %d %g\n", param.qkpair[pair][0], param.qkpair[pair][1], meson_scale);
   /* Point sink */
   if(param.do_meson_spect[pair]){
     corr_fp = open_fnal_meson_file(pair);
@@ -1122,10 +1149,11 @@ static void spectrum_ks_print_diag(int pair){
       print_start_fnal_meson_prop(corr_fp, pair, m);
       //g_veccomplexsum(pmes_prop[m], nt); //TODO: remove. reduction done by quda or contraction_cpu.c
       for(t=0; t<nt; t++){
+	dcomplex dprop;
 	tp = (t + param.r_offset_m[pair][3]) % nt;
 	prop = pmes_prop[m][tp];
 	CMULREAL(prop, norm_fac, prop);
-	dcomplex dprop = {prop.real, prop.imag}; /* Change to double if float */
+	dprop.real = prop.real; dprop.imag = prop.imag; /* Change to double if float */
 	CMULREAL(dprop, meson_scale, dprop);
 	print_meson_prop(pair, t, dprop);
 	print_fnal_meson_prop(corr_fp, pair, t, dprop);
@@ -1154,6 +1182,8 @@ static void spectrum_ks_print_offdiag(int pair){
   /* Rescaling */
   double meson_scale = get_meson_scale_factor(param.qkpair[pair][0],  
 					      param.qkpair[pair][1]);
+  printf("meson_scale %d %d %g\n", param.qkpair[pair][0], param.qkpair[pair][1], meson_scale);
+
   /* Point sink */
   if(param.do_meson_spect[pair]){
     corr_fp = open_fnal_meson_file(pair);
@@ -1168,10 +1198,11 @@ static void spectrum_ks_print_offdiag(int pair){
       print_start_fnal_meson_prop(corr_fp, pair, m);
       //g_veccomplexsum(pmes_prop[m], nt); //TODO: remove. reduction done by quda or contraction_cpu.c
       for(t=0; t<nt; t++){
+	dcomplex dprop;
 	tp = (t + param.r_offset_m[pair][3]) % nt;
 	prop = pmes_prop[m][tp];
 	CMULREAL(prop, norm_fac, prop);
-	dcomplex dprop = {prop.real, prop.imag};
+	dprop.real = prop.real; dprop.imag = prop.imag;
 	CMULREAL(dprop, meson_scale, dprop);
 	print_meson_prop(pair, t, dprop);
 	print_fnal_meson_prop(corr_fp, pair, t, dprop);

@@ -931,11 +931,13 @@ static int v_base_source(su3_vector *src, quark_source *qs)
   /* Rescale the source */
   /* HACK: Don't rescale if the source was preloaded */
   /* We need a much better way of handling the scaling! */
-  if(qs->scale_fact != 1.0 && qs->type != VECTOR_FIELD_STORE){
-    int i; site *s;
-    FORALLSITES(i,s){
-      if(t0 == ALL_T_SLICES || s->t == t0)
-	scalar_mult_su3_vector(src+i, qs->scale_fact, src+i);
+  if(qs->scale_fact != 1.0){
+    if(qs->type != VECTOR_FIELD_STORE && qs->type != VECTOR_FIELD_FILE){
+      int i; site *s;
+      FORALLSITES(i,s){
+	if(t0 == ALL_T_SLICES || s->t == t0)
+	  scalar_mult_su3_vector(src+i, qs->scale_fact, src+i);
+      }
     }
   }
 
@@ -1046,11 +1048,13 @@ static int wv_base_source(wilson_vector *src, quark_source *qs)
   /* Rescale the source */
   /* HACK: Don't rescale if the source was preloaded */
   /* We need a much better way of handling the scaling! */
-  if(qs->scale_fact != 1.0 && qs->type != DIRAC_FIELD_STORE){
-    int i; site *s;
-    FORALLSITES(i,s){
-      if(t0 == ALL_T_SLICES || s->t == t0)
-	scalar_mult_wvec(src+i, qs->scale_fact, src+i);
+  if(qs->scale_fact != 1.0){
+    if(qs->type != DIRAC_FIELD_STORE && qs->type != DIRAC_FIELD_FILE){
+      int i; site *s;
+      FORALLSITES(i,s){
+	if(t0 == ALL_T_SLICES || s->t == t0)
+	  scalar_mult_wvec(src+i, qs->scale_fact, src+i);
+      }
     }
   }
 
