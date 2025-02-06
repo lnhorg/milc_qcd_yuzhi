@@ -53,8 +53,8 @@ int ks_multicg_offset_field_gpu(
 #endif
 
   if(qic[0].relresid != 0.){
-    printf("%s: GPU code does not yet support a Fermilab-type relative residual\n", myname);
-    terminate(1);
+    printf("%s: WARNING; GPU code does not yet support a Fermilab-type relative residual\n", myname);
+    //    terminate(1);
   }
 
   /* Initialize structure */

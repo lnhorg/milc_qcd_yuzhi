@@ -246,9 +246,10 @@ int readin(int prompt) {
 	status += read_ks_eigen_param(&param.eigen_param, status, prompt);
 
       }
-    }
 
 #endif
+
+    }
 
     /*------------------------------------------------------------*/
     /* Chiral condensate and related quantities                   */
@@ -575,9 +576,10 @@ int readin(int prompt) {
     eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
 
   /* Do whatever is needed to get eigenpairs -- assumed charge 0 */
-  imp_ferm_links_t **fn = get_fm_links(fn_links);
+  imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
   status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile, 
-			   &Nvecs_tot, eigVal, eigVec, fn[0], 1);
+			   &Nvecs_tot, eigVal, eigVec, fn, 1);
+  destroy_fn_links(fn);
   if(status != 0) terminate(1);
   //  if(param.fixflag != NO_GAUGE_FIX){
   //    node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors\n");
@@ -610,9 +612,10 @@ int readin(int prompt) {
     }
     
     /* Do whatever is needed to get eigenpairs -- assumed charge 0 */
-    imp_ferm_links_t **fn = get_fm_links(fn_links);
+    imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
     status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile, 
-			     &param.eigen_param.Nvecs, eigVal, eigVec, fn[0], 1);
+			     &param.eigen_param.Nvecs, eigVal, eigVec, fn, 1);
+    destroy_fn_links(fn);
     if(status != 0)terminate(1);
 #if 0
     for(int j = 0; j < param.eigen_param.Nvecs; j++){

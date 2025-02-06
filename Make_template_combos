@@ -114,7 +114,8 @@ KS_LINKS_OBJECTS = \
 
 KS_IO_OBJECTS =  \
   io_helpers_ks.o   \
-  io_prop_ks.o
+  io_prop_ks.o  \
+  io_prop_ks_fm.o  # Deprecated
 
 # These are used to compute the hadron correlators
 
@@ -241,7 +242,7 @@ endif
   FLINKS_FN_QOP = ${FLINKS_QOP} fn_links_qop.o fermion_links_asqtad_qop.o \
       fermion_links_fn_twist_qop.o ks_action_coeffs_asqtad_qop.o ks_action_paths.o
 
-  FLINKS_HISQ_QOP = ${FLINKS_QOP} fn_links_qop.o hisq_links_qop.o \
+  FLINKS_HISQ_QOP = ${FLINKS_QOP} hisq_links_qop.o fn_links_qop.o \
       fermion_links_hisq_qop.o fermion_links_fn_twist_qop.o \
       ks_action_coeffs_hisq_qop.o ks_action_paths_hisq.o \
       su3_mat_op.o
@@ -330,13 +331,13 @@ endif
      d_congrad5_fn_qop_D.o d_congrad5_fn_qop_F.o ${CONGRAD_FN_BASE}
 
 ifeq ($(strip ${HAVE_FN_CG_GPU}),true)
-ifeq ($(strip ${HAVE_QUDA}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_QUDA}
-else ifeq ($(strip ${HAVE_GRID}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_GRID}
-else ifeq ($(strip ${HAVE_QPHIX}),true)
-  CONGRAD_FN_MILC = ${CONGRAD_FN_QPHIX}
-endif
+  ifeq ($(strip ${HAVE_QUDA}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_QUDA}
+  else ifeq ($(strip ${HAVE_GRID}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_GRID}
+  else ifeq ($(strip ${HAVE_QPHIX}),true)
+    CONGRAD_FN_MILC = ${CONGRAD_FN_QPHIX}
+  endif
 else
   CONGRAD_FN_MILC = ${CONGRAD_FN_MILC_CPU}
 endif

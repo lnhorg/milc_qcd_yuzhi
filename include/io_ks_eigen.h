@@ -51,7 +51,7 @@ typedef struct {
   ks_eigen_check  check;       /* Checksum */
   int             Nvecs;        /* number of eigenvectors */
   Real            *eigVal;     /* eigenvalues */
-  Real            *resid;      /* residual norm */
+  double            *resid;      /* residual norm */
   //int             file_type;   /* File format */
   FILE            *info_fp;    /* Pointer to info file */
   //char            *info;       /* ASCII metadata */
@@ -106,7 +106,7 @@ void destroy_ks_eigen_file_handle(ks_eigen_file *kseigf);
 /* procedures for specific types of I/O */
 ks_eigen_file *w_serial_ks_eigen_i(char *filename, int parity);
 void w_serial_ks_eigen(ks_eigen_file *kseigf, int Nvecs, Real *eigVal,
-		       su3_vector **eigVec, Real *resid);
+		       su3_vector **eigVec, double *resid);
 void w_serial_ks_eigen_f(ks_eigen_file *kseigf);
 
 ks_eigen_file *r_serial_ks_eigen_i(char *filename);
@@ -116,7 +116,7 @@ void r_serial_ks_eigen_f(ks_eigen_file *kseigf);
 
 ks_eigen_file *w_ascii_ks_eigen_i(char *filename, int parity);
 void w_ascii_ks_eigen(ks_eigen_file *kseigf, int Nvecs, Real *eigVal,
-		      su3_vector **eigVec, Real *resid);
+		      su3_vector **eigVec, double *resid);
 void w_ascii_ks_eigen_f(ks_eigen_file *kseigf);
 
 ks_eigen_file *r_ascii_ks_eigen_i(char *filename);
@@ -139,7 +139,7 @@ void w_close_ks_eigen(int flag, ks_eigen_file *kseigf);
 int reload_ks_eigen(int flag, char *eigfile, int *Nvecs, Real *eigVal,
 		    su3_vector **eigVec, imp_ferm_links_t *fn, int timing);
 int save_ks_eigen(int flag, char *savefile, int Nvecs, Real *eigVal, 
-		  su3_vector **eigVec, Real *resid, int timing);
+		  su3_vector **eigVec, double *resid, int timing);
 
 int convert_outflag_to_inflag_ks_eigen(int out_flag);
 

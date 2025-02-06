@@ -129,7 +129,7 @@ gauge_action.h: ${GAUGEIMP}/${GAUGE}
 
 check_ks_invert::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@" \
-	"DEFINES= -DFN -DHAVE_KS " \
+	"DEFINES= -DFN -DHAVE_KS -DCHECK_INVERT" \
 	"GAUGE = symanzik_1loop_action.h" \
 	"QUARK = asqtad_action.h" \
 	"EXTRA_OBJECTS=  ${FN_OBJECTS} \
@@ -137,7 +137,7 @@ check_ks_invert::
 
 check_ks_invert_hisq::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@" \
-	"DEFINES= -DFN -DHAVE_KS -DCHECK_HISQ_INVERT " \
+	"DEFINES= -DFN -DHAVE_KS -DCHECK_INVERT " \
 	"GAUGE = symanzik_1loop_action.h" \
 	"QUARK = hisq/hisq_u3_action.h" \
 	"EXTRA_OBJECTS=  ${HISQ_OBJECTS} \
@@ -170,11 +170,11 @@ check_fermion_force_asqtad::
 	"GAUGE = symanzik_1loop_action.h" \
 	"QUARK = asqtad_action.h" \
 	"EXTRA_OBJECTS=  ${FN_OBJECTS} ${ASQ_FORCE} check_fermion_force.o \
-	control_fermion_force.o setup_fermion_force.o"
+	load_rhmc_params.o grsource_rhmc.o ks_ratinv.o"
 
 check_fermion_force_hisq::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@" \
-	"DEFINES= -DFN -DHAVE_KS -DCHECK_FORCE \
+	"DEFINES= -DFN -DHAVE_KS -DFERMION_FORCE \
 	-DHISQ_REUNIT_ALLOW_SVD \
 	-DHISQ_REUNIT_SVD_REL_ERROR=1e-9 \
 	-DHISQ_REUNIT_SVD_ABS_ERROR=1e-9 \
@@ -183,8 +183,10 @@ check_fermion_force_hisq::
 	-DHISQ_FORCE_FILTER=5.0e-5 \
 	-DHISQ_FORCE_FILTER_COUNTER" \
 	"GAUGE = symanzik_1loop_action.h" \
-	"QUARK = hisq/hisq_u3_action.h" \
-	"EXTRA_OBJECTS=  ${HISQ_OBJECTS} ${HISQ_FORCE} check_fermion_force.o"
+	"QUARK = hisq/hisq_u3_test_action.h" \
+	"EXTRA_OBJECTS=  ${HISQ_OBJECTS} ${HISQ_FORCE} \
+	check_fermion_force.o load_rhmc_params.o grsource_rhmc.o \
+	ks_ratinv.o"
 
 check_reunit_deriv::
 	${MAKE} -f ${MAKEFILE} target "MYTARGET= $@" \

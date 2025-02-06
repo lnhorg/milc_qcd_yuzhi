@@ -147,7 +147,7 @@ ifeq ($(strip ${COMPILER}),gnu)
 # Other Gnu options
 #OCFLAGS += -mavx # depends on architecture
 # enable all warnings with exceptions
-OCFLAGS += -Wall -Wno-unused-variable -Wno-unused-but-set-variable -Wno-unknown-pragmas -Wno-unused-function
+OCFLAGS += -Wall -Wno-unused-variable -Wno-unused-but-set-variable
 
 endif
 
@@ -381,7 +381,7 @@ endif
 WANTFFTW ?= false
 
 ifeq ($(strip ${WANTFFTW}),true)
-  FFTW ?= ${HOME}/fftw/build-gcc
+  FFTW ?= ${FFTW_ROOT}
 
   FFTW_HEADERS = ${FFTW}/include
   INCFFTW = -I${FFTW_HEADERS}
@@ -471,7 +471,7 @@ ifeq ($(strip ${WANTQUDA}),true)
   WANT_SHIFT_GPU ?= #true
   WANT_SPIN_TASTE_GPU ?= #true
   WANT_GAUGEFIX_OVR_GPU ?= #true
-  WANT_MULTIGRID ?= #true
+  WANT_MULTIGRID ?= false
 
   # If QUDA CG is enabled, then eigensolve/deflation must be enabled
   ifeq ($(strip ${WANT_FN_CG_GPU}),true)
@@ -481,7 +481,7 @@ endif
 
 ifeq ($(strip ${WANTQUDA}),true)
   ifeq ($(strip ${OFFLOAD}),)
-    OFFLOAD = CUDA
+    OFFLOAD = cuda
   endif
 
   QUDA_HOME ?= ${HOME}/quda
@@ -493,11 +493,14 @@ ifeq ($(strip ${WANTQUDA}),true)
   QUDA_LIBRARIES = ${QUDA_HOME}/lib
   QUDA_HEADERS = ${QUDA_HOME}/include
 
-  ifeq ($(strip ${OFFLOAD}),CUDA)
+  ifeq ($(strip ${OFFLOAD}),cuda)
     CUDA_HOME ?= /usr/local/cuda
+    CUDA_MATH ?= /usr/local/cuda
+    CUDA_COMP ?= /usr/local/cuda
+    CUDA_NVML ?= /usr/local/cuda
     INCQUDA += -I${CUDA_HOME}/include
     PACKAGE_HEADERS += ${CUDA_HOME}/include
-    LIBQUDA += -L${CUDA_HOME}/lib64 -L${CUDA_MATH}/lib64 -L${CUDA_COMP}/lib -lcudart -lcuda -lcublas -lcufft -ldl
+    LIBQUDA += -L${CUDA_HOME}/lib64 -lcudart -L${CUDA_COMP} -lcuda  -L${CUDA_MATH}/lib -lcublas -lcufft -ldl -L${CUDA_NVML} -lnvidia-ml
   endif
 
 # Verbosity choices:
@@ -803,10 +806,10 @@ INLINEOPT = -DC_GLOBAL_INLINE # -DSSE_GLOBAL_INLINE #-DC_INLINE
 #INLINEOPT += -DSSEOPTERON
 
 #----------------------------------------------------------------------
-# crc32
+# crc32.  Now taken from libraries.
 
-CFLAGS += -I/usr/include
-LDFLAGS += -L/usr/lib64 -lz
+# CFLAGS += -I/usr/include
+# LDFLAGS += -L/usr/lib64 -lz
 
 #----------------------------------------------------------------------
 # 20. Miscellaneous macros for performance control and metric
@@ -833,7 +836,7 @@ CGITVER = -DMILC_CODE_VERSION=\"$(GIT_VERSION)\"
 
 # REMAP  report remapping time for QDP, QOP in conjunction with above
 
-CTIME ?= -DNERSC_TIME -DCGTIME -DFFTIME -DFLTIME -DGFTIME -DREMAP -DPRTIME -DIOTIME
+CTIME ?= -DNERSC_TIME -DCGTIME -DFFTIME -DFLTIME -DGFTIME -DREMAP -DPRTIME -DIOTIME -DWMTIME
 
 #------------------------------
 # Profiling
@@ -1072,9 +1075,9 @@ KSSHIFT = # -DONE_SIDED_SHIFT
 
 # HALF_MIXED  Do double-precision inversion with single, or single with half (if supported)
 # MAX_MIXED   Do double-precision inversion with half-precision (if supported)
-# SCALE_PROP  Do rescaling for the clover propagator
+# SCALE_PROP  Do rescaling for the propagator
 
-CLCG = -DCL_CG=BICG 
+CLCG ?= # -DCL_CG=BICG 
 
 #------------------------------
 # Propagator storage
@@ -1269,6 +1272,10 @@ CXXFLAGS = ${OPT} ${OCXXFLAGS} -D${COMMTYPE} ${CODETYPE} ${INLINEOPT} \
 	${DEFINES} ${ADDDEFINES} ${IMPI} ${INCADD}
 
 ILIB = ${LIBSCIDAC} ${LMPI} ${LIBADD}
+
+# Loader flag for command-line macro substitution
++LDFLAGS_ADD ?=
++LDFLAGS += ${LDFLAGS_ADD}
 
 .PHONY: time check test_clean
 time:

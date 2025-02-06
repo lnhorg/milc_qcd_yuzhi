@@ -178,7 +178,6 @@ EXTERN char ** gen_pt[N_POINTERS];
 /* Storage for definition of the quark action */
 EXTERN fermion_links_t        *fn_links;
 
-#include "params_rhmc.h"
 EXTERN int n_pseudo;
 EXTERN int max_rat_order;
 EXTERN params_rhmc *rparam;

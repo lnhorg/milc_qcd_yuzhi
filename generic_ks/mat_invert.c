@@ -504,7 +504,7 @@ int mat_invert_uml_field(su3_vector *src, su3_vector *dst,
     return cgn;
 }
 
-#ifdef HAVE_QUDA
+#if defined(HAVE_QUDA) && defined(USE_CG_GPU)
 
 /********************************************************************/
 /* Multigrid solution of the full Dirac equation for both parities  */
@@ -827,6 +827,7 @@ int mat_invert_block_cgz(su3_vector **src, su3_vector **dst,
   /* Solve for all modes on even sites using tmp as an initial guess */
   /* tmp_e <- (M_adj M)^-1 src_e  (even sites only) */
   qic->parity = EVEN;
+  node0_printf("Calling ks_congrad_block_field\n"); fflush(stdout);
   int cgn = ks_congrad_block_field( nsrc, src, tmp, qic, mass, fn );
   int even_iters = qic->final_iters;
 
@@ -960,7 +961,7 @@ int mat_invert_block_uml(su3_vector **src, su3_vector **dst,
   return cgn;
 }
 
-#ifdef HAVE_QUDA
+#if defined(HAVE_QUDA) && defined(MULTIGRID)
 /*****************************************************************************/
 /* This algorithm solves the Dirac equation for both parities using
    staggered multigrid */
@@ -1100,7 +1101,7 @@ int mat_invert_block(su3_vector **src, su3_vector **dst,
 #endif
     } else {
       /* inv_type == MGTYPE */
-#if defined(USE_CG_GPU) && defined(HAVE_QUDA)
+#if defined(MULTIGRID) && defined(HAVE_QUDA)
       /* Currently only available through QUDA on GPUs */
       cgn = mat_invert_block_mg(src, dst, mass, nsrc, qic, fn);
 #else
@@ -1240,6 +1241,7 @@ void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
     free(tmp);
 }
 
+#if 0 /* Haven't been using these */
 /*****************************************************************************/
 /* Creates an array of vectors for the block-cg solver */
 
@@ -1267,3 +1269,5 @@ static void destroy_su3_vector_array(su3_vector **a, int n){
     if(a[i] != NULL)
       destroy_v_field(a[i]);
 }
+
+#endif

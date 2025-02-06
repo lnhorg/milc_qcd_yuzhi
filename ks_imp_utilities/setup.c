@@ -7,7 +7,7 @@
 // Modified for general improved action 5/24/97  DT
 //
 // Description: Setup routines for improved fermion lattices
-//              Includes lattice structures for Naik imroved
+//              Includes lattice structures for Naik improved
 //              staggered Dirac operator
 //         Ref: S. Naik, Nucl. Phys. B316 (1989) 238
 //              Includes a parameter prompt for Lepage-Mackenzie
@@ -74,9 +74,6 @@ int
 initial_set()
 {
   int prompt=0,status;
-#ifdef FIX_NODE_GEOM
-  int i;
-#endif
   /* On node zero, read lattice size, seed and send to others */
   if(mynode()==0){
     /* print banner */
@@ -134,10 +131,10 @@ initial_set()
   iseed=param.iseed;
 
 #ifdef FIX_NODE_GEOM
-  for(i = 0; i < 4; i++)
+  for(int i = 0; i < 4; i++)
     node_geometry[i] = param.node_geometry[i];
 #ifdef FIX_IONODE_GEOM
-  for(i = 0; i < 4; i++)
+  for(int i = 0; i < 4; i++)
     ionode_geometry[i] = param.ionode_geometry[i];
 #endif
 #endif
@@ -252,7 +249,7 @@ readin(int prompt)
 	  }
 	} else {
 	  if(param.ksp[i].naik_term_epsilon > param.ksp[i-1].naik_term_epsilon){
-	    node0_printf("Naik term epsilons must be in descending order.");
+	    node0_printf("Naik term epsilons must be in descending order.");  // Why?
 	    status++;
 	  }
 	}

@@ -392,7 +392,6 @@ open_ks_eigen_infile(const char *filename, int *Nvecs, int *packed, int *file_ty
 
   /* Open the file for input */
   QIO_verbose(QIO_VERB_OFF);
-  printf("%s(%d): Opening %s for reading\n", myname, this_node, filename); fflush(stdout);
   infile = open_scidac_input_xml(filename, &layout, &fs, serpar, filexml);
   
   if(infile == NULL) return infile;
@@ -653,7 +652,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
 
   /* Broadcast the eigenvalue to the other nodes */
   broadcast_bytes((char *)eigVal, sizeof(*eigVal));
-  printf("%s(%d): eigVal = %f\n", myname, this_node, *eigVal);
+  node0_printf("%s(%d): eigVal = %g\n", myname, this_node, *eigVal);
   
   /* Read the scidac-private-record-xml and get the typesize */
   int typesize;
@@ -666,14 +665,13 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
       printf("Couldn't find %s in %s\n", lime_type, eigfile);
       terminate(1);
     }
-    printf("%s\n", record_xml);
     parse_xml_typesize(&typesize, record_xml);
     free(record_xml);
   }
 
   /* Broadcast the typesize to the other nodes */
-  broadcast_bytes((void *)&typesize, sizeof(typesize));
-  printf("%s(%d): typesize = %d\n", myname, this_node, typesize);
+  broadcast_bytes((char *)&typesize, sizeof(typesize));
+  // printf("%s(%d): typesize = %d\n", myname, this_node, typesize);
   
   /* Skip to the binary record data and read it */
   off_t offset = 0;
@@ -697,8 +695,8 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
   }
 
   /* Broadcast the file offset to the other nodes */
-  broadcast_bytes((void *)&offset, sizeof(offset));
-  printf("%s(%d): offset = %lu\n", myname, this_node, offset);
+  broadcast_bytes((char *)&offset, sizeof(offset));
+  // printf("%s(%d): offset = %lu\n", myname, this_node, offset);
 
   /* Read the eigenvector. All nodes participate. */
   uint32_t data_suma, data_sumb;
@@ -715,7 +713,7 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
 
     char lime_type[] = "scidac-checksum";
     char *record_xml = readLimeXml(LimeR, lime_type);
-    printf("record_xml = %s\n", record_xml);
+    // printf("record_xml = %s\n", record_xml);
     if(record_xml == NULL){
       printf("Couldn't find %s in %s\n", lime_type, eigfile);
       terminate(1);
@@ -735,8 +733,8 @@ read_grid_ks_eigenvector(char *eigfile, int *Nvecs, su3_vector *eigVec, Real *ei
     }
   }
   /* Broadcast the status to the other nodes */
-  broadcast_bytes((void *)&status, sizeof(status));
-  printf("%s(%d): status = %d\n", myname, this_node, status);
+  broadcast_bytes((char *)&status, sizeof(status));
+  // printf("%s(%d): status = %d\n", myname, this_node, status);
 
   fclose(fpt);
 
