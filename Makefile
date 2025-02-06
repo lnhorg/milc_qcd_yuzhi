@@ -473,6 +473,10 @@ ifeq ($(strip ${WANTQUDA}),true)
   WANT_GAUGEFIX_OVR_GPU ?= #true
   WANT_MULTIGRID ?= #true
 
+  # If QUDA CG is enabled, then eigensolve/deflation must be enabled
+  ifeq ($(strip ${WANT_FN_CG_GPU}),true)
+    WANT_EIG_GPU = true
+  endif
 endif
 
 ifeq ($(strip ${WANTQUDA}),true)
