@@ -16,7 +16,7 @@
 #include "../include/complex.h"
 #include "../include/su3.h"
 #include "lattice.h"
-#include "params_rhmc.h"
+#include "../include/params_rhmc.h"
 #include "../include/macros.h"
 #include "../include/comdefs.h"
 #include "../include/io_lat.h"

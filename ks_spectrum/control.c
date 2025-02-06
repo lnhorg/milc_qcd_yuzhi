@@ -275,6 +275,7 @@ int main(int argc, char *argv[])
     
     ENDTIME("create fermion links");
 
+    imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
     
     /**************************************************************/
     /* Set up eigenpairs, if requested */
@@ -296,9 +297,8 @@ int main(int argc, char *argv[])
       eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
     
     /* Do whatever is needed to get eigenpairs */
-    imp_ferm_links_t **fn = get_fm_links(fn_links);
     int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile,
-				 &Nvecs_tot, eigVal, eigVec, fn[0], 1);
+				 &Nvecs_tot, eigVal, eigVec, fn, 1);
     
     if(param.fixflag != NO_GAUGE_FIX){
       node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors\n");
@@ -334,9 +334,8 @@ int main(int argc, char *argv[])
       }
       
       /* Do whatever is needed to get eigenpairs */
-      imp_ferm_links_t **fn = get_fm_links(fn_links);
       int status = reload_ks_eigen(param.ks_eigen_startflag, param.ks_eigen_startfile, 
-				   &param.eigen_param.Nvecs, eigVal, eigVec, fn[0], 1);
+				   &param.eigen_param.Nvecs, eigVal, eigVec, fn, 1);
       if(param.fixflag != NO_GAUGE_FIX){
 	node0_printf("WARNING: Gauge fixing does not readjust the eigenvectors");
       }
@@ -354,11 +353,10 @@ int main(int argc, char *argv[])
 #if EIGMODE != EIGCG
       
       param.eigen_param.parity = EVEN;  /* Required */
-      imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
 
       /* Move KS phases and apply time boundary condition, based on the
 	 coordinate origin and time_bc */
-      Real bdry_phase[4] = {0.,0.,0.,(double)param.time_bc};
+      Real bdry_phase[4] = {0.,0.,0.,(Real)param.time_bc};
       /* Set values in the structure fn */
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
@@ -500,7 +498,8 @@ int main(int argc, char *argv[])
     for(is=param.num_base_source; is<param.num_base_source+param.num_modified_source; is++){
 
       quark_source *qs = &param.src_qs[is];
-      source[is] = create_ksp_field(qs->ncolor);
+      int p = param.parent_source[is];
+      source[is] = create_ksp_field(source[p]->nc);
       
       if(qs->saveflag != FORGET){
 	char *fileinfo = create_ks_XML();
@@ -509,7 +508,6 @@ int main(int argc, char *argv[])
       }
       
       /* Copy parent source */
-      int p = param.parent_source[is];
       copy_ksp_field(source[is],  source[p]);
 
       for(int color = 0; color < qs->ncolor; color++){
@@ -561,9 +559,16 @@ int main(int argc, char *argv[])
 	/* Read and/or generate quark propagator */
 	
 	is = param.source[i];  /* source index for this propagator */
-	prop_nc[i] = param.src_qs[is].ncolor;
+	//	prop_nc[i] = param.src_qs[is].ncolor;
+	/* Get number of colors from the parent */
+	int p = param.parent_source[is];
+	if(p == BASE_SOURCE_PARENT)
+	  prop_nc[i] = param.src_qs[is].ncolor;
+	else
+	  prop_nc[i] = source[p]->nc;
 	
 	/* Allocate propagator */
+	  
 	prop[i] = create_ksp_field(prop_nc[i]);
 	if(prop[i] == NULL){
 	  printf("main(%d): No room for prop\n",this_node);
@@ -946,7 +951,6 @@ int main(int argc, char *argv[])
     if(param.eigcgp.Nvecs_max > 0){
       STARTTIME;
       
-      imp_ferm_links_t *fn = get_fm_links(fn_links)[0];
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       
       if(param.ks_eigen_startflag == FRESH)
@@ -986,6 +990,13 @@ int main(int argc, char *argv[])
     for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
       clear_qs(&param.src_qs[i]);
 
+    /* Free links */
+    fn->preserve = 0;
+#if FERM_ACTION == HISQ
+    destroy_fermion_links_hisq(fn_links);
+#else
+    destroy_fermion_links(fn_links);
+#endif
 
 /****************************************************************/
 /* Compute GB baryon propagators */
@@ -1177,11 +1188,6 @@ int main(int argc, char *argv[])
     
     /* Destroy fermion links (created in readin() */
     
-#if FERM_ACTION == HISQ
-    destroy_fermion_links_hisq(fn_links);
-#else
-    destroy_fermion_links(fn_links);
-#endif
     fn_links = NULL;
     starttime = endtime;
   } /* readin(prompt) */

@@ -28,7 +28,7 @@ INLINE_HEADERS = \
 MY_HEADERS = \
   lattice.h \
   params.h \
-  params_rhmc.h \
+  ../include/params_rhmc.h \
   defines.h \
   gauge_action.h \
   ks_imp_includes.h \
