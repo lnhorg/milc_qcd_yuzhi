@@ -319,6 +319,8 @@ int main(int argc, char *argv[])
 #endif
     
 #if EIGMODE != EIGCG
+    /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
     if(param.eigen_param.Nvecs > 0){
       /* malloc for eigenpairs */
       eigVal = (Real *)malloc(param.eigen_param.Nvecs*sizeof(double));
@@ -339,6 +341,7 @@ int main(int argc, char *argv[])
       }
     }
 #endif
+#endif
     
     /**************************************************************/
     /* Compute Dirac eigenpairs           */
@@ -358,7 +361,10 @@ int main(int argc, char *argv[])
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
       boundary_twist_fn(fn, ON);
-      
+
+      // If using QUDA deflated CG + asking for QUDA to do the eigensolve, then
+      // the eigensolver is called from within QUDA's CG solver...not from MILC
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) ) 
       /* compute eigenpairs if requested */
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
@@ -374,9 +380,11 @@ int main(int argc, char *argv[])
 	initialize_site_prn_from_seed(iseed);
 #endif
       }
-    
+#endif
       /* Check the eigenvectors */
 
+      /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not checked by MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
       /* Calculate and print the residues and norms of the eigenvectors */
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
@@ -384,12 +392,14 @@ int main(int argc, char *argv[])
       construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
-      
+#endif
       /* Unapply twisted boundary conditions on the fermion links and
 	 restore conventional KS phases and antiperiodic BC, if
 	 changed. */
       boundary_twist_fn(fn, OFF);
-      
+     
+      /* If using QUDA for deflation, then eigenvalues are printed by QUDA */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) ) 
       /* print eigenvalues of iDslash */
       node0_printf("The above were eigenvalues of -Dslash^2 in MILC normalization\n");
       node0_printf("Here we also list eigenvalues of iDslash in continuum normalization\n");
@@ -402,6 +412,7 @@ int main(int argc, char *argv[])
 	  node0_printf("eigenval(%i): %10g\n", i, 0.0);
 	}
       }
+#endif
 #endif
     }
     
@@ -954,6 +965,9 @@ int main(int argc, char *argv[])
 #endif
 
     if(param.eigen_param.Nvecs > 0){
+
+      /* If using QUDA for deflation, then eigenvectors are loaded and saved directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
       STARTTIME;
       
       /* save eigenvectors if requested */
@@ -968,6 +982,8 @@ int main(int argc, char *argv[])
       free(eigVal); free(eigVec); free(resid);
 
       ENDTIME("save eigenvectors (if requested)");
+
+#endif
     }
 
     /* Clean up quark sources, both base and modified */
