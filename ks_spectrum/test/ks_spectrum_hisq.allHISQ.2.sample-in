@@ -13,10 +13,10 @@ reload_serial ../../binary_samples/lat.sample.l88832.ildg
 u0 1
 no_gauge_fix
 forget
-#fresh_ape
+fresh_ape
 staple_weight 0.05
 ape_iter 20
-#forget_ape
+forget_ape
 coordinate_origin 0 0 0 0
 time_bc antiperiodic
 
