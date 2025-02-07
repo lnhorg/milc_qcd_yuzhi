@@ -704,11 +704,13 @@ int readin(int prompt) {
 #if ( FERM_ACTION == HISQ )
 	    IF_OK status += get_f(stdin, prompt,"naik_term_epsilon", 
 				  &param.ksp[nprop].naik_term_epsilon);
-	    if(i == 0){
-	      common_naik = param.ksp[nprop].naik_term_epsilon;
-	    } else if (param.ksp[nprop].naik_term_epsilon != common_naik){
-	      node0_printf("ERROR: All propagators in a multimaws set must have the same Naik epsilon\n");
-	      status++;
+	    if(param.set_type[k]  == MULTIMASS_SET){
+	      if(i == 0){
+		common_naik = param.ksp[nprop].naik_term_epsilon;
+	      } else if (param.ksp[nprop].naik_term_epsilon != common_naik){
+		node0_printf("ERROR: All propagators in a multimaws set must have the same Naik epsilon\n");
+		status++;
+	      }
 	    }
 
 #else
