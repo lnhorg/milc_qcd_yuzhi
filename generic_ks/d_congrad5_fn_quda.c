@@ -133,45 +133,10 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   inv_args.tadpole = u0;
 #endif
 
-  // Setup for deflation (and eigensolve) on GPU
-  int parity = qic->parity;
-  int blockSize = param.eigen_param.blockSize;
-  static Real previous_mass = -1.0;
-  static bool first_solve=true;
-
-  QudaEigensolverArgs_t eig_args;
-  eig_args.block_size = blockSize;
-  eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
-  eig_args.n_ev_deflate = param.eigen_param.Nvecs;
-  eig_args.n_ev = eig_args.n_conv;
-  eig_args.n_kr = (param.eigen_param.Nkr < eig_args.n_ev ) ? 2*eig_args.n_ev : param.eigen_param.Nkr;
-  eig_args.tol = param.eigen_param.tol;
-  eig_args.max_restarts = param.eigen_param.MaxIter;
-  eig_args.poly_deg = param.eigen_param.poly.norder;
-  eig_args.a_min = param.eigen_param.poly.minE;
-  eig_args.a_max = param.eigen_param.poly.maxE;
-  strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
-  strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
-  eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.batched_rotate = param.eigen_param.batchedRotate;
-  eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
-  eig_args.partfile = param.eigen_param.partfile ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
-  eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  if(param.eigen_param.eigPrec == 2)eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
-  else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
-  else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
-  eig_args.tol_restart = param.eigen_param.tol_restart;
-
-  previous_mass = mass;
-  first_solve = false;
-
-  qudaInvertDeflatable(MILC_PRECISION,
+  qudaInvert(MILC_PRECISION,
 	     quda_precision, 
 	     mass,
 	     inv_args,
-	     eig_args,
 	     qic->resid,
 	     qic->relresid,
 	     fatlink, 
@@ -315,45 +280,10 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   inv_args.tadpole = u0;
 #endif
 
-  // Setup for deflation (and eigensolve) on GPU
-  int parity = qic->parity;
-  int blockSize = param.eigen_param.blockSize;
-  static Real previous_mass = -1.0;
-  static bool first_solve=true;
-
-  QudaEigensolverArgs_t eig_args;
-  eig_args.block_size = blockSize;
-  eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
-  eig_args.n_ev_deflate = param.eigen_param.Nvecs;
-  eig_args.n_ev = eig_args.n_conv;
-  eig_args.n_kr = (param.eigen_param.Nkr < eig_args.n_ev ) ? 2*eig_args.n_ev : param.eigen_param.Nkr;
-  eig_args.tol = param.eigen_param.tol;
-  eig_args.max_restarts = param.eigen_param.MaxIter;
-  eig_args.poly_deg = param.eigen_param.poly.norder;
-  eig_args.a_min = param.eigen_param.poly.minE;
-  eig_args.a_max = param.eigen_param.poly.maxE;
-  strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
-  strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
-  eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.batched_rotate = param.eigen_param.batchedRotate;
-  eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
-  eig_args.partfile = param.eigen_param.partfile ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
-  eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
-  if(param.eigen_param.eigPrec == 2)eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
-  else if(param.eigen_param.eigPrec == 1)eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
-  else eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
-  eig_args.tol_restart = param.eigen_param.tol_restart;
-
-  previous_mass = mass;
-  first_solve = false;
-
-  qudaInvertMsrcDeflatable(MILC_PRECISION,
+  qudaInvertMsrc(MILC_PRECISION,
      quda_precision,
      mass,
      inv_args,
-     eig_args,
      qic->resid,
      qic->relresid,
      fatlink,
