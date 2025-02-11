@@ -386,7 +386,11 @@ ifeq ($(strip ${WANTFFTW}),true)
   FFTW_HEADERS = ${FFTW}/include
   INCFFTW = -I${FFTW_HEADERS}
   LIBFFTW = -L${FFTW}/lib
-  LIBFFTW += -lfftw3 -lfftw3f
+  ifeq ($(strip ${PRECISION}),1)
+    LIBFFTW += -lfftw3f
+  else
+    LIBFFTW += -lfftw3
+  endif
   PACKAGE_HEADERS += ${FFTW_HEADERS}
 endif
 
