@@ -388,6 +388,7 @@ typedef struct {
   int Nvecs_in ; /* number of input starting eigenvectors */
   Real tol ; /* Tolerance for the eigenvalue computation */
   Real error_decr ; /* error decrease per Rayleigh minimization */
+  int partfile; /* Whether to save in partfile or not */
   int MaxIter ; /* max  Rayleigh iterations */
   int Restart ; /* Restart  Rayleigh every so many iterations */
   int Kiters ; /* Kalkreuter iterations */

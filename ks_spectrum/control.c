@@ -320,7 +320,7 @@ int main(int argc, char *argv[])
     
 #if EIGMODE != EIGCG
     /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not MILC */
-#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) )
     if(param.eigen_param.Nvecs > 0){
       /* malloc for eigenpairs */
       eigVal = (Real *)malloc(param.eigen_param.Nvecs*sizeof(double));
@@ -384,7 +384,7 @@ int main(int argc, char *argv[])
       /* Check the eigenvectors */
 
       /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not checked by MILC */
-#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) )
       /* Calculate and print the residues and norms of the eigenvectors */
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
