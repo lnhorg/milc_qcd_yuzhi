@@ -428,7 +428,6 @@ int main(int argc, char *argv[])
     for(i = 0; i < param.num_pbp_masses; i++){
 #ifdef U1_FIELD
       u1phase_on(param.charge_pbp[i], u1_A);
-      fn->preserve = 0;
       invalidate_fermion_links(fn_links);
       restore_fermion_links_from_site(fn_links, param.qic_pbp[i].prec);
 #endif
@@ -447,7 +446,6 @@ int main(int argc, char *argv[])
 #ifdef U1_FIELD
       /* Unapply the U(1) field phases */
       u1phase_off();
-      fn->preserve = 0;
       invalidate_fermion_links(fn_links);
       restore_fermion_links_from_site(fn_links, param.qic_pbp[i].prec);
       fn = get_fm_links(fn_links, 0);
@@ -995,7 +993,6 @@ int main(int argc, char *argv[])
       clear_qs(&param.src_qs[i]);
 
     /* Free links */
-    fn->preserve = 0;
 #if FERM_ACTION == HISQ
     destroy_fermion_links_hisq(fn_links);
 #else
