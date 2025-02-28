@@ -236,6 +236,7 @@ get_hisq_links_t_fn(hisq_links_t *hl, int i_naik, ferm_links_options_t *options)
   double *eps_naik = hl->ap->eps_naik;
 
   if(i_naik == 0){
+
     fn = hl->fn0;
     fn->preserve = 1;
   } else {
@@ -243,14 +244,12 @@ get_hisq_links_t_fn(hisq_links_t *hl, int i_naik, ferm_links_options_t *options)
     if(options->want_back){
       fn->fatback = create_fatlinks();
       fn->lngback = create_lnglinks();
-    fn->eps_naik = eps_naik[i_naik];
+    }
     scalar_mult_fn(fn_deps, eps_naik[i_naik], fn);
     add_fn(fn, hl->fn0, fn);
     fn->preserve = 0;
-    }
-    
+    fn->eps_naik = eps_naik[i_naik];
   }
-
   return fn;
 }
 
