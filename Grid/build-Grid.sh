@@ -7,7 +7,7 @@ PK_CXX=$3
 #GIT_BRANCH=develop
 #GIT_REPO=https://github.com/clarkedavida/Grid
 GIT_REPO=https://github.com/milc-qcd/Grid
-GIT_BRANCH=feature/LMI-develop
+GIT_BRANCH=feature/LMI-master
 
 if [ -z ${PK_CXX} ]
 then
@@ -222,12 +222,14 @@ then
 	 --enable-simd=GPU \
 	 --enable-gen-simd-width=64  \
 	 --enable-comms=mpi-auto \
- 	 --enable-accelerator-cshift \
+	 --enable-debug \
          --disable-gparity \
          --disable-fermion-reps \
          --disable-zmobius \
+	 --with-lime=${CLIME} \
 	 --enable-shm=nvlink \
          --enable-accelerator=sycl   \
+ 	 --enable-accelerator-aware-mpi=yes \
 	 --enable-unified=no \
 	 MPICXX=mpicxx \
          CXX="${PK_CXX}" CC="${PK_CC}" \
@@ -236,6 +238,7 @@ then
 
 	# /soft/compilers/oneapi/2023.12.15.001/oneapi/2024.0/include
 	# MPICXX=mpicxx \
+        # --enable-accelerator-cshift \
 
 	       #       TOOLS=$HOME/tools
 #	LDFLAGS="-fiopenmp -fsycl -fsycl-device-code-split=per_kernel -fsycl-device-lib=all -lze_loader -L$TOOLS/lib64/" \
