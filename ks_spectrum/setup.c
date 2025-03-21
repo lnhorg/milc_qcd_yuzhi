@@ -662,7 +662,7 @@ int readin(int prompt) {
 
 	/* Propagator parameters */
 
-	param.prop_type[k] = KS_TYPE;  /* Always for ks_spectrum */
+	param.prop_type[nprop] = KS_TYPE;  /* Always for ks_spectrum */
 
 	IF_OK {
 	  
