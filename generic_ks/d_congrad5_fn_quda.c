@@ -45,11 +45,8 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   double nflop = 1187;
 #endif
 
-//  if(qic->relresid != 0.){
-//    printf("%s: GPU code does not yet support a Fermilab-type relative residual\n",myname);
-//    terminate(1);
-//  }
- 
+  // node0_printf("Entered %s\n", myname);
+
   /* Initialize qic */
   qic->size_r = 0;
   qic->size_relr = 0;
@@ -180,9 +177,10 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 				quark_invert_control *qic, Real mass,
 				imp_ferm_links_t *fn)
 {
-  if (this_node == 0) {
-    printf("CONGRAD5: using QUDA's block solver\n");
-  }
+
+  char myname[] = "ks_congrad_block_parity_gpu";
+  // node0_printf("Entered %s. Using QUDA's block solver\nzf", myname);
+
 #if 0
   /* Until QUDA's MRHS solver is fixed we fake it */
   int num_iters = 0;
@@ -191,7 +189,6 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   }
   return num_iters;
 #else
-  char myname[] = "ks_congrad_block_parity_gpu";
   QudaInvertArgs_t inv_args;
   int i;
   double dtimec = -dclock();
