@@ -179,10 +179,9 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 {
 
   char myname[] = "ks_congrad_block_parity_gpu";
-  // node0_printf("Entered %s. Using QUDA's block solver\nzf", myname);
 
 #if 0
-  /* Until QUDA's MRHS solver is fixed we fake it */
+  /* Debug: Solve separately, rather than batch */
   int num_iters = 0;
   for(int i = 0; i < nsrc; i++){
     num_iters += ks_congrad_parity_gpu(t_src[i], t_dest[i], qic, mass, fn);
@@ -207,9 +206,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 
   /* Compute source norm */
   double source_norm = 0.0;
-  FORSOMEFIELDPARITY(i,qic->parity){
-    source_norm += (double)magsq_su3vec( &t_src[0][i] );
-  } END_LOOP;
+  for(int j = 0; j < nsrc; j++){
+    FORSOMEFIELDPARITY(i,qic->parity){
+      source_norm += (double)magsq_su3vec( &t_src[j][i] );
+    } END_LOOP;
+  }
   g_doublesum( &source_norm );
 #ifdef CG_DEBUG
   node0_printf("congrad: source_norm = %e\n", (double)source_norm);
@@ -218,10 +219,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   /* Provide for trivial solution */
   if(source_norm == 0.0){
     /* Zero the solution and return zero iterations */
-    FORSOMEFIELDPARITY(i,qic->parity){
-      memset(t_dest + i, 0, sizeof(su3_vector));
-    } END_LOOP;
-    
+    for(int j = 0; j< nsrc; j++){
+      FORSOMEFIELDPARITY(i,qic->parity){
+	memset(t_dest[j] + i, 0, sizeof(su3_vector));
+      } END_LOOP;
+    }
     dtimec += dclock();
 #ifdef CGTIME
     if(this_node==0){
@@ -240,8 +242,10 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 
   if(qic->parity == EVEN){
     inv_args.evenodd = QUDA_EVEN_PARITY;
+    node0_printf("%s: Using QUDA's block solver with EVEN parity %x\n", myname);
   }else if(qic->parity == ODD){
     inv_args.evenodd = QUDA_ODD_PARITY;
+    node0_printf("%s: Using QUDA's block solver with ODD parity %x\n", myname);
   }else{
     printf("%s: Unrecognised parity\n",myname);
     terminate(2);
