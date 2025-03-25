@@ -1187,6 +1187,28 @@ void check_invert( field_offset src, field_offset dest, Real mass,
   destroy_v_field(tsrc);
 }
 
+/* DEBUG */
+static Real 
+my_relative_residue(su3_vector *p, su3_vector *q, int parity)
+{
+  double residue, num, den;
+  int i;
+  
+  residue = 0;
+  FORSOMEFIELDPARITY_OMP(i,parity,private(num,den) reduction(+:residue)){
+    num = (double)magsq_su3vec( &(p[i]) );
+    den = (double)magsq_su3vec( &(q[i]) );
+    residue += (den==0) ? 1.0 : (num/den);
+  } END_LOOP_OMP;
+
+  g_doublesum(&residue);
+
+  if(parity == EVENANDODD)
+    return sqrt(residue/volume);
+  else
+    return sqrt(2*residue/volume);
+}
+
 /*****************************************************************************/
 /* FOR TESTING: multiply src by Madj M and check against dest */
 void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
@@ -1195,37 +1217,42 @@ void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
     register site *s;
     Real r_diff, i_diff;
     double sum,sum2,dflag,dmaxerr,derr;
-    su3_vector *tmp;
 
-    tmp = (su3_vector *)malloc(sites_on_node * sizeof(su3_vector));
-    if(tmp==NULL){
-      printf("check_invert_field2(%d): no room for tmp\n",this_node);
+    su3_vector *tmp   = create_v_field();
+    su3_vector *resid = create_v_field();
+    if(tmp==NULL || resid==NULL){
+      printf("check_invert_field2(%d): no room for tmp and resid\n",this_node);
       terminate(1);
     }
 
     /* Compute tmp = (Madj M) src */
     ks_dirac_opsq( src, tmp, mass, parity, fn);
 
+    FORSOMEFIELDPARITY(i,parity){
+      sub_su3_vector(dest+i, tmp+i, resid+i);
+    } END_LOOP;
+
     sum2=sum=0.0;
     dmaxerr=0;
     flag = 0;
     FORSOMEFIELDPARITY(i,parity){
-	for(k=0;k<3;k++){
-	    r_diff = dest[i].c[k].real - tmp[i].c[k].real;
-	    i_diff = dest[i].c[k].imag - tmp[i].c[k].imag;
-	    if( fabs(r_diff) > tol || fabs(i_diff) > tol ){
-	      printf("site %d color %d  expected ( %.4e , %.4e ) got ( %.4e , %.4e )\n",
-		     i,k,
-		     dest[i].c[k].real, dest[i].c[k].imag,
-		     tmp[i].c[k].real, tmp[i].c[k].imag);
-	      flag++;
-	    }
-	    derr = r_diff*r_diff + i_diff*i_diff;
-	    if(derr>dmaxerr)dmaxerr=derr;
- 	    sum += derr;
+      for(k=0;k<3;k++){
+	r_diff = resid[i].c[k].real;
+	i_diff = resid[i].c[k].imag;
+	if( fabs(r_diff) > tol || fabs(i_diff) > tol ){
+	  printf("site %d color %d  expected ( %.4e , %.4e ) got ( %.4e , %.4e )\n",
+		 i,k,
+		 dest[i].c[k].real, dest[i].c[k].imag,
+		 tmp[i].c[k].real, tmp[i].c[k].imag);
+	  flag++;
 	}
-	sum2 += magsq_su3vec( dest+i );
+	derr = r_diff*r_diff + i_diff*i_diff;
+	if(derr>dmaxerr)dmaxerr=derr;
+	sum += derr;
+      }
+      sum2 += magsq_su3vec( dest+i );
     } END_LOOP;
+
     g_doublesum( &sum );
     g_doublesum( &sum2 );
     dflag=flag;
@@ -1234,11 +1261,16 @@ void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
     if(this_node==0){
       printf("Inversion checked, frac. error = %e\n",sqrt(sum/sum2));
       printf("Flagged comparisons = %d\n",(int)dflag);
-      printf("Max err. = %e frac. = %e\n",sqrt(dmaxerr),
+      printf("Max err. = %e resid = %e\n",sqrt(dmaxerr),
 	     sqrt(dmaxerr*volume/sum2));
       fflush(stdout);
     }
-    free(tmp);
+
+    double rel_resid = my_relative_residue(resid, dest, parity);
+    node0_printf("Inversion checked: rel_resid = %g\n", rel_resid);
+		 
+    destroy_v_field(tmp);
+    destroy_v_field(resid);
 }
 
 #if 0 /* Haven't been using these */
