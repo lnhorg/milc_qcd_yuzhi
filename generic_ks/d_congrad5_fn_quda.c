@@ -165,6 +165,9 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
     fflush(stdout);}
 #endif
 
+    node0_printf("Calling check_invert_field2\n"); fflush(stdout);
+    check_invert_field2(t_src, t_dest, mass, 2e-5, fn, qic->parity);
+  
   return num_iters;
 }
 
@@ -319,6 +322,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
            (double)(nflop*nsrc*volume*qic->final_iters/(1.0e6*dtimec*numnodes())) );
     fflush(stdout);}
 #endif
+
+  for(int j = 0; j < nsrc; j++){
+    node0_printf("Calling check_invert_field2 for case %d\n", j); fflush(stdout);
+    check_invert_field2(t_src[j], t_dest[j], mass, 2e-5, fn, qic->parity);
+  }
 
   // On the other hand, MILC expects the returned value to be the aggregate number of iterations
   // performed by each solve if it was performed sequentially. This can be approximated by
