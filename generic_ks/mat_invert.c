@@ -73,7 +73,6 @@ void ks_dirac_opsq( su3_vector *src, su3_vector *dst, Real mass, int parity,
     register site *s;
     int otherparity = 0;
     Real msq_x4 = 4.0*mass*mass;
-    su3_vector *tmp = create_v_field();;
 
     switch(parity){
     case(EVEN): otherparity=ODD; break;
@@ -81,14 +80,12 @@ void ks_dirac_opsq( su3_vector *src, su3_vector *dst, Real mass, int parity,
     case(EVENANDODD): otherparity=EVENANDODD;
     }
 
-    dslash_field( src, tmp, otherparity, fn);
-    dslash_field( tmp, dst, parity, fn);
-    FORSOMEPARITYDOMAIN_OMP(i,s,parity,){
-      scalar_mult_su3_vector( dst+i, -1.0, dst+i);
-      scalar_mult_sum_su3_vector( dst+i, src+i, msq_x4 );
+    dslash_fn_field( src, dst, otherparity, fn);
+    dslash_fn_field( dst, dst, parity, fn);
+    FORSOMEFIELDPARITY_OMP(i,parity,){
+      scalar_mult_add_su3_vector( dst+i, src+i, -msq_x4, dst+i );
     } END_LOOP_OMP;
 
-    destroy_v_field(tmp);
 }
 
 /*****************************************************************************/
@@ -1225,49 +1222,57 @@ void check_invert_field2( su3_vector *src, su3_vector *dest, Real mass,
       terminate(1);
     }
 
-    /* Compute tmp = (Madj M) src */
-    ks_dirac_opsq( src, tmp, mass, parity, fn);
+    /* Compute tmp = -(Madj M) dest */
+    ks_dirac_opsq( dest, tmp, mass, parity, fn);
 
     FORSOMEFIELDPARITY(i,parity){
-      sub_su3_vector(dest+i, tmp+i, resid+i);
+      add_su3_vector(src+i, tmp+i, resid+i);
     } END_LOOP;
 
+    node0_printf("check_invert_field2: Checking solution with tolerance %e\n",
+		 tol);
     sum2=sum=0.0;
     dmaxerr=0;
     flag = 0;
+
+    FORSOMEFIELDPARITY(i,parity){
+      sum2 += magsq_su3vec( src+i );
+    } END_LOOP;
+
+    g_doublesum( &sum2 );
+    double srcnorm = sqrt(sum2);
+
     FORSOMEFIELDPARITY(i,parity){
       for(k=0;k<3;k++){
-	r_diff = resid[i].c[k].real;
-	i_diff = resid[i].c[k].imag;
+	r_diff = resid[i].c[k].real/srcnorm;
+	i_diff = resid[i].c[k].imag/srcnorm;
 	if( fabs(r_diff) > tol || fabs(i_diff) > tol ){
-	  printf("site %d color %d  expected ( %.4e , %.4e ) got ( %.4e , %.4e )\n",
-		 i,k,
-		 dest[i].c[k].real, dest[i].c[k].imag,
-		 tmp[i].c[k].real, tmp[i].c[k].imag);
+	  if(flag < 50) /* Don't print too many */
+	    printf("site %d color %d  expected ( %.4e , %.4e ) got ( %.4e , %.4e )\n",
+		   i,k,
+		   src[i].c[k].real, src[i].c[k].imag,
+		   -tmp[i].c[k].real, -tmp[i].c[k].imag);
 	  flag++;
 	}
 	derr = r_diff*r_diff + i_diff*i_diff;
 	if(derr>dmaxerr)dmaxerr=derr;
 	sum += derr;
       }
-      sum2 += magsq_su3vec( dest+i );
     } END_LOOP;
 
     g_doublesum( &sum );
-    g_doublesum( &sum2 );
     dflag=flag;
     g_doublesum( &dflag );
     g_doublemax( &dmaxerr );
+    double rel_resid = my_relative_residue(resid, dest, parity);
+
     if(this_node==0){
-      printf("Inversion checked, frac. error = %e\n",sqrt(sum/sum2));
+      printf("Inversion checked, resid = %e rel_resid = %g\n",
+	     sqrt(sum), rel_resid);
       printf("Flagged comparisons = %d\n",(int)dflag);
-      printf("Max err. = %e resid = %e\n",sqrt(dmaxerr),
-	     sqrt(dmaxerr*volume/sum2));
+      printf("Max err. = %e\n",sqrt(dmaxerr));
       fflush(stdout);
     }
-
-    double rel_resid = my_relative_residue(resid, dest, parity);
-    node0_printf("Inversion checked: rel_resid = %g\n", rel_resid);
 		 
     destroy_v_field(tmp);
     destroy_v_field(resid);
