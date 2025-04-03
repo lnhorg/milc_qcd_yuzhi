@@ -55,16 +55,18 @@ int update_h_fermion( Real eps, su3_vector **multi_x ){
   // path coefficients.
   tmporder = 0;
   iphi = 0;
-#if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
+  restore_fermion_links_from_site(fn_links, prec_md[0]);
+#if FERM_ACTION == HISQ
   n = fermion_links_get_n_naiks(fn_links);
 #else
   n = 1;
 #endif
   for( i=0; i<n; i++ ) {
+    /* Assume prec_md is the same for all pseudo-fermions
+       with the same Naik epsilon */
     fn = get_fm_links(fn_links, i);
     for( jphi=0; jphi<n_pseudo_naik[i]; jphi++ ) {
-      restore_fermion_links_from_site(fn_links, prec_md[iphi]);
-
+      
       // Add the current pseudofermion to the current set
       order = rparam[iphi].MD.order;
       residues = rparam[iphi].MD.res;
@@ -83,10 +85,9 @@ int update_h_fermion( Real eps, su3_vector **multi_x ){
 	allresidues[tmporder+j] = residues[j+1];
 	// remember that residues[0] is constant, no force contribution.
       }
-    tmporder += order;
-    iphi++;
+      tmporder += order;
+      iphi++;
     }
-
     destroy_fn_links(fn);
   }
 
@@ -105,7 +106,6 @@ int update_h_fermion( Real eps, su3_vector **multi_x ){
   restore_fermion_links_from_site(fn_links, prec_ff);
   eo_fermion_force_multi( eps, allresidues, multi_x,
 			  n_order_naik_total, prec_ff, fn_links );
-
   free(allresidues);
   return iters;
 } /* update_h_fermion */

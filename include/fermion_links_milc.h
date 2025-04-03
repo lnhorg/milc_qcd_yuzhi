@@ -23,10 +23,10 @@
    milc_fm_links_t
      fm_ap_links_t *fm_ap
        ks_action_paths *ap
-       imp_ferm_links_t *fm
+       fn_links_t/eo_links_t *fm Fat and long links
      fm_ap_links_t *fm_ap_du0
        ks_action_paths *ap
-       imp_ferm_links_t *fm
+       fn_links_t *fm
 
        (Note that in imp_ferm_links.h imp_ferm_links_t is equated
         to fn_links_t or eo_links_t, depending on the action)

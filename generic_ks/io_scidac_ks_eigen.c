@@ -392,7 +392,6 @@ open_ks_eigen_infile(const char *filename, int *Nvecs, int *packed, int *file_ty
 
   /* Open the file for input */
   QIO_verbose(QIO_VERB_OFF);
-  printf("%s(%d): Opening %s for reading\n", myname, this_node, filename); fflush(stdout);
   infile = open_scidac_input_xml(filename, &layout, &fs, serpar, filexml);
   
   if(infile == NULL) return infile;

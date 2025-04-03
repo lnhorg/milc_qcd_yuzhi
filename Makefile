@@ -802,10 +802,10 @@ INLINEOPT = -DC_GLOBAL_INLINE # -DSSE_GLOBAL_INLINE #-DC_INLINE
 #INLINEOPT += -DSSEOPTERON
 
 #----------------------------------------------------------------------
-# crc32
+# crc32.  Now taken from libraries.
 
-CFLAGS += -I/usr/include
-LDFLAGS += -L/usr/lib64 -lz
+# CFLAGS += -I/usr/include
+# LDFLAGS += -L/usr/lib64 -lz
 
 #----------------------------------------------------------------------
 # 20. Miscellaneous macros for performance control and metric
@@ -1071,7 +1071,7 @@ KSSHIFT = # -DONE_SIDED_SHIFT
 
 # HALF_MIXED  Do double-precision inversion with single, or single with half (if supported)
 # MAX_MIXED   Do double-precision inversion with half-precision (if supported)
-# SCALE_PROP  Do rescaling for the clover propagator
+# SCALE_PROP  Do rescaling for the propagator
 
 CLCG ?= # -DCL_CG=BICG 
 

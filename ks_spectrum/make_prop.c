@@ -96,20 +96,14 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
 
   for(int j = 1; j < num_prop; j++){
     if(my_qic[j].resid != my_qic[0].resid){
-      if(set_type == MULTIMASS_SET){
-	node0_printf("WARNING: %s: inversion error parameters do not match within the set\n", myname);
-	node0_printf("WARNING: %s: will correct this in the refinement step.\n", myname);
-      } else {
-	node0_printf("ERROR: %s: found a nonmatching inversion error parameter in the set\n", myname);
+      if(set_type != SINGLES_SET){
+	node0_printf("ERROR: %s: inversion error parameters do not match within the set\n", myname);
 	terminate(1);
       }
     }
     if(my_ksp[j].naik_term_epsilon_index != my_ksp[0].naik_term_epsilon_index){
-      if(set_type == MULTIMASS_SET){
-	node0_printf("WARNING: %s: Naik parameters do not match within the set\n", myname);
-	node0_printf("WARNING: %s: will correct for this in the refinement step.\n", myname);
-      } else {
-	node0_printf("ERROR: %s: Naik epsilon  mismatch within set\n", myname);
+      if(set_type != SINGLES_SET){
+	node0_printf("ERROR: %s: Naik parameters do not match within the set\n", myname);
 	terminate(1);
       }
     }
@@ -291,7 +285,8 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
 	 requested */
       /* This operation applies the phase to the boundary FN links */
       set_boundary_twist_fn(fn, mybdry_phase, r0);
-      boundary_twist_fn(fn, ON);
+      if(fn->phase->twist_in == OFF)
+	boundary_twist_fn(fn, ON);
       mat_invert_field(src[k], dst[k], my_qic+j, my_ksp[j].mass, fn);
       destroy_fn_links(fn);
     }
@@ -301,7 +296,8 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
     
     fn = get_fm_links(fn_links, my_ksp[0].naik_term_epsilon_index);
     set_boundary_twist_fn(fn, mybdry_phase, r0);
-    boundary_twist_fn(fn, ON);
+    if(fn->phase->twist_in == OFF)
+      boundary_twist_fn(fn, ON);
     for(int color = 0; color < nc; color++){
       node0_printf("%s: color index = %d; all masses\n", myname, color);
       mat_invert_multi(src[num_prop*color], &dst[num_prop*color], my_ksp,
@@ -313,8 +309,9 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
   case(MULTISOURCE_SET):
 
     fn = get_fm_links(fn_links, my_ksp[0].naik_term_epsilon_index);
-    set_boundary_twist_fn(fn, mybdry_phase, r0);
-    boundary_twist_fn(fn, ON);
+    set_boundary_twist_fn(fn, mybdry_phase, r0); 
+    if(fn->phase->twist_in == OFF)
+      boundary_twist_fn(fn, ON);
     for(int color = 0; color < nc; color++){
       node0_printf("%s: color index = %d; mass = %f\n", myname, color, my_ksp[0].mass);
       mat_invert_block(&src[num_prop*color], &dst[num_prop*color], my_ksp[0].mass,
@@ -327,7 +324,8 @@ int solve_ksprop(enum set_type set_type, enum inv_type inv_type,
 
     fn = get_fm_links(fn_links, my_ksp[0].naik_term_epsilon_index);
     set_boundary_twist_fn(fn, mybdry_phase, r0);
-    boundary_twist_fn(fn, ON);
+    if(fn->phase->twist_in == OFF)
+      boundary_twist_fn(fn, ON);
     node0_printf("%s: all colors; mass = %f\n", myname, my_ksp[0].mass);
     mat_invert_block(src, dst, my_ksp[0].mass, num_src, my_qic, fn);
     destroy_fn_links(fn);

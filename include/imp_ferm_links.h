@@ -5,40 +5,57 @@
 #include "../include/su3.h"
 #include "../include/comdefs.h"
 #include "../include/generic_quark_types.h"
-#include "quark_action.h"  /* Defines FERM_ACTION */
+#include <quark_action.h>  /* Defines FERM_ACTION */
 
 /*-----------------------------------------------------------------*/
 /* Define imp_ferm_links_t */
 
 #ifdef HAVE_QOP
 
-#include "../include/fn_links_qop.h"
-typedef fn_links_qop_t imp_ferm_links_t;
+#include <qop.h>
 
-#else
+#if FERM_ACTION == HISQ
+
+#include "../include/fn_links_qop.h"
+#include "../include/hisq_links_qop.h"
+#include "../include/fermion_links_qop.h"
+#define imp_ferm_links_t fn_links_qop_t
+#define create_imp_ferm_links create_fn_links_qop
+#define destroy_imp_ferm_links destroy_fn_links_qop
+
+
+#else /* Not HISQ */
+
+#include "../include/fn_links_qop.h"
+#include "../include/fermion_links_qop.h"
+#define imp_ferm_links_t fn_links_qop_t
+#define create_imp_ferm_links create_fn_links_qop
+#define load_imp_ferm_links load_fn_links_qop
+#define destroy_imp_ferm_links destroy_fn_links_qop
+
+#endif
+
+#else /* Not HAVE_QOP */
 
 #include "../include/fn_links.h"
 #include "../include/eo_links.h"
 
 #if ( FERM_ACTION == HISQ ) || ( FERM_ACTION == FN_TYPE )
-typedef fn_links_t imp_ferm_links_t;
+
+#define imp_ferm_links_t fn_links_t
 #define create_imp_ferm_links create_fn_links
 #define load_imp_ferm_links load_fn_links
 #define destroy_imp_ferm_links destroy_fn_links
+
 #else
-typedef eo_links_t imp_ferm_links_t;
+
+#define imp_ferm_links_t eo_links_t 
 #define create_imp_ferm_links create_eo_links
 #define load_imp_ferm_links load_eo_links
 #define destroy_imp_ferm_links destroy_eo_links
-#endif
 
 #endif
 
-#ifdef HAVE_QOP
-#include <qop.h>
-#include "../include/fermion_links_qop.h"
-#else
-#include "../include/fermion_links_milc.h"
 #endif
 
 /*-----------------------------------------------------------------*/
@@ -346,7 +363,11 @@ typedef struct {
   int Nkr; /* size of the Krylov subspace */
   ks_eigen_poly poly; /* Preconditioning polynomial */
   int blockSize; /* block size for block variant eigensolvers */
-  int parity; 
+  int partfile; /* Whether to save in partfile or not */
+  int eigPrec; /* Run the eigensolver in this precision */
+  int batchedRotate; /* Size of the rotation space to use for solver */
+  int parity;
+  double tol_restart; 
 } ks_eigen_param;
 #elif defined(HAVE_QDP)
 #define ks_eigensolve Kalkreuter
@@ -367,10 +388,12 @@ typedef struct {
   int Nvecs_in ; /* number of input starting eigenvectors */
   Real tol ; /* Tolerance for the eigenvalue computation */
   Real error_decr ; /* error decrease per Rayleigh minimization */
+  int partfile; /* Whether to save in partfile or not */
   int MaxIter ; /* max  Rayleigh iterations */
   int Restart ; /* Restart  Rayleigh every so many iterations */
   int Kiters ; /* Kalkreuter iterations */
   int parity; 
+  Real tol_restart;
 } ks_eigen_param;
 #endif
 
@@ -406,13 +429,25 @@ void check_eigres(double *resid, su3_vector *eigVec[], Real *eigVal,
 		  int Nvecs, int parity, imp_ferm_links_t *fn);
 void construct_eigen_other_parity(su3_vector *eigVec[], Real eigVal[], 
 				  ks_eigen_param *eigen_param, imp_ferm_links_t *fn);
+#ifdef HAVE_QOP
 
-/* fn_links_qop.c  and fn_links_milc.c */
+/* fn_links_qop.c */
 
-su3_matrix *get_fatlinks(imp_ferm_links_t *fn);
-su3_matrix *get_lnglinks(imp_ferm_links_t *fn);
-su3_matrix *get_fatbacklinks(imp_ferm_links_t *fn);
-su3_matrix *get_lngbacklinks(imp_ferm_links_t *fn);
+su3_matrix *get_fatlinks(fn_links_qop_t *fn);
+su3_matrix *get_lnglinks(fn_links_qop_t *fn);
+su3_matrix *get_fatbacklinks(fn_links_qop_t *fn);
+su3_matrix *get_lngbacklinks(fn_links_qop_t *fn);
+
+#else
+
+/* fn_links_milc.c */
+
+su3_matrix *get_fatlinks(fn_links_t *fn);
+su3_matrix *get_lnglinks(fn_links_t *fn);
+su3_matrix *get_fatbacklinks(fn_links_t *fn);
+su3_matrix *get_lngbacklinks(fn_links_t *fn);
+
+#endif
 
 /* fn_links_milc.c only -- for QUDA */
 int fresh_fn_links(imp_ferm_links_t *fn);

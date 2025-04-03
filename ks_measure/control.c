@@ -89,9 +89,6 @@ int main(int argc, char *argv[])
 
       STARTTIME;
       
-      /* The usual case */
-      param.eigen_param.parity = EVEN;
-
       /* First set of fn links is always charge 0 and Naik epsilon 0 */
       imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
 
@@ -173,7 +170,7 @@ int main(int argc, char *argv[])
       /* Make table of FN links and masses and set boundary phases if
 	 requested */
       imp_ferm_links_t *fn_pt[MAX_NAIK];
-      for(naik_index = 0; naik_index++; naik_index < MAX_NAIK)
+      for(int naik_index = 0; naik_index < MAX_NAIK; naik_index++)
 	fn_pt[naik_index] = NULL;
 
       for(int j = 0; j < num_pbp_masses; j++){
@@ -238,7 +235,7 @@ int main(int argc, char *argv[])
 	   boundary_twist_fn(fn_mass[j], OFF);
 #endif
 
-      for(naik_index = 0; naik_index++; naik_index < MAX_NAIK)
+      for(int naik_index = 0; naik_index < MAX_NAIK; naik_index++)
 	if(fn_pt[naik_index] != NULL)
 	  destroy_fn_links(fn_pt[naik_index]);
           

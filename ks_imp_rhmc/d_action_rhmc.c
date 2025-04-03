@@ -3,7 +3,7 @@
 
 /* Measure total action, as needed by the hybrid Monte Carlo algorithm.  */
 
-#include "ks_imp_includes.h"	/* definitions files and prototypes */
+#include <ks_imp_includes.h>	/* definitions files and prototypes */
 #include "../include/fermion_links.h"
 #include "../include/openmp_defs.h"
 #include "../include/generic_quda.h"
@@ -53,15 +53,15 @@ double fermion_action( su3_vector **multi_x, su3_vector *sumvec) {
   imp_ferm_links_t *fn;
   sum=0.0;
   iphi=0;
-#if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ )
+#if FERM_ACTION == HISQ
   n = fermion_links_get_n_naiks(fn_links);
 #else
   n = 1;
 #endif
   for( inaik=0; inaik<n; inaik++ ) {
+    restore_fermion_links_from_site(fn_links, prec_fa[0]);
     fn = get_fm_links(fn_links, inaik);
     for( jphi=0; jphi<n_pseudo_naik[inaik]; jphi++ ) {
-      restore_fermion_links_from_site(fn_links, prec_fa[iphi]);
       ks_ratinv( F_OFFSET(phi[iphi]), multi_x,
                  rparam[iphi].FA.pole, rparam[iphi].FA.res,
 		 rparam[iphi].FA.order, niter_fa[iphi], rsqmin_fa[iphi], 

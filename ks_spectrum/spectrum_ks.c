@@ -1153,7 +1153,6 @@ static void spectrum_ks_print_diag(int pair){
 	tp = (t + param.r_offset_m[pair][3]) % nt;
 	prop = pmes_prop[m][tp];
 	CMULREAL(prop, norm_fac, prop);
-	printf("prop.real = %g prop.imag = %g\n", prop.real, prop.imag);
 	dprop.real = prop.real; dprop.imag = prop.imag; /* Change to double if float */
 	CMULREAL(dprop, meson_scale, dprop);
 	print_meson_prop(pair, t, dprop);

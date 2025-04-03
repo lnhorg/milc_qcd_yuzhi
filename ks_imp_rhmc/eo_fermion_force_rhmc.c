@@ -40,7 +40,7 @@ void eo_fermion_force_rhmc( Real eps, params_ratfunc *rf,
     for(j=0;j<order;j++){ dslash_field( multi_x[j], multi_x[j], ODD, fn ); }
 
     eo_fermion_force_multi( eps, &(residues[1]), multi_x, order, ff_prec, fl );
-    destroy_fn_links(fn);
+    invalidate_fermion_links(fl);
 
 }
 

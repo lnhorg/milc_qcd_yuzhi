@@ -18,6 +18,9 @@
 #include "../include/io_lat.h"
 #include "../include/generic_ks.h"
 #include "../include/generic.h"
+#include "../include/params_rhmc.h"
+#include "../include/imp_ferm_links.h"
+#include "quark_action.h"
 #ifdef HAVE_QUDA
 #include "../include/generic_quda.h"
 #endif
