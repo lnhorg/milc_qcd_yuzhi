@@ -45,11 +45,8 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   double nflop = 1187;
 #endif
 
-//  if(qic->relresid != 0.){
-//    printf("%s: GPU code does not yet support a Fermilab-type relative residual\n",myname);
-//    terminate(1);
-//  }
- 
+  // node0_printf("Entered %s\n", myname);
+
   /* Initialize qic */
   qic->size_r = 0;
   qic->size_relr = 0;
@@ -194,7 +191,6 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
 	     quda_precision, 
 	     mass,
 	     inv_args,
-	     eig_args,
 	     qic->resid,
 	     qic->relresid,
 	     fatlink, 
@@ -226,6 +222,9 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
     fflush(stdout);}
 #endif
 
+    node0_printf("Calling check_invert_field2\n"); fflush(stdout);
+    check_invert_field2(t_src, t_dest, mass, 2e-5, fn, qic->parity);
+  
   return num_iters;
 }
 
@@ -238,18 +237,17 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 				quark_invert_control *qic, Real mass,
 				imp_ferm_links_t *fn)
 {
-  if (this_node == 0) {
-    printf("CONGRAD5: using QUDA's block solver\n");
-  }
+
+  char myname[] = "ks_congrad_block_parity_gpu";
+
 #if 0
-  /* Until QUDA's MRHS solver is fixed we fake it */
+  /* Debug: Solve separately, rather than batch */
   int num_iters = 0;
   for(int i = 0; i < nsrc; i++){
     num_iters += ks_congrad_parity_gpu(t_src[i], t_dest[i], qic, mass, fn);
   }
   return num_iters;
 #else
-  char myname[] = "ks_congrad_block_parity_gpu";
   QudaInvertArgs_t inv_args;
   int i;
   double dtimec = -dclock();
@@ -268,9 +266,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 
   /* Compute source norm */
   double source_norm = 0.0;
-  FORSOMEFIELDPARITY(i,qic->parity){
-    source_norm += (double)magsq_su3vec( &t_src[0][i] );
-  } END_LOOP;
+  for(int j = 0; j < nsrc; j++){
+    FORSOMEFIELDPARITY(i,qic->parity){
+      source_norm += (double)magsq_su3vec( &t_src[j][i] );
+    } END_LOOP;
+  }
   g_doublesum( &source_norm );
 #ifdef CG_DEBUG
   node0_printf("congrad: source_norm = %e\n", (double)source_norm);
@@ -279,10 +279,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   /* Provide for trivial solution */
   if(source_norm == 0.0){
     /* Zero the solution and return zero iterations */
-    FORSOMEFIELDPARITY(i,qic->parity){
-      memset(t_dest + i, 0, sizeof(su3_vector));
-    } END_LOOP;
-    
+    for(int j = 0; j< nsrc; j++){
+      FORSOMEFIELDPARITY(i,qic->parity){
+	memset(t_dest[j] + i, 0, sizeof(su3_vector));
+      } END_LOOP;
+    }
     dtimec += dclock();
 #ifdef CGTIME
     if(this_node==0){
@@ -301,8 +302,10 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
 
   if(qic->parity == EVEN){
     inv_args.evenodd = QUDA_EVEN_PARITY;
+    node0_printf("%s: Using QUDA's block solver with EVEN parity %x\n", myname);
   }else if(qic->parity == ODD){
     inv_args.evenodd = QUDA_ODD_PARITY;
+    node0_printf("%s: Using QUDA's block solver with ODD parity %x\n", myname);
   }else{
     printf("%s: Unrecognised parity\n",myname);
     terminate(2);
@@ -399,7 +402,6 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
      quda_precision,
      mass,
      inv_args,
-     eig_args,
      qic->resid,
      qic->relresid,
      fatlink,
@@ -434,6 +436,11 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
            (double)(nflop*nsrc*volume*qic->final_iters/(1.0e6*dtimec*numnodes())) );
     fflush(stdout);}
 #endif
+
+  for(int j = 0; j < nsrc; j++){
+    node0_printf("Calling check_invert_field2 for case %d\n", j); fflush(stdout);
+    check_invert_field2(t_src[j], t_dest[j], mass, 2e-5, fn, qic->parity);
+  }
 
   // On the other hand, MILC expects the returned value to be the aggregate number of iterations
   // performed by each solve if it was performed sequentially. This can be approximated by

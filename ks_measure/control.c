@@ -89,9 +89,6 @@ int main(int argc, char *argv[])
 
       STARTTIME;
       
-      /* The usual case */
-      param.eigen_param.parity = EVEN;
-
       /* First set of fn links is always charge 0 and Naik epsilon 0 */
       imp_ferm_links_t *fn = get_fm_links(fn_links, 0);
 
