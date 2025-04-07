@@ -130,10 +130,68 @@ int ks_congrad_parity_gpu(su3_vector *t_src, su3_vector *t_dest,
   inv_args.tadpole = u0;
 #endif
 
-  qudaInvert(MILC_PRECISION,
+  // Setup for deflation (and eigensolve) on GPU
+  int parity = qic->parity;
+  int blockSize = param.eigen_param.blockSize;
+  static Real previous_mass = -1.0;
+  static bool first_solve=true;
+
+  QudaEigensolverArgs_t eig_args;
+  eig_args.struct_size = 1192; // Could also use sizeof(QudaEigensolverArgs_t) to automagically update, but using a static number will catch the case when the struct is updated by QUDA but MILC is not updated
+  eig_args.block_size = blockSize;
+  eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
+  eig_args.n_ev_deflate = ( parity == EVEN ) ? param.eigen_param.Nvecs : 0; // Only deflate even solves for now
+  eig_args.n_ev = eig_args.n_conv;
+  eig_args.n_kr = (param.eigen_param.Nkr < eig_args.n_ev ) ? 2*eig_args.n_ev : param.eigen_param.Nkr;
+  eig_args.tol = param.eigen_param.tol;
+  eig_args.max_restarts = param.eigen_param.MaxIter;
+  eig_args.poly_deg = param.eigen_param.poly.norder;
+  eig_args.a_min = param.eigen_param.poly.minE;
+  eig_args.a_max = param.eigen_param.poly.maxE;
+  strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
+  strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
+  eig_args.vec_in_parity = QUDA_EVEN_PARITY; // TODO: Update when we add support for odd parity eigenvector files
+  eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.batched_rotate = param.eigen_param.batchedRotate;
+  eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
+  eig_args.partfile = param.eigen_param.partfile ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
+  eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.tol_restart = param.eigen_param.tol_restart;
+  eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  eig_args.qr_tol = eig_args.tol;
+  eig_args.require_convergence = QUDA_BOOLEAN_TRUE;
+  eig_args.check_interval = 10;
+  eig_args.use_dagger = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_svd = QUDA_BOOLEAN_FALSE;
+  eig_args.use_eigen_qr = QUDA_BOOLEAN_TRUE;
+  eig_args.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_evals_batch_size = 16;
+  eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
+  
+  if(param.eigen_param.eigPrec == 2) {
+    eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 1) {
+    eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 0) {
+    eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
+  } else {
+    printf("%s: Unrecognized eigensolver precision\n",myname);
+    terminate(2);
+  }
+
+  previous_mass = mass;
+  first_solve = false;
+
+  qudaInvertDeflatable(MILC_PRECISION,
 	     quda_precision, 
 	     mass,
 	     inv_args,
+	     eig_args,
 	     qic->resid,
 	     qic->relresid,
 	     fatlink, 
@@ -284,10 +342,68 @@ int ks_congrad_block_parity_gpu(int nsrc, su3_vector **t_src, su3_vector **t_des
   inv_args.tadpole = u0;
 #endif
 
-  qudaInvertMsrc(MILC_PRECISION,
+  // Setup for deflation (and eigensolve) on GPU
+  int parity = qic->parity;
+  int blockSize = param.eigen_param.blockSize;
+  static Real previous_mass = -1.0;
+  static bool first_solve=true;
+
+  QudaEigensolverArgs_t eig_args;
+  eig_args.struct_size = 1192; // Could also use sizeof(QudaEigensolverArgs_t) to automagically update, but using a static number will catch the case when the struct is updated by QUDA but MILC is not updated
+  eig_args.block_size = blockSize;
+  eig_args.n_conv = (param.eigen_param.Nvecs_in > param.eigen_param.Nvecs) ? param.eigen_param.Nvecs_in : param.eigen_param.Nvecs;
+  eig_args.n_ev_deflate = ( parity == EVEN ) ? param.eigen_param.Nvecs : 0; // Only deflate even solves for now
+  eig_args.n_ev = eig_args.n_conv;
+  eig_args.n_kr = (param.eigen_param.Nkr < eig_args.n_ev ) ? 2*eig_args.n_ev : param.eigen_param.Nkr;
+  eig_args.tol = param.eigen_param.tol;
+  eig_args.max_restarts = param.eigen_param.MaxIter;
+  eig_args.poly_deg = param.eigen_param.poly.norder;
+  eig_args.a_min = param.eigen_param.poly.minE;
+  eig_args.a_max = param.eigen_param.poly.maxE;
+  strcpy( eig_args.vec_infile, param.ks_eigen_startfile );
+  strcpy( eig_args.vec_outfile, param.ks_eigen_savefile );
+  eig_args.vec_in_parity = QUDA_EVEN_PARITY; // TODO: Update when we add support for odd parity eigenvector files
+  eig_args.preserve_evals = ( first_solve || fabs(mass - previous_mass) < 1e-6 ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.batched_rotate = param.eigen_param.batchedRotate;
+  eig_args.save_prec = QUDA_SINGLE_PRECISION; // add to input parameters?
+  eig_args.partfile = param.eigen_param.partfile ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.io_parity_inflate = QUDA_BOOLEAN_FALSE;
+  eig_args.use_norm_op = ( parity == EVENANDODD ) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.use_pc = ( parity != EVENANDODD) ? QUDA_BOOLEAN_TRUE : QUDA_BOOLEAN_FALSE;
+  eig_args.tol_restart = param.eigen_param.tol_restart;
+  eig_args.eig_type = ( eig_args.block_size > 1 ) ? QUDA_EIG_BLK_TR_LANCZOS : QUDA_EIG_TR_LANCZOS;  /* or QUDA_EIG_IR_ARNOLDI, QUDA_EIG_BLK_IR_ARNOLDI */
+  eig_args.spectrum = QUDA_SPECTRUM_SR_EIG; /* Smallest Real. Other options: LM, SM, LR, SR, LI, SI */
+  eig_args.qr_tol = eig_args.tol;
+  eig_args.require_convergence = QUDA_BOOLEAN_TRUE;
+  eig_args.check_interval = 10;
+  eig_args.use_dagger = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_gamma5 = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_svd = QUDA_BOOLEAN_FALSE;
+  eig_args.use_eigen_qr = QUDA_BOOLEAN_TRUE;
+  eig_args.use_poly_acc = QUDA_BOOLEAN_TRUE;
+  eig_args.arpack_check = QUDA_BOOLEAN_FALSE;
+  eig_args.compute_evals_batch_size = 16;
+  eig_args.preserve_deflation = QUDA_BOOLEAN_TRUE;
+  
+  if(param.eigen_param.eigPrec == 2) {
+    eig_args.prec_eigensolver = QUDA_DOUBLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 1) {
+    eig_args.prec_eigensolver = QUDA_SINGLE_PRECISION;
+  } else if(param.eigen_param.eigPrec == 0) {
+    eig_args.prec_eigensolver = QUDA_HALF_PRECISION;
+  } else {
+    printf("%s: Unrecognized eigensolver precision\n",myname);
+    terminate(2);
+  }
+
+  previous_mass = mass;
+  first_solve = false;
+
+  qudaInvertMsrcDeflatable(MILC_PRECISION,
      quda_precision,
      mass,
      inv_args,
+     eig_args,
      qic->resid,
      qic->relresid,
      fatlink,
