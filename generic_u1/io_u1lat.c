@@ -1775,7 +1775,7 @@ int read_u1_gauge_hdr(gauge_file *gf, int parallel)
       /**      printf("Reading with byte reversal\n"); **/
       if( sizeof(float) != sizeof(u_int32type)) {
 	printf("%s: Can't byte reverse\n",myname);
-	printf("requires size of int32type(%d) = size of float(%d)\n",
+	printf("requires size of u_int32type(%d) = size of float(%d)\n",
 	       (int)sizeof(u_int32type),(int)sizeof(float));
 	terminate(1);
       }
