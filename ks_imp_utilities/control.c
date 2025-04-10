@@ -1,4 +1,4 @@
-j/************************* control.c *******************************/
+/************************* control.c *******************************/
 /* MIMD version 7 */
 /* Main procedure for SU3 with dynamical staggered fermions        */
 /* general quark action, general gauge action */
@@ -150,6 +150,7 @@ int main( int argc, char **argv ){
 
 #endif
 
+    fn->preserve = 0;
     destroy_fn_links(fn);
   
   } /* readin(prompt) */

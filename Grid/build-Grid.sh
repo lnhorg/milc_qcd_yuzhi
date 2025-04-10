@@ -3,6 +3,10 @@
 ARCH=$1
 PK_CC=$2
 PK_CXX=$3
+#GIT_REPO=https://github.com/milc-qcd/Grid
+#GIT_BRANCH=develop
+#GIT_BRANCH=feature/staggered-a2a-ml
+#vGIT_BRANCH=develop
 #GIT_REPO=https://github.com/paboyle/grid
 #GIT_BRANCH=develop
 #GIT_REPO=https://github.com/clarkedavida/Grid
@@ -85,7 +89,7 @@ then
 
 	${SRCDIR}/configure \
             --prefix=${INSTALLDIR} \
-            --enable-mkl=no \
+            --enable-mkl=yes \
             --enable-simd=GEN \
             --enable-shm=shmnone \
             --enable-comms=mpi3-auto \
@@ -152,25 +156,21 @@ then
 	
 	${SRCDIR}/configure \
              --prefix ${INSTALLDIR}       \
-	     --enable-comms=mpi3-auto     \
+	     --enable-comms=mpi           \
 	     --enable-comms-threads       \
-	     --enable-shm=nvlink          \
+	     --enable-simd=GPU            \
+	     --enable-shm=no              \
              --enable-gen-simd-width=64   \
-	     --enable-simd=GPU \
-	     --enable-accelerator=cuda \
-	     --enable-setdevice \
-	     --disable-accelerator-cshift \
-	     --disable-fermion-reps \
-	     --enable-unified=no \
-	     --disable-gparity \
-	     --disable-zmobius \
+	     --enable-accelerator=cuda    \
+	     --disable-fermion-reps       \
+	     --enable-unified             \
+	     --disable-gparity            \
              --host=x86_64-unknown-linux-gnu \
-	     --with-gmp=${HOME}/perlmutter/gmp \
 	     --with-mpfr=${HOME}/perlmutter/mpfr \
-	     --with-hdf5=${CFAY_HDF5_DIRT} \
-	     --with-lime=${HOME}/perlmutter/quda/install \
-             CXX=nvcc                \
-	     LDFLAGS="-L${CUDATOOLKIT_HOME}/targets/x86_64-linux/lib -cudart shared " \
+	     --with-hdf5=${HOME}/perlmutter/hdf5 \
+	     --with-lime=${HOME}/perlmutter/build/usqcd \
+             CXX="nvcc"                \
+	     LDFLAGS="-cudart shared " \
              CXXFLAGS="-ccbin ${PK_CXX} -gencode arch=compute_80,code=sm_80 -std=c++17 -cudart shared" \
 
         status=$?
@@ -192,20 +192,21 @@ then
 	     --enable-gen-simd-width=64 \
 	     --enable-shm=nvlink \
 	     --enable-simd=GPU \
+	     --enable-tracing=timer \
 	     --disable-accelerator-cshift \
              --enable-unified=no \
 	     --with-fftw=${FFTW_DIR}/.. \
 	     --with-gmp=${OLCF_GMP_ROOT} \
-	     --with-hdf5=${HDF5_ROOT} \
+	     --with-hdf5=${OLCF_HDF5_ROOT} \
  	     --with-lime=${INSTALLROOT}/qio \
 	     --with-mpfr=/opt/cray/pe/gcc/mpfr/3.1.4/ \
 	     --with-openssl=${HOME}/frontier/openssl/install/ \
 	     CXX=hipcc   CXXLD=hipcc  \
 	     MPICXX=${MPICH_DIR}/bin/mpicxx \
-	     CXXFLAGS="${MPI_CFLAGS} -I${ROCM_PATH}/include -O3 -fPIC -fopenmp --offload-arch=gfx90a -L/lib64 -Wunused-result" \
+	     CXXFLAGS="${MPI_CFLAGS} -I${ROCM_PATH}/include -std=c++14 -O3 -fPIC -fopenmp --offload-arch=gfx90a -L/lib64 -Wunused-result" \
 	     LDFLAGS="-L/lib64 -L${ROCM_PATH}/lib -lamdhip64 ${MPI_LDFLAGS}" \
 
-        status=$?
+        Status=$?
         echo "Configure exit status $status"
 	cp ${BUILDDIR}/grid-config ${INSTALLDIR}/bin
 
@@ -220,9 +221,9 @@ then
 	${SRCDIR}/configure \
 	 --prefix ${INSTALLDIR}      \
 	 --enable-simd=GPU \
-	 --enable-gen-simd-width=64  \
 	 --enable-comms=mpi-auto \
-	 --enable-debug \
+	 --enable-gen-simd-width=64  \
+ 	 --enable-accelerator-cshift \
          --disable-gparity \
          --disable-fermion-reps \
          --disable-zmobius \

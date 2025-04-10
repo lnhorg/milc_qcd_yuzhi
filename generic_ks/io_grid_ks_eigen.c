@@ -20,7 +20,6 @@
 #ifdef HAVE_MPI
 #include <mpi.h>
 #endif
-#include <qio.h>
 /*------------------------------------------------------------------*/
 /* Convert rank to coordinates */
 static void lex_coords(int coords[], const int dim, const int size[], 
@@ -145,8 +144,6 @@ read_grid_eigenvector_data(su3_vector *eigVec, int typesize, char* file, off_t o
     node0_printf("%s: Grid requires double.  Typesize %d != 48\n", myname, typesize);
     terminate(1);
   }
-
-  printf("%s(%d): Entered\n", myname, this_node); fflush(stdout);
 
   const int latdim[4] = {nx, ny, nz, nt};
   int grid_reduced_dim[4] = {nx/2, ny, nz, nt};

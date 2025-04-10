@@ -25,6 +25,7 @@
 #include "../include/su3.h"
 #include "../include/complex.h"
 #include "../include/macros.h"
+#include "../include/unistd.h"
 
 /* arguments to the make_gather() routine */
 #define FORWARDS         1
@@ -151,7 +152,7 @@ msg_tag * declare_strided_gather(
 			   neighbor tables */
   int subl,		/* subl of sites whose neighbors we gather.
 			   It is EVENANDODD, if all sublattices are done. */
-  char ** dest);	/* one of the vectors of pointers */
+  char ** __restrict__ dest);	/* one of the vectors of pointers */
 
 msg_tag * start_gather_field(
   const void * const field,	/* which field? pointer returned by malloc() */

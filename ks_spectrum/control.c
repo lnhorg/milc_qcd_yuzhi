@@ -319,6 +319,8 @@ int main(int argc, char *argv[])
 #endif
     
 #if EIGMODE != EIGCG
+    /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) )
     if(param.eigen_param.Nvecs > 0){
       /* malloc for eigenpairs */
       eigVal = (Real *)malloc(param.eigen_param.Nvecs*sizeof(double));
@@ -339,6 +341,7 @@ int main(int argc, char *argv[])
       }
     }
 #endif
+#endif
     
     /**************************************************************/
     /* Compute Dirac eigenpairs           */
@@ -358,7 +361,10 @@ int main(int argc, char *argv[])
       set_boundary_twist_fn(fn, bdry_phase, param.coord_origin);
       /* Apply the operation */
       boundary_twist_fn(fn, ON);
-      
+
+      // If using QUDA deflated CG + asking for QUDA to do the eigensolve, then
+      // the eigensolver is called from within QUDA's CG solver...not from MILC
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) ) 
       /* compute eigenpairs if requested */
       if(param.ks_eigen_startflag == FRESH){
 	int total_R_iters;
@@ -374,9 +380,11 @@ int main(int argc, char *argv[])
 	initialize_site_prn_from_seed(iseed);
 #endif
       }
-    
+#endif
       /* Check the eigenvectors */
 
+      /* If using QUDA for deflation, then eigenvectors are loaded directly by QUDA and not checked by MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) && defined(USE_EIG_GPU) )
       /* Calculate and print the residues and norms of the eigenvectors */
       resid = (double *)malloc(Nvecs_curr*sizeof(double));
       node0_printf("Even site residuals\n");
@@ -384,12 +392,14 @@ int main(int argc, char *argv[])
       construct_eigen_other_parity(eigVec, eigVal, &param.eigen_param, fn);
       node0_printf("Odd site residuals\n");
       check_eigres( resid, eigVec, eigVal, Nvecs_curr, ODD, fn );
-      
+#endif
       /* Unapply twisted boundary conditions on the fermion links and
 	 restore conventional KS phases and antiperiodic BC, if
 	 changed. */
       boundary_twist_fn(fn, OFF);
-      
+     
+      /* If using QUDA for deflation, then eigenvalues are printed by QUDA */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) ) 
       /* print eigenvalues of iDslash */
       node0_printf("The above were eigenvalues of -Dslash^2 in MILC normalization\n");
       node0_printf("Here we also list eigenvalues of iDslash in continuum normalization\n");
@@ -402,6 +412,7 @@ int main(int argc, char *argv[])
 	  node0_printf("eigenval(%i): %10g\n", i, 0.0);
 	}
       }
+#endif
 #endif
     }
     
@@ -418,8 +429,8 @@ int main(int argc, char *argv[])
 #ifdef U1_FIELD
       u1phase_on(param.charge_pbp[i], u1_A);
       invalidate_fermion_links(fn_links);
-#endif
       restore_fermion_links_from_site(fn_links, param.qic_pbp[i].prec);
+#endif
 
       naik_index = param.ksp_pbp[i].naik_term_epsilon_index;
       mass = param.ksp_pbp[i].mass;
@@ -436,6 +447,8 @@ int main(int argc, char *argv[])
       /* Unapply the U(1) field phases */
       u1phase_off();
       invalidate_fermion_links(fn_links);
+      restore_fermion_links_from_site(fn_links, param.qic_pbp[i].prec);
+      fn = get_fm_links(fn_links, 0);
 #endif
     }
 
@@ -487,7 +500,8 @@ int main(int argc, char *argv[])
     for(is=param.num_base_source; is<param.num_base_source+param.num_modified_source; is++){
 
       quark_source *qs = &param.src_qs[is];
-      source[is] = create_ksp_field(qs->ncolor);
+      int p = param.parent_source[is];
+      source[is] = create_ksp_field(source[p]->nc);
       
       if(qs->saveflag != FORGET){
 	char *fileinfo = create_ks_XML();
@@ -496,7 +510,6 @@ int main(int argc, char *argv[])
       }
       
       /* Copy parent source */
-      int p = param.parent_source[is];
       copy_ksp_field(source[is],  source[p]);
 
       for(int color = 0; color < qs->ncolor; color++){
@@ -548,9 +561,16 @@ int main(int argc, char *argv[])
 	/* Read and/or generate quark propagator */
 	
 	is = param.source[i];  /* source index for this propagator */
-	prop_nc[i] = param.src_qs[is].ncolor;
+	//	prop_nc[i] = param.src_qs[is].ncolor;
+	/* Get number of colors from the parent */
+	int p = param.parent_source[is];
+	if(p == BASE_SOURCE_PARENT)
+	  prop_nc[i] = param.src_qs[is].ncolor;
+	else
+	  prop_nc[i] = source[p]->nc;
 	
 	/* Allocate propagator */
+	  
 	prop[i] = create_ksp_field(prop_nc[i]);
 	if(prop[i] == NULL){
 	  printf("main(%d): No room for prop\n",this_node);
@@ -947,6 +967,9 @@ int main(int argc, char *argv[])
 #endif
 
     if(param.eigen_param.Nvecs > 0){
+
+      /* If using QUDA for deflation, then eigenvectors are loaded and saved directly by QUDA and not MILC */
+#if !( defined(USE_CG_GPU) && defined(HAVE_QUDA) )
       STARTTIME;
       
       /* save eigenvectors if requested */
@@ -961,14 +984,20 @@ int main(int argc, char *argv[])
       free(eigVal); free(eigVec); free(resid);
 
       ENDTIME("save eigenvectors (if requested)");
+
+#endif
     }
 
     /* Clean up quark sources, both base and modified */
     for(i = 0; i < param.num_base_source + param.num_modified_source; i++)
       clear_qs(&param.src_qs[i]);
 
-    /* Free fn space */
-    destroy_fn_links(fn);
+    /* Free links */
+#if FERM_ACTION == HISQ
+    destroy_fermion_links_hisq(fn_links);
+#else
+    destroy_fermion_links(fn_links);
+#endif
 
 /****************************************************************/
 /* Compute GB baryon propagators */
@@ -1009,6 +1038,7 @@ int main(int argc, char *argv[])
             node0_printf(" %d ",iq1);
             if(iq1 == -1) qko1[j] = NULL;
             else qko1[j] = quark[iq1];
+
           }
           node0_printf("\nOctet %d :  ",iqo2);
           for(j = 0; j < 8; j++){
@@ -1160,11 +1190,6 @@ int main(int argc, char *argv[])
     
     /* Destroy fermion links (created in readin() */
     
-#if FERM_ACTION == HISQ
-    destroy_fermion_links_hisq(fn_links);
-#else
-    destroy_fermion_links(fn_links);
-#endif
     fn_links = NULL;
     starttime = endtime;
   } /* readin(prompt) */

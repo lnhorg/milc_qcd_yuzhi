@@ -1339,7 +1339,7 @@ Deriv_O6_field( int npbp_reps, quark_invert_control *qic,
   imp_ferm_links_t *fn = get_fm_links(fl, naik_term_epsilon_index);
   
 #ifdef DM_DU0
-  imp_ferm_links_t *fn_dmdu0 = get_fm_du0_links(fl)[naik_term_epsilon_index];
+  imp_ferm_links_t *fn_dmdu0 = get_fm_du0_links(fl);
 #else
   imp_ferm_links_t *fn_dmdu0 = NULL;
 #endif
@@ -1427,9 +1427,9 @@ void Deriv_O6_multi(int num_masses, int npbp_reps, quark_invert_control *qic,
   int m;
   
 #ifdef DM_DU0
-  imp_ferm_links_t **Fn_dmdu0 = get_fm_du0_links(fl);
+  imp_ferm_links_t *Fn_dmdu0 = get_fm_du0_links(fl);
 #else
-  imp_ferm_links_t **Fn_dmdu0 = NULL; 
+  imp_ferm_links_t *Fn_dmdu0 = NULL; 
 #endif
   
 #if ( FERM_ACTION == HISQ || FERM_ACTION == HYPISQ ) & defined(DM_DEPS)
@@ -1463,7 +1463,7 @@ void Deriv_O6_multi(int num_masses, int npbp_reps, quark_invert_control *qic,
   imp_ferm_links_t *fn = get_fm_links(fl, ksp[0].naik_term_epsilon_index);
   for(m=0;m<num_masses;m++){
     if(fn_dmdu0==NULL) fn_dmdu0=NULL;
-    else fn_dmdu0 = Fn_dmdu0[(ksp+m)->naik_term_epsilon_index]; 
+    else fn_dmdu0 = Fn_dmdu0;
  
     for(jpbp_reps = 0; jpbp_reps < npbp_reps; jpbp_reps++){
      

@@ -195,6 +195,9 @@ int readin(int prompt) {
     
     /* number of eigenpairs */
     IF_OK status += get_i(stdin, prompt,"max_number_of_eigenpairs", &param.eigen_param.Nvecs);
+    /* The usual case. May be changed by I/O routines */
+    param.eigen_param.parity = EVEN;
+
 
     IF_OK if(param.eigen_param.Nvecs > 0){
 
@@ -246,9 +249,10 @@ int readin(int prompt) {
 	status += read_ks_eigen_param(&param.eigen_param, status, prompt);
 
       }
-    }
 
 #endif
+
+    }
 
     /*------------------------------------------------------------*/
     /* Chiral condensate and related quantities                   */
@@ -570,9 +574,13 @@ int readin(int prompt) {
 
   eigVal = (double *)malloc(Nvecs_tot*sizeof(double));
   eigVec = (su3_vector **)malloc(Nvecs_tot*sizeof(su3_vector *));
-  node0_printf("Allocating space for %d eigenvectors\n", Nvecs_tot);
-  for(int i = 0; i < Nvecs_tot; i++)
+  for(int i = 0; i < Nvecs_tot; i++){
     eigVec[i] = (su3_vector *)malloc(sites_on_node*sizeof(su3_vector));
+    if(eigVec[i] == NULL){
+      printf("No room for eigenvector\n");
+      terminate(1);
+    }
+  }
 
   /* Do whatever is needed to get eigenpairs -- assumed charge 0 */
   imp_ferm_links_t *fn = get_fm_links(fn_links, 0);

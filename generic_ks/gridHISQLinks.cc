@@ -1,19 +1,21 @@
 // Wrappers for Grid Staggered Link Fattening
 
 #include <omp.h>
-#include <Grid/Grid.h>
+
+#include "../include/macros.h"
+#include "../include/fermion_links.h"
 
 #include "../include/mGrid/mGrid_internal.h"
 #include "../include/mGrid/mGrid.h"
 #include "../include/milc_datatypes.h"
 #include "../include/mGrid/mGrid_assert.h"
-#include "../include/fermion_links.h"
-#include "../include/macros.h"
+
 #include "../generic/gridMap.h"
+#include <Grid/Grid.h>
+#include <Grid/qcd/smearing/HISQSmearing.h>
 
 using namespace Grid;
 
-#if 0
 // residues and multi_x are indexed by the pseudofermion fields
 // multi_x[i] points to a color vector field.
 //   The fieldss for each Naik mass are grouped together and
@@ -25,46 +27,83 @@ using namespace Grid;
 template<typename LatticeGaugeField, typename Gimpl, typename Complex>
 static void
 hisqForce (GRID_info_t *info,
-	   fermion_links_t *fl,
+	   void *fl_void,
 	   Real residues[],
 	   su3_vector *multi_x[],
 	   int n_orders_naik[],
 	   su3_matrix *deriv[],
 	   GridCartesian *CGrid)
 {
+  fermion_links_t *fl = (fermion_links_t *)fl_void;
+  
   auto start = std::chrono::system_clock::now();
 
-  // Instantiate the Smear_HISQ class
-  Smear_HISQ<Gimpl> HL(CGrid, path_coeff);
+  hisq_auxiliary_t *aux = get_hisq_auxiliary(fl);
+  su3_matrix *Umilc = aux->U_link;
+  su3_matrix *Vmilc = aux->V_link;
+  su3_matrix *Wmilc = aux->W_unitlink;
 
-  // Copy MILC-formatted thin links
-  LatticeGaugeField Umu(CGrid);
-  milcGaugeFieldToGrid<LatticeGaugeField, Complex>(in, &Umu);
+  LatticeGaugeField Umu(CGrid), Vmu(CGrid), Wmu(CGrid), UForce(CGrid);
+  milcGaugeFieldToGrid<LatticeGaugeField, Complex>(Umilc, &Umu);
+  milcGaugeFieldToGrid<LatticeGaugeField, Complex>(Vmilc, &Vmu);
+  milcGaugeFieldToGrid<LatticeGaugeField, Complex>(Wmilc, &Wmu);
 
-  // Allocate space for output fat and long links
-  LatticeGaugeField fatlinks(CGrid);
-  GRID_ASSERT(&fatlinks != NULL, GRID_MEM_ERROR);
-  LatticeGaugeField lnglinks(CGrid);
-  GRID_ASSERT(&lnglinks != NULL, GRID_MEM_ERROR);
+  int n_naiks = fermion_links_get_n_naiks(fl);
+  Real *eps_naik = fermion_links_get_eps_naik(fl);
+  std::array<Real,GRID_MAX_NAIK> eps_naiks;
+  for(int i = 0; i < n_naiks; i++)
+    eps_naiks[i] = eps_naik[i];
+  
+  ks_action_paths_hisq *ap = get_action_paths_hisq(fl);
+  Real fat7_c1    = ap->p1.act_path_coeff.one_link ;
+  Real fat7_c3    = ap->p1.act_path_coeff.three_staple ;
+  Real fat7_c5    = ap->p1.act_path_coeff.five_staple ;
+  Real fat7_c7    = ap->p1.act_path_coeff.seven_staple ;
 
-  if(lng != NULL){
-    HL.smear(fatlinks, lnglinks, Umu);
-    std::cout << "Done with smear" << std::endl << std::flush;
-    gridToMilcGaugeField<LatticeGaugeField, Complex>(fat, &fatlinks);
-    gridToMilcGaugeField<LatticeGaugeField, Complex>(lng, &lnglinks);
-  }
-  else{
-    HL.smear(fatlinks, lnglinks, Umu);
-    std::cout << "Done with smear" << std::endl << std::flush;
-    gridToMilcGaugeField<LatticeGaugeField, Complex>(fat, &fatlinks);
-  }
+  Real asqtad_c1  = ap->p2.act_path_coeff.one_link ;
+  Real asqtad_c3  = ap->p2.act_path_coeff.three_staple ;
+  Real asqtad_c5  = ap->p2.act_path_coeff.five_staple ;
+  Real asqtad_c7  = ap->p2.act_path_coeff.seven_staple ;
+  Real asqtad_clp = ap->p2.act_path_coeff.lepage ;
+  Real cnaik      = ap->p2.act_path_coeff.naik ;
+
+  Real diff_c1    = ap->p3.act_path_coeff.one_link ;
+  Real diff_cnaik = ap->p3.act_path_coeff.naik ;
+  int ugroup     = ap->ugroup;
+  int umethod    = ap->umethod;
+  
+  HISQParameters<Real> hisq_param(n_naiks  , eps_naiks ,
+	  fat7_c1  , fat7_c3  , fat7_c5  , fat7_c7  , 0.,
+	  asqtad_c1, asqtad_c3, asqtad_c5, asqtad_c7, asqtad_clp,
+	  cnaik    , diff_c1     , diff_cnaik);
+
+  bool allow_svd = false, svd_only = false;
+  Real svd_rel_error = HISQ_REUNIT_SVD_REL_ERROR;
+  Real svd_abs_error = HISQ_REUNIT_SVD_ABS_ERROR;
+  Real force_filter  = HISQ_FORCE_FILTER;
+
+#ifdef HISQ_REUNIT_ALLOW_SVD
+  allow_svd = true;
+#endif
+
+#ifdef HISQ_REUNIT_SVD_ONLY
+  svd_only = true;
+#endif
+  
+  HISQReunitSVDParameters<Real> hisq_SVD(allow_svd, svd_only, svd_rel_error,
+					 svd_abs_error, force_filter);
+    
+  Force_HISQ<Gimpl> HF(CGrid, hisq_param, Wmu, Vmu, Umu, hisq_SVD);
+
+  HF.ddVprojectU3(UForce, Umu, Umu, 5e-5);
+
+  gridToMilcGaugeField<LatticeGaugeField, Complex>(deriv, &UForce);
 
   auto end = std::chrono::system_clock::now();
   auto elapsed = end - start;
   std::cout << "generate fat and long links " << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed) 
 	    << "\n";
 }
-#endif
 	
 template<typename LatticeGaugeField, typename Gimpl, typename Complex>
 static void
@@ -189,8 +228,8 @@ void GRID_F3_hisq_links(GRID_info_t *info,
 			su3_matrix *in,
 			GRID_4Dgrid *grid_full)
 {
-  std::cout << "GRID_F3_hisq_links is not supported yet" << std::endl;
-  assert(0);
+  //  std::cout << "GRID_F3_hisq_links is not supported yet" << std::endl;
+  //  assert(0);
   // hisqLinks<LatticeGaugeFieldF, PeriodicGimplF, ComplexF>(info, path_coeff, fat, lng, in, grid_full->gridF);
 }
 
@@ -222,14 +261,12 @@ void GRID_D3_hisq_aux_links(GRID_info_t *info,
   hisqAuxLinks<LatticeGaugeFieldD, PeriodicGimplD, ComplexD>(info, path_coeff, U, V, W, grid_full->gridD);
 }
 
-#if 0
 //====================================================================//
 // The GRID C API for the fermion force
 
 void GRID_F3_hisq_force(GRID_info_t *info,
-			fermion_links_t *fl,
+			void *fl,
 			Real residues[],
-			int nterms,
 			su3_vector *multi_x[],
 			int n_orders_naik[],
 			su3_matrix *deriv[],
@@ -241,9 +278,8 @@ void GRID_F3_hisq_force(GRID_info_t *info,
 }
 
 void GRID_D3_hisq_force(GRID_info_t *info,
-			fermion_links_t *fl,
+			void *fl,
 			Real residues[],
-			int nterms,
 			su3_vector *multi_x[],
 			int n_orders_naik[],
 			su3_matrix *deriv[],
@@ -254,16 +290,14 @@ void GRID_D3_hisq_force(GRID_info_t *info,
 							  deriv, grid_full->gridF);
 }
 
-#endif
-
 //====================================================================//
 // The GRID C API for testing the reunitarization derivative
 
 void GRID_F3_reunit_deriv( GRID_info_t *info, su3_matrix *V, su3_matrix *dW,
 			   su3_matrix *Q, GRID_4Dgrid * grid_full ){
-  std::cout << "GRID_F3_reunit_deriv is not supported yet" << std::endl;
-  assert(0);
-  // reunitDeriv<LatticeGaugeFieldF, PeriodicGimplF, ComplexF>(info, V, dW, Q, grid_full->gridF);
+  //  std::cout << "GRID_F3_reunit_deriv is not supported yet" << std::endl;
+  //  assert(0);
+  reunitDeriv<LatticeGaugeFieldF, PeriodicGimplF, ComplexF>(info, V, dW, Q, grid_full->gridF);
 }
 
 void GRID_D3_reunit_deriv( GRID_info_t *info, su3_matrix *V, su3_matrix *dW,
