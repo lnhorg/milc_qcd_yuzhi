@@ -32,27 +32,27 @@ int read_w_fm_prop_hdr(w_prop_file *wpf)
   w_prop_header *wph = wpf->header;
   int *dims = wph->dims;
 
-  int32type   tmp; 
-  int32type   size_of_element, order; 
-  int32type   t_stamp;
+  u_int32type   tmp; 
+  u_int32type   size_of_element, order; 
+  u_int32type   t_stamp;
   int byterevflag = 0;
   char myname[] = "read_w_fm_prop_hdr";
 
-  if( sizeof(float) != sizeof(int32type)) {
+  if( sizeof(float) != sizeof(u_int32type)) {
     printf("%s: Can't byte reverse\n", wpf->filename);
-    printf("requires size of int32type(%d) = size of float(%d)\n",
-	   (int)sizeof(int32type),(int)sizeof(float));
+    printf("requires size of u_int32type(%d) = size of float(%d)\n",
+	   (int)sizeof(u_int32type),(int)sizeof(float));
     terminate(1);
   }
 
-  if(sread_data(wpf->fp,&wph->magic_number,sizeof(int32type),
+  if(sread_data(wpf->fp,&wph->magic_number,sizeof(u_int32type),
 		myname,"magic_no")) terminate(1);
 
   tmp = wph->magic_number;
   if(wph->magic_number == IO_UNI_MAGIC) byterevflag = 0;
   else 
     {
-      byterevn((int32type *)&wph->magic_number,1);
+      byterevn((u_int32type *)&wph->magic_number,1);
       if(wph->magic_number == IO_UNI_MAGIC) 
 	{
 	  byterevflag = 1; 
@@ -74,11 +74,11 @@ int read_w_fm_prop_hdr(w_prop_file *wpf)
   if(sread_byteorder(byterevflag,wpf->fp,&t_stamp,
 	     sizeof(t_stamp),myname,"t_stamp"))terminate(1);
   if(sread_byteorder(byterevflag,wpf->fp,&size_of_element,
-	     sizeof(int32type),myname,"size_of_element"))terminate(1);
+	     sizeof(u_int32type),myname,"size_of_element"))terminate(1);
   if(sread_byteorder(byterevflag,wpf->fp,&wph->elements_per_site,
-	     sizeof(int32type),myname,"elements_per_site"))terminate(1);
+	     sizeof(u_int32type),myname,"elements_per_site"))terminate(1);
   if(sread_byteorder(byterevflag,wpf->fp,dims,
-	     4*sizeof(int32type),myname,"dimensions"))terminate(1);
+	     4*sizeof(u_int32type),myname,"dimensions"))terminate(1);
 
   if( dims[0]!=nx || dims[1]!=ny || dims[2]!=nz || dims[3]!=nt )
     {
@@ -96,7 +96,7 @@ int read_w_fm_prop_hdr(w_prop_file *wpf)
   else
     {
       nx = dims[0]; ny = dims[1]; nz = dims[2]; nt = dims[3];
-      volume = nx*ny*nz*nt;
+      volume = (size_t) nx*ny*nz*nt;
     }
   
   /* Consistency checks */
@@ -114,7 +114,7 @@ int read_w_fm_prop_hdr(w_prop_file *wpf)
   
   /* The site order parameter is ignored */
   
-  if(sread_byteorder(byterevflag,wpf->fp,&order,sizeof(int32type),
+  if(sread_byteorder(byterevflag,wpf->fp,&order,sizeof(u_int32type),
 		     myname,"order parameter"))terminate(1);
   
   return byterevflag;
@@ -127,10 +127,10 @@ int read_w_fm_prop_hdr(w_prop_file *wpf)
 void swrite_w_fm_prop_hdr(FILE *fp, w_prop_header *wph)
 {
 
-  int32type   elements_per_site = wph->elements_per_site;
-  int32type   size_of_element   = sizeof(float);
-  int32type   zero32 = 0;
-  int32type   t_stamp = wph->t_stamp;
+  u_int32type   elements_per_site = wph->elements_per_site;
+  u_int32type   size_of_element   = sizeof(float);
+  u_int32type   zero32 = 0;
+  u_int32type   t_stamp = wph->t_stamp;
 
   char myname[] = "swrite_w_fm_prop_hdr";
 
@@ -411,7 +411,7 @@ void w_serial_w_fm(w_prop_file *wpf, field_offset src_site,
 
 	  /* Accumulate checksums - contribution from next site */
 	  for(k = 0, val = (u_int32type *)&lbuf[buf_length]; 
-	      k < (int)sizeof(fwilson_matrix)/(int)sizeof(int32type); k++, val++)
+	      k < (int)sizeof(fwilson_matrix)/(int)sizeof(u_int32type); k++, val++)
 	    {
 	      wpf->check.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
 	      wpf->check.sum31 ^= (*val)<<rank31 | (*val)>>(32-rank31);
@@ -587,7 +587,7 @@ void w_serial_w_fm_sc(w_prop_file *wpf, field_offset src_site,
 	   
 	   /* Accumulate checksums - contribution from next site */
 	   for(k = 0, val = (u_int32type *)&lbuf[buf_length]; 
-	       k < (int)sizeof(fwilson_vector)/(int)sizeof(int32type); k++, val++)
+	       k < (int)sizeof(fwilson_vector)/(int)sizeof(u_int32type); k++, val++)
 	     {
 	       wpf->check.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
 	       wpf->check.sum31 ^= (*val)<<rank31 | (*val)>>(32-rank31);
@@ -858,12 +858,12 @@ void r_serial_w_fm(w_prop_file *wpf, field_offset dest_site,
       if(this_node==destnode)
 	{
 	  if(byterevflag==1)
-	    byterevn((int32type *)&msg.q, 
-		     sizeof(fwilson_matrix)/sizeof(int32type));
+	    byterevn((u_int32type *)&msg.q, 
+		     sizeof(fwilson_matrix)/sizeof(u_int32type));
 	  
 	  /* Accumulate checksums */
 	  for(k = 0, val = (u_int32type *)(&msg.q); 
-	      k < (int)sizeof(fwilson_matrix)/(int)sizeof(int32type); 
+	      k < (int)sizeof(fwilson_matrix)/(int)sizeof(u_int32type); 
 	      k++, val++)
 	    {
 	      test_wpc.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
@@ -892,8 +892,8 @@ void r_serial_w_fm(w_prop_file *wpf, field_offset dest_site,
 	}
       else
 	{
-	  rank29 += sizeof(fwilson_matrix)/sizeof(int32type);
-	  rank31 += sizeof(fwilson_matrix)/sizeof(int32type);
+	  rank29 += sizeof(fwilson_matrix)/sizeof(u_int32type);
+	  rank31 += sizeof(fwilson_matrix)/sizeof(u_int32type);
 	  rank29 %= 29;
 	  rank31 %= 31;
 	}
@@ -910,7 +910,7 @@ void r_serial_w_fm(w_prop_file *wpf, field_offset dest_site,
 	}
     } /* rcv_rank */
 
-  if(pbuff != NULL)free(pbuff);  pbuff = NULL;
+  if(pbuff != NULL){free(pbuff);  pbuff = NULL;}
 
   /**  if(this_node==0)
     {
@@ -1034,12 +1034,12 @@ void r_serial_w_fm_sc(w_prop_file *wpf, field_offset dest_site,
 	  if(this_node==destnode)
 	    {
 	      if(byterevflag==1)
-		byterevn((int32type *)&msg.q, 
-			 sizeof(fwilson_vector)/sizeof(int32type));
+		byterevn((u_int32type *)&msg.q, 
+			 sizeof(fwilson_vector)/sizeof(u_int32type));
 	      
 	      /* Accumulate checksums */
 	      for(k = 0, val = (u_int32type *)(&msg.q); 
-		  k < (int)sizeof(fwilson_vector)/(int)sizeof(int32type); 
+		  k < (int)sizeof(fwilson_vector)/(int)sizeof(u_int32type); 
 		  k++, val++)
 		{
 		  test_wpc.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
@@ -1068,8 +1068,8 @@ void r_serial_w_fm_sc(w_prop_file *wpf, field_offset dest_site,
 	    }
 	  else
 	    {
-	      rank29 += sizeof(fwilson_vector)/sizeof(int32type);
-	      rank31 += sizeof(fwilson_vector)/sizeof(int32type);
+	      rank29 += sizeof(fwilson_vector)/sizeof(u_int32type);
+	      rank31 += sizeof(fwilson_vector)/sizeof(u_int32type);
 	      rank29 %= 29;
 	      rank31 %= 31;
 	    }
@@ -1083,7 +1083,7 @@ void r_serial_w_fm_sc(w_prop_file *wpf, field_offset dest_site,
 		   test_wpc.sum29, test_wpc.sum31);
     } /* source color, spin */
   
-  if(pbuff != NULL)free(pbuff);  pbuff = NULL;
+  if(pbuff != NULL){free(pbuff);  pbuff = NULL;}
 
   /**  if(this_node==0)
     {

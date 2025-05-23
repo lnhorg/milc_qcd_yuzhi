@@ -22,7 +22,7 @@ typedef struct {
   /* is it even or odd? */
   char parity;
   /* my index in the array */
-  int index;
+  uint32_t index;
 #ifdef SITERAND
   /* The state information for a random number generator */
 /*
@@ -34,7 +34,7 @@ typedef struct {
   
   /* Now come the physical fields, program dependent */
   /* gauge field */
-  su3_matrix link[4];
+  su3_matrix link[4] ALIGNMENT;
   double ch_dens;
 #ifdef HYP
   su3_matrix blocked_link[32];
@@ -59,7 +59,7 @@ typedef struct {
 
 /* The following are global scalars */
 EXTERN  int nx,ny,nz,nt;        /* lattice dimensions */
-EXTERN  int volume;                     /* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;                     /* volume of lattice = nx*ny*nz*nt */
 #ifdef FIX_NODE_GEOM
 EXTERN  int node_geometry[4];  /* Specifies fixed "nsquares" (i.e. 4D
 			    hypercubes) for the compute nodes in each
@@ -73,7 +73,7 @@ EXTERN int ionode_geometry[4]; /* Specifies fixed "nsquares" for I/O
 			     Must be divisors of the node_geometry. */
 #endif
 #endif
-EXTERN  int iseed;              /* random number seed */
+EXTERN  uint32_t iseed;              /* random number seed */
 EXTERN  Real ape_weight;       /* weight parameter in APE blocking */
 EXTERN  int sweeps,hits,measinterval;
 EXTERN  int total_sweeps;
@@ -94,9 +94,9 @@ EXTERN Real alpha3;
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN  int sites_on_node;              /* number of sites on this node */
-EXTERN  int even_sites_on_node; /* number of even sites on this node */
-EXTERN  int odd_sites_on_node;  /* number of odd sites on this node */
+EXTERN  size_t sites_on_node;              /* number of sites on this node */
+EXTERN  size_t even_sites_on_node; /* number of even sites on this node */
+EXTERN  size_t odd_sites_on_node;  /* number of odd sites on this node */
 EXTERN  int number_of_nodes;    /* number of nodes in use */
 EXTERN  int this_node;          /* node number of this node */
 

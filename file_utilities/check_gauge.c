@@ -31,7 +31,7 @@
 #include <qio.h>
 #endif
 
-gauge_file *r_serial_i(char *filename);
+gauge_file *r_serial_i(const char *filename);
 void r_serial_f(gauge_file *gf);
 
 #define PARALLEL 1
@@ -100,7 +100,7 @@ float ck_unitarity(su3_matrix *work,int x, int y, int z, int t)
 
 /* Here only node 0 reads the gauge configuration from a binary file */
 
-void byterevn(int32type w[], int n);
+void byterevn(u_int32type w[], int n);
 void read_checksum(int parallel, gauge_file *gf, gauge_check *test_gc);
 
 void r_check(gauge_file *gf, float *max_deviation)
@@ -112,12 +112,12 @@ void r_check(gauge_file *gf, float *max_deviation)
   char *filename;
   int byterevflag;
 
-  off_t offset ;            /* File stream pointer */
-  off_t gauge_check_size;   /* Size of gauge configuration checksum record */
-  off_t coord_list_size;    /* Size of coordinate list in bytes */
-  off_t head_size;          /* Size of header plus coordinate list */
-  off_t checksum_offset;    /* Where we put the checksum */
-  int rcv_rank, rcv_coords;
+  off_t offset = 0 ;         /* File stream pointer */
+  off_t gauge_check_size;    /* Size of gauge configuration checksum record */
+  off_t coord_list_size;     /* Size of coordinate list in bytes */
+  off_t head_size;           /* Size of header plus coordinate list */
+  off_t checksum_offset = 0; /* Where we put the checksum */
+  size_t rcv_rank, rcv_coords;
   int destnode;
   int k;
   int x,y,z,t;
@@ -125,7 +125,7 @@ void r_check(gauge_file *gf, float *max_deviation)
   gauge_check test_gc;
   u_int32type *val;
   int rank29,rank31;
-  su3_matrix *lbuf;
+  su3_matrix *lbuf = NULL;
   su3_matrix work[4];
   float deviation;
 
@@ -151,7 +151,7 @@ void r_check(gauge_file *gf, float *max_deviation)
 	gauge_check_size = 0;
       
       if(gf->header->order == NATURAL_ORDER)coord_list_size = 0;
-      else coord_list_size = sizeof(int32type)*volume;
+      else coord_list_size = sizeof(u_int32type)*volume;
       checksum_offset = gf->header->header_bytes + coord_list_size;
       head_size = checksum_offset + gauge_check_size;
       
@@ -259,11 +259,11 @@ void r_check(gauge_file *gf, float *max_deviation)
       if(this_node==destnode)
 	{
 	  if(byterevflag==1)
-	    byterevn((int32type *)&work[0],
-		     4*sizeof(su3_matrix)/sizeof(int32type));
+	    byterevn((u_int32type *)&work[0],
+		     4*sizeof(su3_matrix)/sizeof(u_int32type));
 	  /* Accumulate checksums */
 	  for(k = 0, val = (u_int32type *)&work[0]; 
-	      k < 4*(int)sizeof(su3_matrix)/(int)sizeof(int32type); k++, val++)
+	      k < 4*(int)sizeof(su3_matrix)/(int)sizeof(u_int32type); k++, val++)
 	    {
 	      test_gc.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
 	      test_gc.sum31 ^= (*val)<<rank31 | (*val)>>(32-rank31);
@@ -275,8 +275,8 @@ void r_check(gauge_file *gf, float *max_deviation)
 	}
       else
 	{
-	  rank29 += 4*sizeof(su3_matrix)/sizeof(int32type);
-	  rank31 += 4*sizeof(su3_matrix)/sizeof(int32type);
+	  rank29 += 4*sizeof(su3_matrix)/sizeof(u_int32type);
+	  rank31 += 4*sizeof(su3_matrix)/sizeof(u_int32type);
 	  rank29 %= 29;
 	  rank31 %= 31;
 	}
@@ -415,7 +415,7 @@ void r_check_arch(gauge_file *gf, float *max_deviation)
 		     myname,this_node,errno,filename); 
 	      fflush(stdout); terminate(1);
 	    }
-	  if (!big_end) byterevn((int32type *)uin,48);
+	  if (!big_end) byterevn((u_int32type *)uin,48);
 	  q = uin;
 	  for (mu=0;mu<4;mu++) {
 	    for (p=0;p<realspersite/4;p++) {
@@ -444,7 +444,7 @@ void r_check_arch(gauge_file *gf, float *max_deviation)
 		     myname,this_node,errno,filename); 
 	      fflush(stdout); terminate(1);
 	    }
-	  if (!big_end) byterevn64((int32type *)uind,realspersite);
+	  if (!big_end) byterevn64((u_int32type *)uind,realspersite);
 	  qd = uind;
 	  for (mu=0;mu<4;mu++) {
 	    for (p=0;p<realspersite/4;p++) {
@@ -489,7 +489,7 @@ void r_check_arch(gauge_file *gf, float *max_deviation)
 	{
 	  /* Accumulate checksums */
 	  for(k = 0, val = (u_int32type *)&work[0]; 
-	      k < 4*(int)sizeof(su3_matrix)/(int)sizeof(int32type); k++, val++)
+	      k < 4*(int)sizeof(su3_matrix)/(int)sizeof(u_int32type); k++, val++)
    	    {
 	      test_gc.sum29 ^= (*val)<<rank29 | (*val)>>(32-rank29);
 	      test_gc.sum31 ^= (*val)<<rank31 | (*val)>>(32-rank31);
@@ -501,8 +501,8 @@ void r_check_arch(gauge_file *gf, float *max_deviation)
 	}
       else
 	{
-	  rank29 += 4*sizeof(su3_matrix)/sizeof(int32type);
-	  rank31 += 4*sizeof(su3_matrix)/sizeof(int32type);
+	  rank29 += 4*sizeof(su3_matrix)/sizeof(u_int32type);
+	  rank31 += 4*sizeof(su3_matrix)/sizeof(u_int32type);
 	  rank29 %= 29;
 	  rank31 %= 31;
 	}
@@ -554,6 +554,10 @@ int main(int argc, char *argv[])
     }
   filename = argv[1];
 
+#if MILC_PRECISION == 2
+  node0_printf("WARNING: To check MILC v5 lattices, this utility must be compiled with PRECISION = 1\n");
+#endif
+	       
   initialize_machine(&argc,&argv);
 
   this_node = mynode();
@@ -569,8 +573,13 @@ int main(int argc, char *argv[])
   if(gh->magic_number == LIME_MAGIC_NO){
     /* SciDAC format gauge files */
 
+#ifdef HAVE_QIO
     node0_printf("Scanning to verify only checksums.\n");
     gf = file_scan_serial_scidac(filename);
+#else
+    node0_printf("This appears to be a SciDAC file. Recompile with QIO to scan.\n");
+    terminate(1);
+#endif
     
   } else {
     /* MILC format gauge files */
@@ -596,7 +605,7 @@ int main(int argc, char *argv[])
     
     setup_layout();
     
-    volume = nx*ny*nz*nt;
+    volume = (size_t) nx*ny*nz*nt;
     
     if(gh->magic_number == GAUGE_VERSION_NUMBER_ARCHIVE){
       r_check_arch(gf,&max_deviation);

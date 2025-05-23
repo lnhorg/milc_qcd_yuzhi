@@ -8,7 +8,7 @@ typedef struct {
 	int stopflag;   /* 1 if it is time to stop */
    /* INITIALIZATION PARAMETERS */
 	int nx,ny,nz,nt;  /* lattice dimensions */
-	int iseed;	/* for random numbers */
+	uint32_t iseed;	/* for random numbers */
    /*  REPEATING BLOCK */
 	int warms;	/* the number of warmup trajectories */
 	int trajecs;	/* the number of real trajectories */
@@ -18,7 +18,11 @@ typedef struct {
 	int startflag;  /* what to do for beginning lattice */
 	int fixflag;    /* whether to gauge fix */
 	int saveflag;   /* what to do with lattice at end */
+#ifndef ANISOTROPY
 	Real beta;	/* gauge coupling */
+#else
+        Real beta[2];   /* gauge coupling: 0 - space, 1 - time */
+#endif
 	Real epsilon;	/* time step */
 	char startfile[MAXFILENAME],savefile[MAXFILENAME];
 	char stringLFN[MAXFILENAME];  /** ILDG LFN if applicable ***/

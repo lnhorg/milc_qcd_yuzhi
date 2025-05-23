@@ -19,11 +19,12 @@
 #include "../include/generic.h"
 #include "../include/generic_wilson.h"
 #include "../include/generic_clover.h"
+#include "../include/imp_ferm_links.h"
 #include "../include/dirs.h"
 
 #ifdef PRTIME
 #define STARTTIME dtime = -dclock();
-#define ENDTIME(string) dtime += dclock(); node0_printf("Time to %s %e\n",(string),dtime);
+#define ENDTIME(string) dtime += dclock(); node0_printf("Time to %s %e\n",(string),dtime); fflush(stdout);
 #else
 #define STARTTIME
 #define ENDTIME(string)

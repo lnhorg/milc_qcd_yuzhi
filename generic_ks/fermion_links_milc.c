@@ -30,7 +30,9 @@ create_fm_ap_links_t(info_t *info, ks_action_paths *ap, su3_matrix *links,
   
   al->ap = ap;
   al->fm = create_imp_ferm_links();
+  al->fm->preserve = 1;
   load_imp_ferm_links(info, al->fm, ap, links, options->want_back);
+  
 
   return al;
 }
@@ -65,11 +67,12 @@ restore_fm_ap_links_t(info_t *info, fm_ap_links_t *al, su3_matrix *links,
 
   al->fm = create_imp_ferm_links();
   load_imp_ferm_links(info, al->fm, al->ap, links, want_back);
+  al->fm->preserve = 1;
 }
 
-static imp_ferm_links_t **
+static imp_ferm_links_t *
 get_fm_ap_links_t_fm(fm_ap_links_t *al){
-  return &al->fm;
+  return al->fm;
 }
 
 static ks_action_paths*
@@ -148,12 +151,12 @@ restore_milc_fm_links_t(info_t *info, milc_fm_links_t *al,
   info->final_flop = final_flop;
 }
 
-static imp_ferm_links_t **
+static imp_ferm_links_t *
 get_milc_fm_ap_links_fm(milc_fm_links_t *al){
   return get_fm_ap_links_t_fm(al->fm_ap);
 }
 
-static imp_ferm_links_t **
+static imp_ferm_links_t *
 get_milc_fm_ap_du0_links_fm(milc_fm_links_t *al){
   return get_fm_ap_links_t_fm(al->fm_ap_du0);
 }
@@ -192,9 +195,9 @@ create_fermion_links(int precision, int phases_in, su3_matrix *links){
 
   /* Precision for MILC is ignored: use the prevailing precision */
 
-  if(precision != PRECISION)
+  if(precision != MILC_PRECISION)
     if(mynode() == 0)printf("%s: Warning. Precision request replaced by %d\n",
-			    myname, PRECISION);
+			    myname, MILC_PRECISION);
 
   if( phases_in != 1){
     if(mynode() == 0)printf("BOTCH: %s needs phases in\n",myname); 
@@ -224,7 +227,7 @@ create_fermion_links(int precision, int phases_in, su3_matrix *links){
 
 #ifdef FLTIME
   if(mynode()==0)printf("FLTIME: time = %e (asqtad %s) mflops = %e\n",
-	       info.final_sec,milc_prec[PRECISION-1],
+	       info.final_sec,milc_prec[MILC_PRECISION-1],
 	       info.final_flop/(1e6*info.final_sec) );
 #endif
   return fl;
@@ -260,7 +263,7 @@ invalidate_fermion_links(fermion_links_t *fl){
 void 
 restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_matrix *links){
 
-  char myname[] = "restore_fermion_links_fm";
+  char myname[] = "restore_fermion_links";
   info_t info = INFO_ZERO;
 
   if(fl == NULL){
@@ -268,18 +271,18 @@ restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_mat
     terminate(1);
   }
 
-  if(precision != PRECISION)
+  if(precision != MILC_PRECISION)
     if(mynode() == 0)printf("%s: Warning. Precision request replaced by %d\n",
-			    myname, PRECISION);
+			    myname, MILC_PRECISION);
 
   if( phases_in != 1){
-    if(mynode() == 0)printf("BOTCH: %s needs phases in\n",myname); terminate(1);
+    if(mynode() == 0){printf("BOTCH: %s needs phases in\n",myname); terminate(1);}
   }
   
   restore_milc_fm_links_t(&info, fl->flg, links, fl->options.want_back);
 #ifdef FLTIME
   if(mynode()==0)printf("FLTIME: time = %e (asqtad %s) mflops = %e\n",
-	       info.final_sec,milc_prec[PRECISION-1],
+	       info.final_sec,milc_prec[MILC_PRECISION-1],
 	       info.final_flop/(1e6*info.final_sec) );
 #endif
 }
@@ -288,12 +291,13 @@ restore_fermion_links(fermion_links_t *fl, int precision, int phases_in, su3_mat
 /* Accessors                              */
 /*----------------------------------------*/
 
-imp_ferm_links_t **
-get_fm_links(fermion_links_t *fl){
+imp_ferm_links_t *
+get_fm_links(fermion_links_t *fl, int i_naik){
+  /* The non-HISQ actions have no Naik epsilon */
   return get_milc_fm_ap_links_fm(fl->flg);
 }
 
-imp_ferm_links_t **
+imp_ferm_links_t *
 get_fm_du0_links(fermion_links_t *fl){
   return get_milc_fm_ap_du0_links_fm(fl->flg);
 }

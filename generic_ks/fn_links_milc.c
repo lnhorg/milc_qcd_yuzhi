@@ -10,6 +10,10 @@
 #ifdef QCDOC
 #define special_alloc qcdoc_alloc
 #define special_free qfree
+#elif defined(USE_FL_GPU) && defined(HAVE_QUDA)
+#include "../include/generic_quda.h"
+#define special_alloc qudaAllocatePinned
+#define special_free qudaFreePinned
 #else
 #define special_alloc malloc
 #define special_free free
@@ -227,6 +231,15 @@ load_fn_backlinks(fn_links_t *fn){
 /* Create/destroy fn links                                           */
 /*-------------------------------------------------------------------*/
 
+void 
+init_ferm_links(fn_links_t *fn){
+  fn->fat = NULL;
+  fn->lng = NULL;
+  fn->fatback = NULL;
+  fn->lngback = NULL;
+  fn->eps_naik = 0.0;
+  fn->notify_quda_new_links = 1; /* Tell QUDA to refresh its cached links */
+}
 /* The fat/long members are not created */
 
 fn_links_t *
@@ -245,11 +258,14 @@ create_fn_links(void){
     terminate(1);
   }
   
+  init_ferm_links(fn);
+  fn->preserve = 0;
   fn->phase = create_link_phase_info();
   fn->fat = create_fatlinks();
   fn->lng = create_lnglinks();
   fn->fatback = NULL;
   fn->lngback = NULL;
+  fn->eps_naik = 0.0;
 
   return fn;
 }
@@ -258,6 +274,7 @@ create_fn_links(void){
 void 
 destroy_fn_links(fn_links_t *fn){
   if(fn == NULL)return;
+  if(fn->preserve == 1)return;
 
   destroy_link_phase_info(fn->phase);
   destroy_fatlinks(fn->fat);
@@ -318,6 +335,9 @@ copy_fn(fn_links_t *fn_src, fn_links_t *fn_dst){
 	lngbackdst[4*i + dir] = lngbacksrc[4*i + dir];
     }
   }
+
+  fn_dst->eps_naik = fn_src->eps_naik;
+
   END_LOOP_OMP;
 }
 
@@ -354,6 +374,9 @@ scalar_mult_fn(fn_links_t *fn_src, Real s, fn_links_t *fn_dst){
 
 void 
 add_fn(fn_links_t *fn_A, fn_links_t *fn_B, fn_links_t *fn_C){
+
+  char myname[] = "add_fn";
+
   int i, dir;
 
   su3_matrix *fatA = get_fatlinks(fn_A);
@@ -375,12 +398,29 @@ add_fn(fn_links_t *fn_A, fn_links_t *fn_B, fn_links_t *fn_C){
     for(dir=XUP;dir<=TUP;dir++) {
       add_su3_matrix( fatA + 4*i + dir, fatB + 4*i + dir, fatC + 4*i + dir );
       add_su3_matrix( lngA + 4*i + dir, lngB + 4*i + dir, lngC + 4*i + dir );
-      if(fatbackA != NULL && fatbackC != NULL)
+      if(fatbackA != NULL && fatbackB != NULL && fatbackC != NULL)
 	add_su3_matrix( fatbackA + 4*i + dir, fatbackB + 4*i + dir, fatbackC + 4*i + dir );
-      if(lngbackA != NULL && lngbackC != NULL)
+      if(lngbackA != NULL && lngbackB != NULL && lngbackC != NULL)
 	add_su3_matrix( lngbackA + 4*i + dir, lngbackB + 4*i + dir, lngbackC + 4*i + dir );
     }
   }
   END_LOOP_OMP;
 }
 
+int
+fresh_fn_links(imp_ferm_links_t *fn)
+{
+  return fn->notify_quda_new_links;
+}
+
+void
+refresh_fn_links(imp_ferm_links_t *fn)
+{
+  fn->notify_quda_new_links = 1;
+}
+
+void
+cancel_quda_notification(imp_ferm_links_t *fn)
+{
+  fn->notify_quda_new_links = 0;
+}

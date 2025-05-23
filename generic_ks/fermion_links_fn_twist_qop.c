@@ -70,7 +70,7 @@ create_link_phase_info(void){
 }
 
 void 
-set_boundary_twist_fn(fn_links_qop_t *fn, Real bdry_phase[4], int r0[4]){
+set_boundary_twist_fn(imp_ferm_links_t *fn, Real bdry_phase[4], int r0[4]){
   int dir;
   
   FORALLUPDIR(dir){
@@ -177,8 +177,14 @@ apply_twist(fn_links_qop_t *fn, int r0[], complex cphase[4]){
   free(cp.phase);
 }
 
+int
+twist_status(imp_ferm_links_t *fn){
+  link_phase_info_t *lp = fn->phase;
+  return lp->twist_in;
+}
+
 void 
-boundary_twist_fn(fn_links_qop_t *fn, int flag) {
+boundary_twist_fn(imp_ferm_links_t *fn, int flag) {
   char myname[] = "boundary_twist_fn";
 
   link_phase_info_t *lp = fn->phase;

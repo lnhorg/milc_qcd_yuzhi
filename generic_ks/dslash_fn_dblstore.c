@@ -74,17 +74,17 @@ void dslash_fn_site_special( field_offset src, field_offset dest,
 			     int parity, msg_tag **tag, int start,
 			     fn_links_t *fn)
 {
-    register int i;
-    register site *s;
-    register int dir,otherparity=0;
-    register su3_matrix *fat4;
+    int i;
+    site *s;
+    int dir,otherparity=0;
+    su3_matrix *fat4;
     su3_matrix *t_fatlink;
 #ifndef NO_LONG_LINKS
     int do_long = 1;
 #else
     int do_long = 0;
 #endif
-    register su3_matrix *long4;
+     su3_matrix *long4;
     su3_matrix *t_longlink;
     su3_vector *templongvec, *templongv1;
     su3_vector *tempvec;
@@ -284,7 +284,7 @@ void dslash_fn_site_special( field_offset src, field_offset dest,
 
 void dslash_fn_field( su3_vector *src, su3_vector *dest, int parity,
 		      fn_links_t *fn) {
-    register int dir;
+    int dir;
     msg_tag *tag[16];
 
     dslash_fn_field_special(src, dest, parity, tag, 1, fn );
@@ -311,10 +311,10 @@ void dslash_fn_field( su3_vector *src, su3_vector *dest, int parity,
 void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
 			     int parity, msg_tag **tag, int start,
 			     fn_links_t *fn ){
-  register int i;
-  register site *s;
-  register int dir;
-  register su3_matrix *fat4, *fatback4;
+  int i;
+  site *s;
+  int dir;
+  su3_matrix *fat4, *fatback4;
   su3_matrix *t_fatlink;
   su3_matrix *t_fatbacklink;
 #ifndef NO_LONG_LINKS
@@ -324,7 +324,7 @@ void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
 #endif
   su3_matrix *t_longlink;
   su3_matrix *t_longbacklink;
-  register su3_matrix *longback4;
+  su3_matrix *longback4;
   su3_vector tvec;
 #ifdef D_FN_GATHER13
   int coords[4]; /* for avoiding gathers */
@@ -350,6 +350,7 @@ void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
   /* Then change pointers from first neighbor to point into third
       neighbor results, so we don't have to restart those gathers,
       provided third neighbors are done */
+    int dim[4] = {nx, ny, nz, nt};
   for( dir=XUP; dir<=TUP; dir++ ){
     if(start==1) 
       {
@@ -366,6 +367,7 @@ void dslash_fn_field_special(su3_vector *src, su3_vector *dest,
 	    || gen_pt[dir][i] >= (char *)(src+sites_on_node) ){
 	      coords[XUP]=s->x; coords[YUP]=s->y; coords[ZUP]=s->z;
 	      coords[TUP]=s->t; coords[dir]-=2;
+	      coords[dir] = (coords[dir] + dim[dir]) % dim[dir];
 	      gen_pt[dir][i]=gen_pt[DIR3(dir)][node_index(coords[XUP],
 		coords[YUP],coords[ZUP], coords[TUP])];
 	      if(d_fn_g13_checked == 0)
@@ -572,11 +574,11 @@ void cleanup_dslash_temps(){
 
 
 void 
-dslash_fn_dir(su3_vector *src, su3_vector *dest, int parity,
+dslash_fn_dir(const su3_vector * const src, su3_vector *dest, int parity,
 	      fn_links_t *fn, int dir, int fb, 
 	      Real wtfat, Real wtlong)
 {
-  register int i ;
+  int i ;
   site *s;
   msg_tag *tag[2] = {NULL, NULL};
   su3_matrix *fat = get_fatlinks(fn);

@@ -38,7 +38,7 @@ typedef struct {
 	/* is it even or odd? */
 	char parity;
 	/* my index in the array */
-	int index;
+	uint32_t index;
 #ifdef SITERAND
 	/* The state information for a random number generator */
 	double_prn site_prn;
@@ -50,10 +50,10 @@ typedef struct {
 /*   Now come the physical fields, program dependent            */
 /* ------------------------------------------------------------ */
 	/* gauge field */
-	su3_matrix link[4];	/* the fundamental field */
+	su3_matrix link[4] ALIGNMENT;	/* the fundamental field */
 
 	/* antihermitian momentum matrices in each direction */
- 	anti_hermitmat mom[4];
+ 	anti_hermitmat mom[4] ALIGNMENT;
 #ifdef FERMION_FORCE
         su3_matrix ansmom[4];
 #endif
@@ -61,28 +61,9 @@ typedef struct {
 	/* The Kogut-Susskind phases, which have been absorbed into 
 		the matrices.  Also the antiperiodic boundary conditions.  */
  	Real phase[4];
-#if 0
-	/* 3 element complex vectors */
- 	su3_vector phi;	        /* Gaussian random source vector */
- 	su3_vector resid;	/* conjugate gradient residual vector */
- 	su3_vector cg_p;	/* conjugate gradient change vector */
- 	su3_vector xxx;	        /* solution vector = Kinverse * phi */
- 	su3_vector xxx1;        /* solution vector = Kinverse * phi */
- 	su3_vector xxx2;        /* solution vector = Kinverse * phi */
- 	su3_vector ttt;		/* temporary vector, for K*ppp */
  	su3_vector g_rand;	/* Gaussian random vector*/
 	/* Use trick of combining xxx=D^adj D)^(-1) on even sites with
 	   Dslash times this on odd sites when computing fermion force */
-
-	/* temporary vectors and matrices */
-	su3_vector tempvec[4];	/* One for each direction */
-#ifdef FN
-	su3_vector templongvec[4];	/* One for each direction */
-        su3_vector templongv1;
-#endif
-	su3_matrix tempmat1,staple;
-#endif
-
 } site;
 
 /* End definition of site structure */
@@ -101,7 +82,7 @@ typedef struct {
    u0 is tadpole improvement factor, perhaps (plaq/3)^(1/4)
 */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
-EXTERN  int volume;		/* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;		/* volume of lattice = nx*ny*nz*nt */
 #ifdef FIX_NODE_GEOM
 EXTERN  int node_geometry[4];  /* Specifies fixed "nsquares" (i.e. 4D
 			    hypercubes) for the compute nodes in each
@@ -115,7 +96,8 @@ EXTERN int ionode_geometry[4]; /* Specifies fixed "nsquares" for I/O
 			     Must be divisors of the node_geometry. */
 #endif
 #endif
-EXTERN	int iseed;		/* random number seed */
+EXTERN  params param;           /* user input parameters */
+EXTERN	uint32_t iseed;		/* random number seed */
 EXTERN  int nmass;
 EXTERN  Real beta;
 EXTERN  Real mass,u0;
@@ -131,9 +113,9 @@ EXTERN  double_complex linktrsum;
 EXTERN  u_int32type nersc_checksum;
 EXTERN  char stringLFN[MAXFILENAME];  /** ILDG LFN if applicable **/
 EXTERN  char savelongfile[MAXFILENAME],savefatfile[MAXFILENAME];
+EXTERN  char stringLFNlong[MAXFILENAME], stringLFNfat[MAXFILENAME];  /** ILDG LFN if applicable **/
 EXTERN  char srcfile[MAXFILENAME],ansfile[MAXFILENAME];
 EXTERN  int inverttype;
-EXTERN  params par_buf;
 EXTERN  int niter;
 EXTERN  int nrestart;
 EXTERN  Real rsqprop;
@@ -144,9 +126,9 @@ EXTERN  int phases_in; /* 1 if KS and BC phases absorbed into matrices */
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN	int sites_on_node;		/* number of sites on this node */
-EXTERN	int even_sites_on_node;	/* number of even sites on this node */
-EXTERN	int odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN	size_t sites_on_node;		/* number of sites on this node */
+EXTERN	size_t even_sites_on_node;	/* number of even sites on this node */
+EXTERN	size_t odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN	int number_of_nodes;	/* number of nodes in use */
 EXTERN  int this_node;		/* node number of this node */
 
@@ -163,6 +145,8 @@ EXTERN Real boundary_phase[4];
 EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
+EXTERN int refresh_ape_links;
+EXTERN int ape_links_ks_phases;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */
@@ -174,6 +158,16 @@ EXTERN fermion_links_t        *fn_links;
 
 /* Naik terms */
 EXTERN int n_order_naik_total;
-EXTERN int n_orders_naik[MAX_MASS];
 
+/* For eigenpair calculation */
+EXTERN int Nvecs_tot;
+EXTERN Real *eigVal; /* eigenvalues of D^dag D */
+EXTERN su3_vector **eigVec; /* eigenvectors */
+
+EXTERN int n_pseudo;
+EXTERN int max_rat_order;
+
+EXTERN int n_order_naik_total;
+EXTERN int n_pseudo_naik[MAX_N_PSEUDO];
+EXTERN int n_orders_naik[MAX_N_PSEUDO];
 #endif /* _LATTICE_H */

@@ -18,11 +18,11 @@
 #endif
 #include <string.h>
 
-int io_detect(char *filename, file_table ft[], int ntypes){
+int io_detect(const char *filename, file_table ft[], int ntypes){
   FILE *fp;
   int i, status, words;
-  int32type magic_no;
-  int32type revmagic_no;
+  u_int32type magic_no;
+  u_int32type revmagic_no;
   char editfilename[513];
 
   /* Node 0 reads and checks */
@@ -40,7 +40,7 @@ int io_detect(char *filename, file_table ft[], int ntypes){
     if(fp == NULL)status = -2;
     else
       {
-	words = g_read(&magic_no, sizeof(int32type), 1, fp);
+	words = g_read(&magic_no, sizeof(u_int32type), 1, fp);
 	g_close(fp);
 
 	if(words != 1)status = -3;
@@ -74,7 +74,7 @@ int io_detect(char *filename, file_table ft[], int ntypes){
 /* Open a staggered propagator file and discover its format */
 
 #ifdef HAVE_QIO
-int io_detect_ks_usqcd(char *filename){
+int io_detect_ks_usqcd(const char *filename){
 
   QIO_Layout layout;
   QIO_Filesystem fs;
@@ -119,7 +119,7 @@ int io_detect_ks_usqcd(char *filename){
 /********************************************************************/
 /* Open a Wilson propagator file and discover its format */
 
-int io_detect_w_usqcd(char *filename){
+int io_detect_w_usqcd(const char *filename){
 
   QIO_Layout layout;
   QIO_Filesystem fs;
@@ -164,12 +164,14 @@ int io_detect_w_usqcd(char *filename){
 #endif
 
 #endif
+
+#if 0
 /********************************************************************/
 /* For FNAL we base the detection on the number of elements per site */
-int io_detect_fm(char *filename){
+int io_detect_fm(const char *filename){
   FILE *fp;
   int status, words;
-  int32type magic_no, revmagic_no, gmtime_stamp, size_of_element,
+  u_int32type magic_no, revmagic_no, gmtime_stamp, size_of_element,
     elem_per_site;
   int byterevflag = 0;
 
@@ -179,7 +181,7 @@ int io_detect_fm(char *filename){
     if(fp == NULL)status = -2;
     else
       {
-	words = g_read(&magic_no, sizeof(int32type), 1, fp);
+	words = g_read(&magic_no, sizeof(u_int32type), 1, fp);
 
 	if(words != 1)status = -3;
 	else
@@ -191,8 +193,8 @@ int io_detect_fm(char *filename){
 	    if(revmagic_no == IO_UNI_MAGIC)byterevflag = 1;
 	    if(magic_no == IO_UNI_MAGIC || revmagic_no == IO_UNI_MAGIC){
 	      g_read(&gmtime_stamp, sizeof(gmtime_stamp), 1, fp);
-	      g_read(&size_of_element, sizeof(int32type), 1, fp);
-	      g_read(&elem_per_site, sizeof(int32type), 1, fp);
+	      g_read(&size_of_element, sizeof(u_int32type), 1, fp);
+	      g_read(&elem_per_site, sizeof(u_int32type), 1, fp);
 
 	      if(byterevflag){
 		byterevn(&size_of_element, 1);
@@ -221,6 +223,7 @@ int io_detect_fm(char *filename){
   /* All nodes return the same value */
   return status;
 }
+#endif
 
 /*---------------------------------------------------------------*/
 /* Sniff out the file type */
@@ -237,7 +240,7 @@ static file_table broad_file_types[N_BROAD_FILE_TYPES] =
   };
 
 int 
-get_file_type(char *filename)
+get_file_type(const char *filename)
 {
   int file_type = FILE_TYPE_UNKNOWN;
   char myname[] = "get_file_type";
@@ -248,6 +251,7 @@ get_file_type(char *filename)
     terminate(1);
   }
   
+#if 0
   /* Look further for FNAL files */
   if(file_type == FILE_TYPE_FM){
     file_type = io_detect_fm(filename);
@@ -256,9 +260,10 @@ get_file_type(char *filename)
       terminate(1);
     }
   }
+#endif
   
   /* For QIO(LIME) types, same thing */
-  else if(file_type == FILE_TYPE_LIME){
+  if(file_type == FILE_TYPE_LIME){
 #ifdef HAVE_QIO
 #ifndef ONLY_GLUON_FILES
     file_type = io_detect_w_usqcd(filename);

@@ -1,0 +1,313 @@
+SU3 staggered fermion measurements
+MIMD version 8bd23-dirty
+Machine = QMP (portable), with 1 nodes
+Host(0) = login37
+Username = detar
+start: Sat Nov 16 16:17:04 2024
+
+Options selected...
+Generic double precision
+C_GLOBAL_INLINE
+DBLSTORE_FN
+D_FN_GATHER13
+FEWSUMS
+KS_MULTICG=HYBRID
+HISQ_REUNIT_ALLOW_SVD
+HISQ_REUNIT_SVD_REL_ERROR = 1e-08
+HISQ_REUNIT_SVD_ABS_ERROR = 1e-08
+type 0 for no prompts, 1 for prompts, or 2 for proofreading
+nx 8
+ny 8
+nz 8
+nt 8
+iseed 5682304
+job_id 203696.kaon2.fnal.gov
+LAYOUT = Hypercubes, options = hyper_prime,
+QMP with automatic hyper_prime layout
+ON EACH NODE (RANK) 8 x 8 x 8 x 8
+Mallocing 2.9 MBytes per node for lattice
+Time to set up 9.981155e-03
+
+
+######################################################################
+# source time 0
+######################################################################
+# Gauge field description
+reload_serial ../../binary_samples/lat.sample.l8888
+u0 1
+forget 
+staple_weight 0
+ape_iter 0
+coordinate_origin 0 0 0 0 
+time_bc antiperiodic
+# Number of eigenvalues to compute (storage required for all eigenvectors)
+max_number_of_eigenpairs 10
+# eigenvector I/O
+fresh_ks_eigen 
+save_serial_ks_eigen ./eigen_serial.out
+# Dirac eigenpair calculation
+# CG for Rayleigh-Ritz minimization
+Max_Rayleigh_iters 100
+Restart_Rayleigh 10
+# Outer loop iterations
+Kalkreuter_iters 20
+# Eigenvalue tolerance
+eigenval_tolerance 1e-06
+# See README.ks_eigen - For optimizing the RR CG
+error_decrease 0.3
+# Chiral condensate and related measurements
+number_of_sets 1
+# Parameters common to all members of set 0
+npbp_reps 1
+max_cg_iterations 300
+max_cg_restarts 5
+prec_pbp 2
+number_of_pbp_masses 2
+mass 0.01
+naik_term_epsilon 0
+error_for_propagator 1e-08
+rel_error_for_propagator 0
+mass 0.1
+naik_term_epsilon 0
+error_for_propagator 1e-08
+rel_error_for_propagator 0
+Restored binary gauge configuration serially from file ../../binary_samples/lat.sample.l8888
+Time stamp Tue Mar 13 15:47:22 2012
+Checksums 4f9d000e 8d72f72e OK
+Time to reload gauge configuration = 4.719019e-03
+CHECK PLAQ: 1.7790021544584655e+00 1.7823592881385817e+00
+CHECK NERSC LINKTR: -6.4563862036388919e-04 CKSUM: 4a3bbf43
+Reunitarized for double precision. Max deviation 2.62e-07 changed to 5.55e-16
+Time to check unitarity = 8.140087e-03
+"Fat 7 (level 1)"
+path coefficients: npath  path_coeff
+                    0      1.250000e-01
+                    1      -6.250000e-02
+                    2      1.562500e-02
+                    3      -2.604167e-03
+Unitarization method = UNITARIZE_ANALYTIC
+Unitarization group = U(3)
+"Fat7 + 2xLepage"
+path coefficients: npath  path_coeff
+                    0      1.000000e+00
+                    1      -4.166667e-02
+                    2      -6.250000e-02
+                    3      1.562500e-02
+                    4      -2.604167e-03
+                    5      -1.250000e-01
+"1-link + Naik"
+path coefficients: npath  path_coeff
+                    0      1.250000e-01
+                    1      -4.166667e-02
+MAKING PATH TABLES
+Combined fattening and long-link calculation time: 0.044461
+Time to APE smear 2.939939e-03 sec
+Time to readin 1.188581e-01
+Turning ON boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+Eigenvalues after diagonalization at iteration 9
+BEGIN RESULTS
+Eigenvalue(0) = 0.1333053285586458 +/- 1.293471e-08	 cvg? 0  
+Eigenvalue(1) = 0.1366105707181099 +/- 2.736016e-08	 cvg? 0  
+Eigenvalue(2) = 0.1534184341618279 +/- 3.259341e-08	 cvg? 0  
+Eigenvalue(3) = 0.1576108780716972 +/- 5.084107e-08	 cvg? 0  
+Eigenvalue(4) = 0.1782402661911607 +/- 3.505505e-08	 cvg? 0  
+Eigenvalue(5) = 0.1880120684711617 +/- 4.587285e-08	 cvg? 0  
+Eigenvalue(6) = 0.1983062466575185 +/- 5.234763e-08	 cvg? 0  
+Eigenvalue(7) = 0.2038871217968712 +/- 9.515337e-08	 cvg? 0  
+Eigenvalue(8) = 0.2365129482934804 +/- 6.679811e-08	 cvg? 0  
+Eigenvalue(9) = 0.2394291174642291 +/- 9.946291e-08	 cvg? 0  
+total Rayleigh iters = 0
+Even site residuals
+Checking eigensolutions
+eigVal[0] = 1.333053e-01 ( resid = 1.837017e-04 , |eigVec[0]|-1 = 0.000000e+00 )
+eigVal[1] = 1.366106e-01 ( resid = 3.057994e-04 , |eigVec[1]|-1 = -1.110223e-16 )
+eigVal[2] = 1.534184e-01 ( resid = 3.284160e-04 , |eigVec[2]|-1 = 0.000000e+00 )
+eigVal[3] = 1.576109e-01 ( resid = 4.215750e-04 , |eigVec[3]|-1 = 0.000000e+00 )
+eigVal[4] = 1.782403e-01 ( resid = 3.227960e-04 , |eigVec[4]|-1 = 0.000000e+00 )
+eigVal[5] = 1.880121e-01 ( resid = 3.827293e-04 , |eigVec[5]|-1 = 2.220446e-16 )
+eigVal[6] = 1.983062e-01 ( resid = 4.276723e-04 , |eigVec[6]|-1 = 2.220446e-16 )
+eigVal[7] = 2.038871e-01 ( resid = 5.026037e-04 , |eigVec[7]|-1 = 0.000000e+00 )
+eigVal[8] = 2.365129e-01 ( resid = 4.681002e-04 , |eigVec[8]|-1 = -1.110223e-16 )
+eigVal[9] = 2.394291e-01 ( resid = 4.635850e-04 , |eigVec[9]|-1 = 0.000000e+00 )
+End of eigensolutions
+Odd site residuals
+Checking eigensolutions
+eigVal[0] = 1.333053e-01 ( resid = 1.634115e-03 , |eigVec[0]|-1 = -6.348900e-01 )
+eigVal[1] = 1.366106e-01 ( resid = 2.800750e-03 , |eigVec[1]|-1 = -6.303913e-01 )
+eigVal[2] = 1.534184e-01 ( resid = 2.759543e-03 , |eigVec[2]|-1 = -6.083133e-01 )
+eigVal[3] = 1.576109e-01 ( resid = 3.410335e-03 , |eigVec[3]|-1 = -6.029976e-01 )
+eigVal[4] = 1.782403e-01 ( resid = 2.447130e-03 , |eigVec[4]|-1 = -5.778149e-01 )
+eigVal[5] = 1.880121e-01 ( resid = 2.849355e-03 , |eigVec[5]|-1 = -5.663964e-01 )
+eigVal[6] = 1.983062e-01 ( resid = 3.138548e-03 , |eigVec[6]|-1 = -5.546841e-01 )
+eigVal[7] = 2.038871e-01 ( resid = 3.653256e-03 , |eigVec[7]|-1 = -5.484614e-01 )
+eigVal[8] = 2.365129e-01 ( resid = 3.044235e-03 , |eigVec[8]|-1 = -5.136740e-01 )
+eigVal[9] = 2.394291e-01 ( resid = 3.013127e-03 , |eigVec[9]|-1 = -5.106851e-01 )
+End of eigensolutions
+Turning OFF boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+The above were eigenvalues of -Dslash^2 in MILC normalization
+Here we also list eigenvalues of iDslash in continuum normalization
+eigenval(0):   0.182555
+eigenval(1):   0.184804
+eigenval(2):   0.195843
+eigenval(3):   0.198501
+eigenval(4):   0.211093
+eigenval(5):   0.216802
+eigenval(6):   0.222658
+eigenval(7):   0.225769
+eigenval(8):   0.243163
+eigenval(9):   0.244657
+Time to calculate/reload Dirac eigenpairs 1.763613e+00
+Turning ON boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+UML inversion with mass 0.010000
+deflating on even sites for mass 0.01 with 10 eigenvec
+Time to project out 10 modes 0.000597 sec
+Time to deflate 10 modes 0.000965118
+CONGRAD5: time = 3.700018e-02 (fn D) masses = 1 iters = 82 mflops = 1.077508e+04
+ OK converged final_rsq= 7.9e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 82
+deflating on odd sites for mass 0.01 with 10 eigenvec
+Time to project out 10 modes 0.000341892 sec
+Time to deflate 10 modes 0.000679016
+CONGRAD5: time = 2.517700e-02 (fn D) masses = 1 iters = 36 mflops = 6.951990e+03
+ OK converged final_rsq= 7.6e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 36
+UML inversion with mass 0.100000
+deflating on even sites for mass 0.1 with 10 eigenvec
+Time to project out 10 modes 0.000326872 sec
+Time to deflate 10 modes 0.000648022
+CONGRAD5: time = 3.315592e-02 (fn D) masses = 1 iters = 74 mflops = 1.085129e+04
+ OK converged final_rsq= 8.8e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 74
+deflating on odd sites for mass 0.1 with 10 eigenvec
+Time to project out 10 modes 0.000326872 sec
+Time to deflate 10 modes 0.000651121
+CONGRAD5: time = 1.211715e-02 (fn D) masses = 1 iters = 26 mflops = 1.043239e+04
+ OK converged final_rsq= 9.9e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 26
+PBP: mass 1.000000e-02     4.176069e-03  1.384507e-02  -1.057935e-02  -1.057935e-02 ( 1 of 1 )
+FACTION: mass = 1.000000e-02,  1.479268e+00 ( 1 of 1 )
+PBP: mass 1.000000e-01     8.601250e-02  8.982017e-02  -1.095778e-02  -1.095778e-02 ( 1 of 1 )
+FACTION: mass = 1.000000e-01,  1.478984e+00 ( 1 of 1 )
+Turning OFF boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+Time to calculate observables 1.175699e-01
+Time to save 10 eigenvectors = 2.157187e-02
+RUNNING COMPLETED
+Time = 2.021696e+00 seconds
+total_iters = 218
+
+
+######################################################################
+# Gauge field description
+continue 
+u0 1
+forget 
+staple_weight 0
+ape_iter 0
+coordinate_origin 0 0 0 0 
+time_bc antiperiodic
+# Dirac eigenpair calculation
+# Number of eigenvalues to compute (storage required for all eigenvectors)
+max_number_of_eigenpairs 5
+# eigenvector I/O
+reload_serial_ks_eigen ./eigen_serial.out
+forget_ks_eigen 
+# Chiral condensate and related measurements
+number_of_sets 1
+# Parameters common to all members of set 0
+npbp_reps 1
+max_cg_iterations 300
+max_cg_restarts 5
+prec_pbp 2
+number_of_pbp_masses 2
+mass 0.01
+naik_term_epsilon 0
+error_for_propagator 1e-08
+rel_error_for_propagator 0
+mass 0.1
+naik_term_epsilon 0
+error_for_propagator 1e-08
+rel_error_for_propagator 0
+"Fat 7 (level 1)"
+path coefficients: npath  path_coeff
+                    0      1.250000e-01
+                    1      -6.250000e-02
+                    2      1.562500e-02
+                    3      -2.604167e-03
+Unitarization method = UNITARIZE_ANALYTIC
+Unitarization group = U(3)
+"Fat7 + 2xLepage"
+path coefficients: npath  path_coeff
+                    0      1.000000e+00
+                    1      -4.166667e-02
+                    2      -6.250000e-02
+                    3      1.562500e-02
+                    4      -2.604167e-03
+                    5      -1.250000e-01
+"1-link + Naik"
+path coefficients: npath  path_coeff
+                    0      1.250000e-01
+                    1      -4.166667e-02
+MAKING PATH TABLES
+Combined fattening and long-link calculation time: 0.044059
+Time to APE smear 8.530617e-04 sec
+Opened KS eigenvector file ./eigen_serial.out for serial reading
+Read eigenvectors serially from file ./eigen_serial.out
+Closed KS eigenvector file ./eigen_serial.out
+Time to reload 5 eigenvectors = 1.309490e-02
+Time to readin 1.228502e-01
+Checking eigensolutions
+eigVal[0] = 1.333053e-01 ( resid = 1.837017e-04 , |eigVec[0]|-1 = -1.110223e-16 )
+eigVal[1] = 1.366106e-01 ( resid = 3.057994e-04 , |eigVec[1]|-1 = -1.110223e-16 )
+eigVal[2] = 1.534184e-01 ( resid = 3.284160e-04 , |eigVec[2]|-1 = 0.000000e+00 )
+eigVal[3] = 1.576109e-01 ( resid = 4.215750e-04 , |eigVec[3]|-1 = 0.000000e+00 )
+eigVal[4] = 1.782403e-01 ( resid = 3.227960e-04 , |eigVec[4]|-1 = 0.000000e+00 )
+End of eigensolutions
+Odd site residuals
+Checking eigensolutions
+eigVal[0] = 1.333053e-01 ( resid = 1.634115e-03 , |eigVec[0]|-1 = -6.348900e-01 )
+eigVal[1] = 1.366106e-01 ( resid = 2.800750e-03 , |eigVec[1]|-1 = -6.303913e-01 )
+eigVal[2] = 1.534184e-01 ( resid = 2.759543e-03 , |eigVec[2]|-1 = -6.083133e-01 )
+eigVal[3] = 1.576109e-01 ( resid = 3.410335e-03 , |eigVec[3]|-1 = -6.029976e-01 )
+eigVal[4] = 1.782403e-01 ( resid = 2.447130e-03 , |eigVec[4]|-1 = -5.778149e-01 )
+End of eigensolutions
+Turning OFF boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+The above were eigenvalues of -Dslash^2 in MILC normalization
+Here we also list eigenvalues of iDslash in continuum normalization
+eigenval(0):   0.182555
+eigenval(1):   0.184804
+eigenval(2):   0.195843
+eigenval(3):   0.198501
+eigenval(4):   0.211093
+Time to calculate/reload Dirac eigenpairs 1.072097e-02
+Turning ON boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+UML inversion with mass 0.010000
+deflating on even sites for mass 0.01 with 5 eigenvec
+Time to project out 5 modes 0.000182867 sec
+Time to deflate 5 modes 0.000362158
+CONGRAD5: time = 3.740692e-02 (fn D) masses = 1 iters = 85 mflops = 1.104785e+04
+ OK converged final_rsq= 9.8e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 85
+deflating on odd sites for mass 0.01 with 5 eigenvec
+Time to project out 5 modes 0.000193119 sec
+Time to deflate 5 modes 0.000362873
+CONGRAD5: time = 1.481986e-02 (fn D) masses = 1 iters = 32 mflops = 1.049824e+04
+ OK converged final_rsq= 8.4e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 32
+UML inversion with mass 0.100000
+deflating on even sites for mass 0.1 with 5 eigenvec
+Time to project out 5 modes 0.000163078 sec
+Time to deflate 5 modes 0.000334978
+CONGRAD5: time = 3.489900e-02 (fn D) masses = 1 iters = 79 mflops = 1.100588e+04
+ OK converged final_rsq= 8.4e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 79
+deflating on odd sites for mass 0.1 with 5 eigenvec
+Time to project out 5 modes 0.000194073 sec
+Time to deflate 5 modes 0.000404835
+CONGRAD5: time = 9.819031e-03 (fn D) masses = 1 iters = 21 mflops = 1.039828e+04
+ OK converged final_rsq= 7.9e-17 (cf 1e-16) rel = 1 (cf 0) restarts = 1 iters= 21
+PBP: mass 1.000000e-02     5.043030e-03  1.272543e-02  4.092675e-03  4.092676e-03 ( 1 of 1 )
+FACTION: mass = 1.000000e-02,  1.482209e+00 ( 1 of 1 )
+PBP: mass 1.000000e-01     8.411202e-02  8.919704e-02  4.036858e-03  4.036858e-03 ( 1 of 1 )
+FACTION: mass = 1.000000e-01,  1.481777e+00 ( 1 of 1 )
+Turning OFF boundary phases 0 0 0 0 to FN links r0 0 0 0 0
+Time to calculate observables 1.033878e-01
+RUNNING COMPLETED
+Time = 2.370031e-01 seconds
+total_iters = 217
+
+
+ask_starting_lattice(0): EOF on input.
+exit: Sat Nov 16 16:17:07 2024

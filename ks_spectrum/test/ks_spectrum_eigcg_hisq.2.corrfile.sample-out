@@ -65,17 +65,17 @@ momentum:                     p000
 spin_taste_sink:              rhox
 correlator_key:               RHOX_d_p_d_d_m0.01_m0.01_p000
 ...
-0	7.991677e-02	-5.245351e-12
-1	4.503465e-02	6.914431e-12
-2	3.847014e-03	-7.635965e-13
-3	5.851660e-03	-7.356461e-13
-4	5.985862e-04	9.876924e-13
-5	5.558455e-03	-1.375799e-12
-6	3.143286e-03	-7.765546e-13
-7	4.436283e-02	-1.375309e-12
+0	7.991677e-02	0.000000e+00
+1	4.503465e-02	0.000000e+00
+2	3.847014e-03	0.000000e+00
+3	5.851660e-03	0.000000e+00
+4	5.985862e-04	0.000000e+00
+5	5.558455e-03	0.000000e+00
+6	3.143286e-03	0.000000e+00
+7	4.436283e-02	0.000000e+00
 ---
 JobID:                        203696.kaon2.fnal.gov
-date:                         "Sat Feb 27 23:15:49 2016 UTC"
+date:                         "Tue Oct 12 21:46:56 2021 UTC"
 lattice_size:                 8,8,8,8
 antiquark_type:               staggered
 antiquark_source_type:        point
@@ -110,7 +110,7 @@ correlator_key:               POINT_PION_d_d_d_d_m0.01_m0.01_p000
 7	6.151892e-02	0.000000e+00
 ---
 JobID:                        203696.kaon2.fnal.gov
-date:                         "Sat Feb 27 23:15:49 2016 UTC"
+date:                         "Tue Oct 12 21:46:56 2021 UTC"
 lattice_size:                 8,8,8,8
 antiquark_type:               staggered
 antiquark_source_type:        point

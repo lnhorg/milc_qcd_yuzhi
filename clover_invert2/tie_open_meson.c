@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#define PRECISION 2
+#define MILC_PRECISION 2
 
 typedef struct {   
   float real;	   
@@ -20,7 +20,7 @@ typedef struct {
    double imag;
 } dcomplex;
 
-#if (PRECISION==1)
+#if (MILC_PRECISION==1)
 #define complex fcomplex
 #else
 #define complex dcomplex
@@ -44,7 +44,7 @@ typedef struct { dwilson_vector d[4]; } dspin_wilson_vector;
 typedef struct { dcolor_wilson_vector d[4]; } dwilson_matrix;
 typedef struct { dspin_wilson_vector c[3]; } dwilson_propagator;
 
-#if (PRECISION==1)
+#if (MILC_PRECISION==1)
 
 #define wilson_vector       fwilson_vector
 #define half_wilson_vector  fhalf_wilson_vector
@@ -271,7 +271,7 @@ void mult_w_by_gamma_mat(wilson_vector * src,
 }
 
 void mult_w_by_gamma(wilson_vector * src,
-		     wilson_vector * dest, int dir)
+		     wilson_vector * dest, gammatype dir)
 {
   gamma_matrix_t gm;
 
@@ -340,7 +340,7 @@ void mult_sw_by_gamma_mat_l(spin_wilson_vector * src,
 }
 
 void mult_sw_by_gamma_l(spin_wilson_vector * src,
-			spin_wilson_vector * dest, int dir)
+			spin_wilson_vector * dest, gammatype dir)
 {
   gamma_matrix_t gm;
 
@@ -403,7 +403,7 @@ void mult_sw_by_gamma_mat_r(spin_wilson_vector * src,
 }
 
 void mult_sw_by_gamma_r(spin_wilson_vector * src,
-			spin_wilson_vector * dest, int dir)
+			spin_wilson_vector * dest, gammatype dir)
 {
   gamma_matrix_t gm;
 

@@ -10,11 +10,14 @@
 /* The fn_links_t "class" */
 
 typedef struct {
+  int preserve;
   link_phase_info_t *phase;
   su3_matrix *fat;
   su3_matrix *lng;
   su3_matrix *fatback;  // NULL if unused
   su3_matrix *lngback;  // NULL if unused
+  double eps_naik;
+  int notify_quda_new_links;
 } fn_links_t;
 
 su3_matrix *create_lnglinks(void);
@@ -26,6 +29,8 @@ void destroy_fn_backlinks(fn_links_t *fn);
 
 fn_links_t *create_fn_links(void);
 void destroy_fn_links(fn_links_t *fn);
+
+void init_ferm_links(fn_links_t *fn);
 
 void copy_fn(fn_links_t *fn_src, fn_links_t *fn_dst);
 void scalar_mult_fn(fn_links_t *fnsrc, Real s, fn_links_t *fndst);

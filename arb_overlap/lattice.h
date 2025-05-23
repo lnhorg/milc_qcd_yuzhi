@@ -28,7 +28,7 @@ typedef struct {
 	/* is it even or odd? */
 	char parity;
 	/* my index in the array */
-	int index;
+	uint32_t index;
 #ifdef SITERAND
 	/* The state information for a random number generator */
 	double_prn site_prn;
@@ -38,7 +38,7 @@ typedef struct {
 
     /* Now come the physical fields, program dependent */
 	/* gauge field */
-	su3_matrix link[4];
+	su3_matrix link[4] ALIGNMENT;
 
 
 	su3_matrix tempmat1,tempmat2;
@@ -90,9 +90,9 @@ typedef struct {
 
 /* The following are global scalars */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
-EXTERN  int volume;		/* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;		/* volume of lattice = nx*ny*nz*nt */
 #ifdef RANDOM
-EXTERN	int iseed;		/* random number seed */
+EXTERN	uint32_t iseed;		/* random number seed */
 #endif
 EXTERN	int niter,nrestart;
 
@@ -148,7 +148,7 @@ EXTERN	int Maxr0Iter;	/* max  Rayleigh iterations for h(-r0) */
 EXTERN	int Restart;	/* Restart  Rayleigh every so many iterations */
 EXTERN	int Kiters;	/* Kalkreuter iterations */
 EXTERN  wilson_vector  **eigVec0, **eigVec;
-EXTERN  double *eigVal0, *eigVal;
+EXTERN  Real *eigVal0, *eigVal;
 EXTERN  Real eigValcut;
 #endif
 
@@ -204,9 +204,9 @@ extern int spins[4];
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN	int sites_on_node;		/* number of sites on this node */
-EXTERN	int even_sites_on_node;	/* number of even sites on this node */
-EXTERN	int odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN	size_t sites_on_node;		/* number of sites on this node */
+EXTERN	size_t even_sites_on_node;	/* number of even sites on this node */
+EXTERN	size_t odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN	int number_of_nodes;	/* number of nodes in use */
 EXTERN	int this_node;		/* node number of this node */
 
@@ -241,6 +241,7 @@ EXTERN Real boundary_phase[4];
 EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
+EXTERN int refresh_ape_links;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */

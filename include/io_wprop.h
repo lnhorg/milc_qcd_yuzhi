@@ -52,17 +52,17 @@
 /* 1. Header comes first    */
 
 typedef struct {
-  int32type magic_number;               /* Identifies file format */
+  u_int32type magic_number;               /* Identifies file format */
   char   time_stamp[MAX_TIME_STAMP]; /* Date and time stamp - used to
 					check consistency between the
 					ASCII header file and the
 					lattice file */
   time_t t_stamp;
-  int32type dims[4];                    /* Full lattice dimensions */
-  int32type header_bytes;               /* NOT WRITTEN TO THE FILE but
+  u_int32type dims[4];                    /* Full lattice dimensions */
+  u_int32type header_bytes;               /* NOT WRITTEN TO THE FILE but
 					 helpful for finding the data */
 
-  int32type order;                      /* 0 file is in natural order
+  u_int32type order;                      /* 0 file is in natural order
 					  no coordinate list is attached.
 				        1 file is in node-dump (checkpoint)
 					  order.  Coordinate list is attached.
@@ -71,9 +71,9 @@ typedef struct {
 					  Coordinate list is attached
 					  before each file. */
 
-  int32type n_spins;                    /* Number of source spins in this file */
-  int32type spins[MAX_SOURCE_SPINS];    /* List of source spin indices in file */
-  int32type elements_per_site;     /* For Fermilab propagator files */
+  u_int32type n_spins;                    /* Number of source spins in this file */
+  u_int32type spins[MAX_SOURCE_SPINS];    /* List of source spin indices in file */
+  u_int32type elements_per_site;     /* For Fermilab propagator files */
 
 } w_prop_header;
 
@@ -89,8 +89,8 @@ typedef struct {
 /* 3. Next comes a spin - color index and checksum  */
 
 typedef struct {
-  int32type spin;
-  int32type color;
+  u_int32type spin;
+  u_int32type color;
   u_int32type sum29;
   u_int32type sum31;
 } w_prop_check;
@@ -103,7 +103,7 @@ typedef struct {
 /* List of admissible keywords for version 5 ASCII lattice info file */
 
 #ifdef CONTROL
-char *w_prop_info_keyword[] = {
+const char *w_prop_info_keyword[] = {
       "magic_number",
       "time_stamp",
       "nx",
@@ -193,6 +193,8 @@ typedef struct {
   w_prop_header* header;        /* Pointer to header for file */
   char *         filename;      /* Pointer to file name string */
   int            byterevflag;   /* Byte reverse flag - used only for reading */
+  u_int32type *  rank2rcv;      /* File site list - used only for                                   
+                                   serial reading */
   int            parallel;      /* 0 if file was opened for serial reading
 				   1 if opened for parallel reading */
   w_prop_check   check;         /* Current checksum, spin, color indices */
@@ -291,7 +293,7 @@ int write_w_prop_info_item( FILE *fpout,    /* ascii file pointer */
 		       char *keyword,   /* keyword */
 		       char *fmt,       /* output format -
 					      must use s, d, f, or e */
-		       char *src,       /* address of starting data */
+		       const char *src,       /* address of starting data */
 		       int count,       /* number of data items if > 1 */
 		       int stride);     /* byte stride of data if
                                            count > 1 */
@@ -301,7 +303,7 @@ int sprint_w_prop_info_item(
   char *keyword,   /* keyword */
   char *fmt,       /* output format -
 		      must use s, d, e, f, or g */
-  char *src,       /* address of starting data
+  const char *src,       /* address of starting data
 		      floating point data must be
 		      of type (Real) */
   int count,       /* number of data items if > 1 */
@@ -320,20 +322,23 @@ w_prop_file *r_open_wprop(int flag, char *filename);
 w_prop_file *w_open_wprop(int flag, char *filename, int source_type);
 int reload_wprop_sc_to_field( int flag, w_prop_file *wpf, 
 			      quark_source *wqs, int spin, int color, 
-			      wilson_vector *dest, int timing);
-int save_wprop_sc_from_field( int flag, w_prop_file *wpf, 
-			      quark_source *wqs, int spin, int color, 
-			      wilson_vector *src, char *recinfo, int timing);
+			      wilson_vector *src, wilson_vector *dest, int timing);
+int save_wprop_sc_from_field( int flag, w_prop_file *wpf, quark_source *wqs,
+			      int spin, int color, wilson_vector *src,
+			      wilson_vector *prop, char *recinfo, int timing);
+int reload_wprop_c_to_field( int flag, w_prop_file *wpf, 
+			     quark_source *wqs, int spin, int color,
+			     spin_wilson_vector *source,
+			     spin_wilson_vector *dest, int timing);
 int reload_wprop_to_field( int flag, char *filename, quark_source *wqs,
 			   wilson_propagator *dest, int timing);
-int reload_wprop_to_wp_field( int flag, char *filename, 
-			      quark_source *wqs,
-			      wilson_prop_field *dest, int timing);
+int reload_wprop_to_wp_field( int flag, char *filename, quark_source *wqs,
+			      wilson_prop_field *source, wilson_prop_field *dest, int timing);
 int save_wprop_from_field( int flag, char *filename, quark_source *wqs,
 			   wilson_propagator *src, char *recxml, int timing);
-int save_wprop_from_wp_field( int flag, char *filename, 
-			      quark_source *wqs,
-			      wilson_prop_field *src, char *recxml, int timing);
+int save_wprop_from_wp_field( int flag, char *filename, char *recxml,
+			      quark_source *wqs, wilson_prop_field *source,
+			      wilson_prop_field *prop,  int timing);
 int reload_wprop_sc_to_site( int flag, w_prop_file *wpf,
 			     quark_source *wqs, int spin, int color, 
 			     field_offset dest, int timing);

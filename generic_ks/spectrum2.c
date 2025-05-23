@@ -1,4 +1,5 @@
 /******** spectrum2.c *************/
+/* OBSOLETE */
 /* MIMD version 7 */
 /* Spectrum for Kogut-Susskind pointlike hadrons, wall source 
 * MIMD version 7 with SG additions
@@ -87,7 +88,7 @@ int spectrum2( Real vmass, field_offset temp1, field_offset temp2,
 	      /* do a C.G. (source in temp1, result in temp2) */
 	      if(t_source%2 == 0) {
 		cgn += ks_congrad( temp1, temp2, vmass,
-				   niter, nrestart, rsqprop, PRECISION, 
+				   niter, nrestart, rsqprop, MILC_PRECISION, 
 				   EVEN, &finalrsq, fn);
 	          /* Multiply by -Madjoint */
 	          dslash_site( temp2, F_OFFSET(ttt), ODD, fn);
@@ -99,7 +100,7 @@ checkmul();**/
 	      }
 	      else {
 		cgn += ks_congrad( temp1, temp2, vmass,
-				   niter, nrestart, rsqprop, PRECISION, 
+				   niter, nrestart, rsqprop, MILC_PRECISION, 
 				   ODD, &finalrsq, fn);
 	          /* Multiply by -Madjoint */
 	          dslash_site( temp2, F_OFFSET(ttt), EVEN, fn);

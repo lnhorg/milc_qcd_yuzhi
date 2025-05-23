@@ -33,9 +33,10 @@ void update_h( Real eps ) {
   /* fermionic force */
   /* First compute M*xxx in temporary vector ttt */
   /* The diagonal term in M doesn't matter */
-  restore_fermion_links_from_site(fn_links, PRECISION);
-  fn = get_fm_links(fn_links);
-  dslash_fn_site( F_OFFSET(xxx), F_OFFSET(ttt), ODD, fn[0] );
+  restore_fermion_links_from_site(fn_links, MILC_PRECISION);
+  fn = get_fm_links(fn_links, 0);
+  dslash_fn_site( F_OFFSET(xxx), F_OFFSET(ttt), ODD, fn );
+  destroy_fn_links(fn);
   fermion_force(eps);
 } /* update_h */
 

@@ -72,10 +72,11 @@ typedef struct {
 } ks_action_paths;
 
 #else
-  BOMB THE COMPILIATION
+  #error "Unsupported fermion action"
 #endif
 
-/* Structure defining the precomputed links for the FN actions */
+/* OBSOLETE Structure defining the precomputed links for the FN actions */
+/* See fn_links_t, etc */
 
 typedef struct {
   int valid;
@@ -403,14 +404,6 @@ void invalidate_all_ferm_links(ferm_links_t *fn);
 
 /* jacobi.c */
 #include "../include/jacobi.h"
-
-/* mat_invert.c */
-int mat_invert_cg( field_offset src, field_offset dest, field_offset temp,
-		   Real mass, int prec, ferm_links_t *fn );
-int mat_invert_uml(field_offset src, field_offset dest, field_offset temp,
-		   Real mass, int prec, ferm_links_t *fn );
-void check_invert( field_offset src, field_offset dest, Real mass,
-		   Real tol, ferm_links_t *fn );
 
 /* mu.c and mu_fast.c */
 void M_derivatives(field_offset phi_off, field_offset xxx_off, 

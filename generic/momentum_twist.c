@@ -2,6 +2,7 @@
 /* MIMD version 7*/
 
 #include "generic_includes.h"
+#include "../include/openmp_defs.h"
 
 /* Apply phase change to gauge field. */
 
@@ -29,7 +30,8 @@ phase_mult_su3_matrix( su3_matrix *a, complex c ){
 void 
 momentum_twist_site(Real bdry_phase[4], int sign) {
   //char myname[] = "momentum_twist_site";
-  int i,dir;
+  size_t i;
+  int dir;
   site *s;
   complex cphase[4];
   int no_twist;
@@ -70,7 +72,8 @@ momentum_twist_site(Real bdry_phase[4], int sign) {
 void 
 momentum_twist_links(Real bdry_phase[4], int sign, su3_matrix *links) {
   //char myname[] = "momentum_twist_site";
-  int i,dir;
+  size_t i;
+  int dir;
   complex cphase[4];
   int no_twist;
   int nmu[4] = {nx, ny, nz, nt};
@@ -108,7 +111,8 @@ momentum_twist_links(Real bdry_phase[4], int sign, su3_matrix *links) {
 void 
 boundary_twist_site(Real bdry_phase[4], int r0[4], int sign) {
   //char myname[] = "boundary_twist_site";
-  int i,dir;
+  size_t i;
+  int dir;
   site *s;
   int bc_coord[4];
   complex cphase[4];
@@ -138,7 +142,7 @@ boundary_twist_site(Real bdry_phase[4], int r0[4], int sign) {
   bc_coord[ZUP] = (r0[ZUP] + nz - 1) % nz;
   bc_coord[TUP] = (r0[TUP] + nt - 1) % nt;
 
-  FORALLSITES(i,s){
+  FORALLSITES_OMP(i,s,){
     if( s->x == bc_coord[XUP])
       phase_mult_su3_matrix(&s->link[XUP], cphase[XUP]);
     if( s->y == bc_coord[YUP])
@@ -147,7 +151,7 @@ boundary_twist_site(Real bdry_phase[4], int r0[4], int sign) {
       phase_mult_su3_matrix(&s->link[ZUP], cphase[ZUP]);
     if( s->t == bc_coord[TUP])
       phase_mult_su3_matrix(&s->link[TUP], cphase[TUP]);
-  }
+  } END_LOOP_OMP;
 
   FORALLUPDIR(dir){
     boundary_phase[dir] = bdry_phase[dir];
@@ -162,7 +166,8 @@ boundary_twist_site(Real bdry_phase[4], int r0[4], int sign) {
 void 
 boundary_twist_field(Real bdry_phase[4], int r0[4], int sign, su3_matrix *links) {
   //char myname[] = "boundary_twist_site";
-  int i,dir;
+  size_t i;
+  int dir;
   site *s;
   int bc_coord[4];
   complex cphase[4];
@@ -274,7 +279,7 @@ phase_mult_wilson_vector( wilson_vector *a, complex c ){
 void 
 rephase_wv_field(wilson_vector *wv, Real bdry_phase[4], int r0[4], int sign) {
 
-  int i;
+  size_t i;
   site *s;
   complex c;
   Real p;
@@ -287,13 +292,13 @@ rephase_wv_field(wilson_vector *wv, Real bdry_phase[4], int r0[4], int sign) {
   node0_printf("Applying momentum phases %g %g %g %g sign %d to Wilson vector field\n",
 	       bdry_phase[0], bdry_phase[1], bdry_phase[2], bdry_phase[3], sign);
 
-  FORALLSITES(i,s){
+  FORALLSITES_OMP(i,s,private(p,c)){
     p = bdry_phase[XUP]*((int)(s->x + nx - r0[XUP]) % nx)/(Real)nx 
       + bdry_phase[YUP]*((int)(s->y + ny - r0[YUP]) % ny)/(Real)ny 
       + bdry_phase[ZUP]*((int)(s->z + nz - r0[ZUP]) % nz)/(Real)nz 
       + bdry_phase[TUP]*((int)(s->t + nt - r0[TUP]) % nt)/(Real)nt;
     c = ce_itheta(sign*PI*p);
     phase_mult_wilson_vector(wv+i, c);
-  }  
+  } END_LOOP_OMP;
 }
 

@@ -12,118 +12,8 @@
 */
 /* SU(3) */
 
-typedef struct { fcomplex e[3][3]; } fsu3_matrix;
-typedef struct { fcomplex c[3]; } fsu3_vector;
-typedef struct { 
-  fcomplex m01,m02,m12; 
-  float m00im,m11im,m22im; 
-  float space; } fanti_hermitmat;
-
-typedef struct { dcomplex e[3][3]; } dsu3_matrix;
-typedef struct { dcomplex c[3]; } dsu3_vector;
-typedef struct { 
-  dcomplex m01,m02,m12; 
-  double m00im,m11im,m22im; 
-  double space; } danti_hermitmat;
-
-#if (PRECISION==1)
-
-#define su3_matrix      fsu3_matrix
-#define su3_vector      fsu3_vector
-#define anti_hermitmat  fanti_hermitmat
-
-#else
-
-#define su3_matrix      dsu3_matrix
-#define su3_vector      dsu3_vector
-#define anti_hermitmat  danti_hermitmat
-
-#endif
-
-/* For KS spectroscopy */
-typedef struct {
-  su3_vector ** v;  /* For the nc vector fields */
-  int nc;           /* number of vectors */
-} ks_prop_field;
-
-/* Used in HISQ codes */
-/* Rank 4 tensor for storing derivatives */
-typedef struct { fcomplex t4[3][3][3][3]; } fsu3_tensor4;
-typedef struct { dcomplex t4[3][3][3][3]; } dsu3_tensor4;
-
-#if (PRECISION==1)
-#define su3_tensor4 fsu3_tensor4
-#else
-#define su3_tensor4 dsu3_tensor4
-#endif
-
-/* SU(2) */
-typedef struct { complex e[2][2]; } su2_matrix;
-
-/* Wilson vectors */
-
-/* e.g. 					     */
-/* wilson_propagator prop;                           */
-/* prop.c[ci].d[si].d[sf].c[cf]                      */
-/* ----------------------->    complex               */
-/* ----------------->          su3_vector            */
-/* ----------->                wilson_vector         */
-/* ----->                      spin_wilson_vector    */
-/* e.g. 					     */
-/* wilson_matrix matr;                               */
-/* matr.d[si].c[ci].d[sf].c[cf]                      */
-/* ----------------------->    complex               */
-/* ----------------->          su3_vector            */
-/* ----------->                wilson_vector         */
-/* ----->                      color_wilson_vector   */
-
-/* Object with two Dirac and two color indices. A given element
-   of a "wilson_propagator" is accessed by
-   object.c[color1].d[spin1].d[spin2].c[color2].real , etc.
-   As alway, "d" denotes a Dirac index and "c" a color index.
-   "1" refers to the source, "2" to the sink.
-*/
-
-typedef struct { fsu3_vector d[4]; } fwilson_vector;
-typedef struct { fsu3_vector h[2]; } fhalf_wilson_vector;
-typedef struct { fwilson_vector c[3]; } fcolor_wilson_vector;
-typedef struct { fwilson_vector d[4]; } fspin_wilson_vector;
-typedef struct { fcolor_wilson_vector d[4]; } fwilson_matrix;
-typedef struct { fspin_wilson_vector c[3]; } fwilson_propagator;
-
-typedef struct { dsu3_vector d[4]; } dwilson_vector;
-typedef struct { dsu3_vector h[2]; } dhalf_wilson_vector;
-typedef struct { dwilson_vector c[3]; } dcolor_wilson_vector;
-typedef struct { dwilson_vector d[4]; } dspin_wilson_vector;
-typedef struct { dcolor_wilson_vector d[4]; } dwilson_matrix;
-typedef struct { dspin_wilson_vector c[3]; } dwilson_propagator;
-
-#if (PRECISION==1)
-
-#define wilson_vector       fwilson_vector
-#define half_wilson_vector  fhalf_wilson_vector
-#define color_wilson_vector fcolor_wilson_vector
-#define spin_wilson_vector  fspin_wilson_vector
-#define wilson_matrix       fwilson_matrix
-#define wilson_propagator   fwilson_propagator
-
-#else
-
-#define wilson_vector       dwilson_vector
-#define half_wilson_vector  dhalf_wilson_vector
-#define color_wilson_vector dcolor_wilson_vector
-#define spin_wilson_vector  dspin_wilson_vector
-#define wilson_matrix       dwilson_matrix
-#define wilson_propagator   dwilson_propagator
-
-#endif
-
-/* For Wilson spectroscopy */
-typedef struct {
-  spin_wilson_vector ** swv;
-  int nc;
-} wilson_prop_field;
-
+#include "../include/milc_datatypes.h"
+#include "../include/int32type.h"
 
 #define GAMMAFIVE -1    /* some integer which is not a direction */
 #define PLUS 1          /* flags for selecting M or M_adjoint */
@@ -433,8 +323,8 @@ typedef struct {
 *	file "gaussrand.c"
 * Real z2_rand_no( double_prn *prn_pt );
 *	file "z2rand.c"
-* void byterevn(int32type w[], int n)
-* void byterevn64(int32type w[], int n)
+* void byterevn(u_int32type w[], int n)
+* void byterevn64(u_int32type w[], int n)
 *
 */
 
@@ -455,7 +345,7 @@ void c_scalar_mult_sub_su3mat( su3_matrix *src1, su3_matrix *src2,
 void su3_adjoint( su3_matrix *a, su3_matrix *b );
 void make_anti_hermitian( su3_matrix *m3, anti_hermitmat *ah3 );
 void random_anti_hermitian( anti_hermitmat *mat_antihermit, double_prn *prn_pt );
-void uncompress_anti_hermitian( anti_hermitmat *mat_anti, su3_matrix *mat );
+void uncompress_anti_hermitian( const anti_hermitmat * const mat_anti, su3_matrix *mat );
 void compress_anti_hermitian( su3_matrix *mat, anti_hermitmat *mat_anti);
 void clear_su3mat( su3_matrix *dest );
 void su3mat_copy( su3_matrix *a, su3_matrix *b );
@@ -473,7 +363,7 @@ void mult_su3_mat_vec_nsum( su3_matrix *a, su3_vector *b, su3_vector *c );
 void mult_adj_su3_mat_vec_sum( su3_matrix *a, su3_vector *b, su3_vector *c );
 void mult_adj_su3_mat_vec_nsum( su3_matrix *a, su3_vector *b, su3_vector *c );
 
-void scalar_mult_su3_vector(  su3_vector *src, Real scalar, 
+void scalar_mult_su3_vector(  const su3_vector *const src, Real scalar, 
 	su3_vector *dest);
 void scalar_mult_sum_su3_vector( su3_vector *src1, su3_vector *src2,
 	Real scalar);
@@ -536,8 +426,8 @@ Real gaussian_rand_no( double_prn *prn_pt );
 complex complex_gaussian_rand_no( double_prn *prn_pt );
 Real z2_rand_no( double_prn *prn_pt );
 #include "../include/int32type.h"
-void byterevn(int32type w[], int n);
-void byterevn64(int32type w[], int n);
+void byterevn(u_int32type w[], int n);
+void byterevn64(u_int32type w[], int n);
 
 
 /********************************************************************/
@@ -563,7 +453,7 @@ void byterevn64(int32type w[], int n);
    and double precision */
 
 #if defined SSE_INLINE || defined SSE_GLOBAL_INLINE
-#if (PRECISION==1)
+#if (MILC_PRECISION==1)
 #ifdef SSEOPTERON
 #include "../sse_opteron/include/inline_sse.h"
 #else
@@ -593,7 +483,7 @@ void byterevn64(int32type w[], int n);
 /********************************************************************/
 /* Our available single-precision SSE macros */
 
-#if (PRECISION == 1)
+#if (MILC_PRECISION == 1)
 
 #define add_su3_vector(...) _inline_sse_add_su3_vector(__VA_ARGS__)
 #define mult_su3_nn(...) _inline_sse_mult_su3_nn(__VA_ARGS__)
@@ -613,7 +503,7 @@ void byterevn64(int32type w[], int n);
 
 /********************************************************************/
 
-#else // PRECISION == 2
+#else // MILC_PRECISION == 2
 
 /********************************************************************/
 /* Our available double-precision SSE macros */
@@ -632,7 +522,7 @@ void byterevn64(int32type w[], int n);
 
 /********************************************************************/
 
-#endif // PRECISION
+#endif // MILC_PRECISION
 #endif // SSE_GLOBAL_INLINE
 
 #if defined C_GLOBAL_INLINE
@@ -754,11 +644,11 @@ void mult_su3_an ( su3_matrix *a, su3_matrix *b, su3_matrix *c );
 #endif
 
 #ifndef mult_su3_mat_vec
-void mult_su3_mat_vec( su3_matrix *a, su3_vector *b, su3_vector *c );
+void mult_su3_mat_vec( const su3_matrix * const a, const su3_vector * const b, su3_vector *c );
 #endif
 
 #ifndef mult_adj_su3_mat_vec
-void mult_adj_su3_mat_vec( su3_matrix *a, su3_vector *b, su3_vector *c );
+void mult_adj_su3_mat_vec( const su3_matrix * const a, const su3_vector * const b, su3_vector *c );
 #endif
 
 #ifndef mult_adj_su3_mat_vec_4dir

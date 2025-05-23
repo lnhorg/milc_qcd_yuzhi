@@ -3,6 +3,7 @@
 
 #include "../include/macros.h"  /* For MAXFILENAME */
 #include "defines.h"
+#include "../include/imp_ferm_links.h"
 
 /* structure for passing simulation parameters to each node */
 typedef struct {
@@ -22,7 +23,7 @@ typedef struct {
 			     Must be divisors of the node_geometry. */
 #endif
 #endif
-	int iseed;	/* for random numbers */
+	uint32_t iseed;	/* for random numbers */
 #ifdef ONEMASS
 	int nflavors;	/* the number of flavors */
 #else
@@ -59,6 +60,10 @@ typedef struct {
 	int saveflag;   /* what to do with lattice at end */
 	char startfile[MAXFILENAME],savefile[MAXFILENAME];
 	char stringLFN[MAXFILENAME];  /** ILDG LFN if applicable ***/
+	/* Eigenparameters (not used for HMC) */
+        ks_eigen_param eigen_param; /* Parameters for eigensolver */
+        char ks_eigen_startfile[MAXFILENAME]; /* KS eigenvector file to be loaded */
+        char ks_eigen_savefile[MAXFILENAME]; /* KS eigenvector file to be saved */
 }  params;
 
 #endif /* _PARAMS_H */

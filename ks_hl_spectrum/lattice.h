@@ -25,11 +25,11 @@ typedef struct {
   char parity;
   /* my index in the array */
 
-  int index;
+  uint32_t index;
   
   /* Now come the physical fields, program dependent */
   /* gauge field */
-  su3_matrix link[4];
+  su3_matrix link[4] ALIGNMENT;
   
   /* wilson complex vectors - removed*/
 	wilson_vector psi;	/* solution vector */
@@ -103,7 +103,7 @@ typedef struct {
 /* The following are global scalars */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
 EXTERN  char job_id[MAXFILENAME];
-EXTERN  int volume;		/* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;		/* volume of lattice = nx*ny*nz*nt */
 EXTERN	int nrestart,wallflag;
 #define MAX_KAP 6
 EXTERN	double kappa,source_r0,kap[MAX_KAP],resid[MAX_KAP];
@@ -150,9 +150,9 @@ extern int spins[4];
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN	int sites_on_node;		/* number of sites on this node */
-EXTERN	int even_sites_on_node;	/* number of even sites on this node */
-EXTERN	int odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN	size_t sites_on_node;		/* number of sites on this node */
+EXTERN	size_t even_sites_on_node;	/* number of even sites on this node */
+EXTERN	size_t odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN	int number_of_nodes;	/* number of nodes in use */
 EXTERN  int this_node;		/* node number of this node */
 
@@ -176,13 +176,14 @@ EXTERN Real boundary_phase[4];
 EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
+EXTERN int refresh_ape_links;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */
 #define N_POINTERS 8	/* Number of generic pointers */
 /* NEED 8 WHEN GAUGEFIXING */
 EXTERN char ** gen_pt[N_POINTERS];
-EXTERN	int iseed;
+EXTERN	uint32_t iseed;
 
 EXTERN  int log_correlators;
 EXTERN	double rsqmin,rsqprop,beta,mass;

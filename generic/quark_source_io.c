@@ -64,6 +64,7 @@
 /* USQCD propagator file types according to source type */
 /*--------------------------------------------------------------------*/
 
+#if 0
 /* Staggered propagator files */
 int choose_usqcd_ks_file_type(int source_type){
   int file_type;
@@ -96,8 +97,15 @@ int choose_usqcd_ks_file_type(int source_type){
   }
   return file_type;
 }
+#else
+/* Staggered propagator files */
+int choose_usqcd_ks_file_type(int source_type){
+  return FILE_TYPE_KS_USQCD_VV_PAIRS;
+}
+#endif
 
 /* Dirac propagator files */
+#if 0
 int choose_usqcd_w_file_type(int source_type){
   int file_type;
 
@@ -133,6 +141,12 @@ int choose_usqcd_w_file_type(int source_type){
   }
   return file_type;
 }
+#else
+/* Staggered propagator files */
+int choose_usqcd_w_file_type(int source_type){
+  return FILE_TYPE_W_USQCD_DD_PAIRS;
+}
+#endif
 
 #ifdef HAVE_QIO
 
@@ -245,7 +259,7 @@ static int check_color(QIO_String *recxml, int color){
 
 #ifdef HAVE_QIO
 
-QIO_Reader *r_source_cmplx_scidac_open(char source_file[]){
+QIO_Reader *r_source_cmplx_scidac_open(const char source_file[]){
   QIO_String *xml_file;
   QIO_Reader *infile;
 
@@ -258,7 +272,7 @@ QIO_Reader *r_source_cmplx_scidac_open(char source_file[]){
 
 void r_source_open(quark_source *qs){
 
-  char *source_file         = qs->source_file;
+  const char *source_file         = qs->source_file;
   int source_type           = qs->type;
 #ifdef HAVE_QIO
   QIO_String *xml_file;
@@ -275,12 +289,12 @@ void r_source_open(quark_source *qs){
 
 #ifdef HAVE_KS
 
-  else if(source_type == VECTOR_FIELD_FM_FILE){
-    qs->kssf = r_source_ks_fm_i(source_file);
-    if(qs->kssf == NULL){
-      node0_printf("%s: Failed to open source %s\n", myname, source_file);
-    }
-  }
+//  else if(source_type == VECTOR_FIELD_FM_FILE){
+//    qs->kssf = r_source_ks_fm_i(source_file);
+//    if(qs->kssf == NULL){
+//      node0_printf("%s: Failed to open source %s\n", myname, source_file);
+//    }
+//  }
 #endif
 
 #ifdef HAVE_QIO
@@ -355,12 +369,12 @@ void r_source_close(quark_source *qs){
 
   if(0);
 
-#ifdef HAVE_KS
-  else if(qs->type == VECTOR_FIELD_FM_FILE){
-    r_source_ks_fm_f(qs->kssf);
-    qs->kssf = NULL;
-  }
-#endif
+// #ifdef HAVE_KS
+//   else if(qs->type == VECTOR_FIELD_FM_FILE){
+//     r_source_ks_fm_f(qs->kssf);
+//     qs->kssf = NULL;
+//   }
+// #endif
 #ifdef HAVE_QIO
   else if(qs->type == COMPLEX_FIELD_FILE)
     r_close_scidac_file(qs->infile);
@@ -515,13 +529,13 @@ int r_source_dirac(quark_source *qs){
 /* Open a color vector source file for writing */
 /*--------------------------------------------------------------------*/
 
-int w_source_open_ks(quark_source *qs, char *fileinfo){
+int w_source_open_ks(quark_source *qs, const char *fileinfo){
 
   char myname[] = "w_source_open_ks";
 
 #ifdef HAVE_QIO
   int volfmt, serpar;
-  char *source_file = qs->save_file;
+  const char *source_file = qs->save_file;
 
   interpret_usqcd_ks_save_flag(&volfmt, &serpar, qs->saveflag);
 
@@ -555,13 +569,13 @@ int w_source_open_ks(quark_source *qs, char *fileinfo){
 /* Open a Dirac vector source file for writing */
 /*--------------------------------------------------------------------*/
 
-int w_source_open_dirac(quark_source *qs, char *fileinfo){
+int w_source_open_dirac(quark_source *qs, const char *fileinfo){
 
   char myname[] = "w_source_open_dirac";
 
 #ifdef HAVE_QIO
   int volfmt, serpar;
-  char *source_file = qs->save_file;
+  const char *source_file = qs->save_file;
 
   interpret_usqcd_w_save_flag(&volfmt, &serpar, qs->saveflag);
 
@@ -859,7 +873,7 @@ void print_output_quark_source_choices(void){
 }
 
 int parse_output_quark_source_choices(int *flag, int *save_type, 
-				      char *descrp, char* savebuf){
+				      char *descrp, const char* savebuf){
 
   if(strcmp("forget_source",savebuf) == 0 ) {
     *flag=FORGET;
@@ -957,11 +971,11 @@ int ask_output_quark_source_file( FILE *fp, int prompt,
 				  int *flag, int *save_type,
 				  int *t0, char *descrp, char *filename)
 {
-  char *savebuf;
+  const char *savebuf;
   int status = 0;
   char myname[] = "ask_output_quark_source_file";
 
-  filename[0] = '\0';  /* Set NULL default */
+  strcpy(filename,"");  /* Set NULL default */
 
   if (prompt==1){
     print_output_quark_source_choices();

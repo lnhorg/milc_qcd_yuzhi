@@ -30,7 +30,7 @@ typedef struct {
 	/* is it even or odd? */
 	char parity;
 	/* my index in the array */
-	int index;
+	uint32_t index;
 	/* The state information for a random number generator */
 	double_prn site_prn;
 	/* align to double word boundary (kludge for Intel compiler) */
@@ -38,7 +38,7 @@ typedef struct {
 
     /* Now come the physical fields, program dependent */
 	/* gauge field */
-	su3_matrix link[4];
+	su3_matrix link[4] ALIGNMENT;
 
 	/* wilson complex vectors */
  	wilson_vector psi;   /* solution vector for mrilu, cgilu or jacobi */
@@ -79,8 +79,8 @@ extern int spins[4];
 
 /* The following are global scalars */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
-EXTERN  int iseed;
-EXTERN  int  volume;	/* volume of lattice = nx*ny*nz*nt */
+EXTERN  uint32_t iseed;
+EXTERN  size_t volume;	/* volume of lattice = nx*ny*nz*nt */
 EXTERN  int nkap;  /****** number of kappa values ******/
 #define MAX_NKAP 20 /* maximum number of kappa values */
 EXTERN  Real cappa[MAX_NKAP];  /******kappa******/
@@ -120,9 +120,9 @@ EXTERN  int fixflag;    /* whether to gauge fix **/
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN  int	sites_on_node;		/* number of sites on this node */
-EXTERN  int	even_sites_on_node;	/* number of even sites on this node */
-EXTERN  int	odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN  size_t	sites_on_node;		/* number of sites on this node */
+EXTERN  size_t	even_sites_on_node;	/* number of even sites on this node */
+EXTERN  size_t	odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN  int	number_of_nodes;	/* number of nodes in use */
 EXTERN  int  this_node;		/* node number of this node */
 
@@ -152,6 +152,7 @@ EXTERN Real boundary_phase[4];
 EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
+EXTERN int refresh_ape_links;
 
 /* Storage for the clover term */
 EXTERN clover *gen_clov;

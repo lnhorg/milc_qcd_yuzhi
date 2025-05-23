@@ -23,10 +23,10 @@
    milc_fm_links_t
      fm_ap_links_t *fm_ap
        ks_action_paths *ap
-       imp_ferm_links_t *fm
+       fn_links_t/eo_links_t *fm Fat and long links
      fm_ap_links_t *fm_ap_du0
        ks_action_paths *ap
-       imp_ferm_links_t *fm
+       fn_links_t *fm
 
        (Note that in imp_ferm_links.h imp_ferm_links_t is equated
         to fn_links_t or eo_links_t, depending on the action)
@@ -41,25 +41,11 @@
          su3_matrix *V_link;
 	 su3_matrix *Y_unitlink; 
 	 su3_matrix *W_unitlink; 
-       fn_links_t *fn[MAX_NAIK]
-       fn_links_t *fn_deps
+       fn_links_t *fn0  Fat and long links with zero Naik epsilon
+       fn_links_t *fn_deps Used for Naik correction as well as hot QCD
 
        (Here fn_links_t is the only option.)
 
-   Structure nesting for HYPISQ actions
-
-   milc_hypisq_links_t
-     hypisq_links_t *hypisq
-       ks_action_paths_hypisq *ap
-       hypisq_auxiliary_t *aux
-         su3_matrix *U_link;    TO BE DECIDED
-         su3_matrix *V_link;
-	 su3_matrix *Y_unitlink; 
-	 su3_matrix *W_unitlink; 
-       fn_links_t *fn[MAX_NAIK]
-       fn_links_t *fn_deps
-
-       (Here fn_links_t is the only option.)
  */
 
 /*********************************************************************/
@@ -86,35 +72,13 @@ typedef struct {
 typedef struct {
   ks_action_paths_hisq *ap;
   hisq_auxiliary_t *aux;          // Intermediate links needed for fermion force
-  imp_ferm_links_t *fn[MAX_NAIK]; // Table of links depending on epsilon
+  imp_ferm_links_t *fn0;          // Links for Naik epsilon = 0
   imp_ferm_links_t *fn_deps;      // Derivative of links wrto epsilon.
 } hisq_links_t;
 
 typedef struct {
   hisq_links_t *hisq;
 } milc_hisq_links_t;
-
-/*********************************************************************/
-typedef struct {          // TO BE DECIDED
-  int phases_in;          // track KS phases in the V and Y links
-  int WeqY;               // true if W = Y
-  su3_matrix *U_link;     // original gauge matrices, stored as four fields
-  su3_matrix *V_link;     // first iteration of fattening
-  su3_matrix *Y_unitlink; // unitary projection of V_link, U(3)
-  su3_matrix *W_unitlink; // special unitary projection of Y_link, SU(3)
-} hypisq_auxiliary_t;
-
-typedef struct {
-  ks_action_paths_hypisq *ap;
-  hypisq_auxiliary_t *aux;          // Intermediate links needed for fermion force
-  imp_ferm_links_t *fn[MAX_NAIK]; // Table of links depending on epsilon
-  imp_ferm_links_t *fn_deps;      // Derivative of links wrto epsilon.
-} hypisq_links_t;
-
-typedef struct {
-  hypisq_links_t *hisq;
-} milc_hypisq_links_t;
-
 
 /********************************************************************/
 /* Fermion links routines */
@@ -168,7 +132,7 @@ void create_hisq_links_milc(info_t *info, fn_links_t **fn, fn_links_t **fn_deps,
 			  su3_matrix *links, int want_deps, int want_back);
 
 void destroy_hisq_links_milc(ks_action_paths_hisq *ap, hisq_auxiliary_t *aux, 
-			     fn_links_t **fn, fn_links_t *fn_deps);
+			     fn_links_t *fn, fn_links_t *fn_deps);
 
 
 //hisq_auxiliary_t *create_hisq_auxiliary_t(ks_action_paths_hisq *ap,
@@ -180,6 +144,7 @@ link_phase_info_t *create_link_phase_info(void);
 void destroy_link_phase_info(link_phase_info_t *lp);
 void set_boundary_twist_fn(fn_links_t *fn_links, Real bdry_phase[4], int r0[4]);
 void boundary_twist_fn(fn_links_t *fn_links, int flag);
+int twist_status(fn_links_t *fn);
 void custom_rephase( su3_matrix **internal_links, int flag, int *status_now );
 
 /* ff_opt.c */

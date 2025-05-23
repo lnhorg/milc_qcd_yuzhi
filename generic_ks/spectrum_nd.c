@@ -1,4 +1,5 @@
 /******** spectrum_nd.c *************/
+/* OBSOLETE */
 /* MILC version 7 */
 /* DT 9/20/00 started, from spectrum_nlpi2.c
    KS hadron masses with nondegenerate quarks ("nd")
@@ -111,7 +112,7 @@ int spectrum_nd( Real mass1, Real mass2, Real tol, ferm_links_t *fn ){
       /* do a C.G. (source in quark_source, result in g_rand) */
       if(t_source%2 == 0) {
          cgn += ks_congrad( F_OFFSET(quark_source), F_OFFSET(g_rand),
-			    mass1, niter, nrestart, rsqprop, PRECISION, 
+			    mass1, niter, nrestart, rsqprop, MILC_PRECISION, 
 			    EVEN, &finalrsq, fn);
          /* Multiply by -Madjoint */
          dslash_site( F_OFFSET(g_rand), F_OFFSET(quark_prop), ODD, fn);
@@ -119,7 +120,7 @@ int spectrum_nd( Real mass1, Real mass2, Real tol, ferm_links_t *fn ){
       }
       else {
         cgn += ks_congrad( F_OFFSET(quark_source), F_OFFSET(g_rand),
-			   mass1, niter, nrestart, rsqprop, PRECISION, 
+			   mass1, niter, nrestart, rsqprop, MILC_PRECISION, 
 			   ODD, &finalrsq, fn);
           /* Multiply by -Madjoint */
           dslash_site( F_OFFSET(g_rand), F_OFFSET(quark_prop), EVEN, fn);
@@ -132,7 +133,7 @@ scalar_mult_latvec( F_OFFSET(quark_prop), -1.0, F_OFFSET(g_rand), EVENANDODD );
       /* repeat for heavy quark */
       if(t_source%2 == 0) {
          cgn += ks_congrad( F_OFFSET(quark_source), F_OFFSET(g_rand),
-			    mass2, niter, nrestart, rsqprop, PRECISION, 
+			    mass2, niter, nrestart, rsqprop, MILC_PRECISION, 
 			    EVEN, &finalrsq, fn);
          /* Multiply by -Madjoint */
          dslash_site( F_OFFSET(g_rand), F_OFFSET(quark_prop), ODD, fn);
@@ -140,7 +141,7 @@ scalar_mult_latvec( F_OFFSET(quark_prop), -1.0, F_OFFSET(g_rand), EVENANDODD );
       }
       else {
         cgn += ks_congrad( F_OFFSET(quark_source), F_OFFSET(g_rand),
-			   mass2, niter, nrestart, rsqprop, PRECISION, 
+			   mass2, niter, nrestart, rsqprop, MILC_PRECISION, 
 			   ODD, &finalrsq, fn);
           /* Multiply by -Madjoint */
           dslash_site( F_OFFSET(g_rand), F_OFFSET(quark_prop), EVEN, fn);

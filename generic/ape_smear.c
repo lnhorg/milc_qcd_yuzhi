@@ -76,6 +76,7 @@
 */
 
 #include "generic_includes.h"
+#include "../include/openmp_defs.h"
 
 /* Smear in a specified source direction. */
 void ape_smear_dir(
@@ -100,8 +101,9 @@ void ape_smear_dir(
 			     as a prescribed number of hits. */ 
   )
 {
-  register int i,dir2;
-  register site *s;
+  size_t i;
+  int dir2;
+  site *s;
   su3_matrix tmat1,tmat2;
   msg_tag *mtag0,*mtag1;
   Real w_link, w_staple, norm_factor;
@@ -121,12 +123,12 @@ void ape_smear_dir(
   w_link = norm_factor;
   
   /* dest <- src w_link */ 
-  FORALLSITES(i,s)
+  FORALLSITES_OMP(i,s,)
     {
       scalar_mult_su3_matrix( 
 		     &(((su3_matrix *)F_PT(s,src))[dir1]), w_link, 
 		     (su3_matrix *)F_PT(s,dest) );
-    }
+    } END_LOOP_OMP;
   for(dir2=XUP;dir2<=(space_only==1?ZUP:TUP);dir2++)if(dir2!=dir1){
     
     /* Upper staple, and simple link */
@@ -138,7 +140,7 @@ void ape_smear_dir(
     wait_gather(mtag1);
     
     /* dest += w_staple * upper staple */ 
-    FORALLSITES(i,s)
+    FORALLSITES_OMP(i,s,private(tmat1,tmat2))
       {
 	mult_su3_na( (su3_matrix *)gen_pt[1][i],
 		     (su3_matrix *)gen_pt[0][i], &tmat1 );
@@ -148,7 +150,7 @@ void ape_smear_dir(
 			   (su3_matrix *)F_PT(s,dest),
 			   &tmat2, w_staple,
 			   (su3_matrix *)F_PT(s,dest) );
-      }
+      } END_LOOP_OMP;
     cleanup_gather(mtag0);
     cleanup_gather(mtag1);
     
@@ -157,40 +159,45 @@ void ape_smear_dir(
 			  sizeof(su3_matrix), dir1,
 			  EVENANDODD, gen_pt[0] );
     wait_gather(mtag0);
-    FORALLSITES(i,s)
+    FORALLSITES_OMP(i,s,private(tmat1))
       {
 	mult_su3_nn( &(((su3_matrix *)F_PT(s,src))[dir1]),
 		     (su3_matrix *)gen_pt[0][i], &tmat1 );
 	mult_su3_an( &(((su3_matrix *)F_PT(s,src))[dir2]),
 		     &tmat1, &temp[i] );
-      }
+      } END_LOOP_OMP;
     cleanup_gather(mtag0);
     mtag1 = start_gather_field( temp, sizeof(su3_matrix),
 				    OPP_DIR(dir2), EVENANDODD, gen_pt[1] );
     wait_gather(mtag1);
     
     /* dest += w_staple * lower staple */ 
-    FORALLSITES(i,s){
+    FORALLSITES_OMP(i,s,){
       scalar_mult_add_su3_matrix( 
 			 (su3_matrix *)F_PT(s,dest),
 			 (su3_matrix *)gen_pt[1][i], w_staple, 
 			 (su3_matrix *)F_PT(s,dest) );
-    }
+    } END_LOOP_OMP;
     cleanup_gather(mtag1);
     
   } /* dir2 loop */
   
   /* project links onto SU(3) if nhits > 0 */
   if(nhits > 0){
-    FORALLSITES(i,s){
+    int status = 0;
+    FORALLSITES_OMP(i,s,private(tmat1) reduction(+:status)){
       /* Use partially reunitarized link for guess */
       tmat1 = *((su3_matrix *)F_PT(s,dest));
       reunit_su3(&tmat1);
-      project_su3(&tmat1,
-		  (su3_matrix *)F_PT(s,dest),nhits,tol);
+      status += project_su3(&tmat1,
+			    (su3_matrix *)F_PT(s,dest),nhits,tol);
       /* Copy projected matrix to dest */
       *((su3_matrix *)F_PT(s,dest)) = tmat1;
-    }
+    } END_LOOP_OMP;
+
+    g_intsum(&status);
+    if(this_node == 0 && status > 0)
+      printf("WARNING %d sites report no convergence in project_su3\n", status);
   }
 
   free(temp);
@@ -218,7 +225,7 @@ void ape_smear(
 			     as a prescribed number of hits. */ 
   )
 {
-  register int dir1;
+  int dir1;
   
   for(dir1=XUP;dir1<=TUP;dir1++){
     ape_smear_dir(src,dir1,dest+dir1*sizeof(su3_matrix),
@@ -255,8 +262,9 @@ void ape_smear_field_dir(
 			     as a prescribed number of hits. */ 
   )
 {
-  register int i,dir2;
-  register site *s;
+  size_t i;
+  int dir2;
+  site *s;
   su3_matrix tmat1,tmat2;
   msg_tag *mtag0,*mtag1;
   Real w_link, w_staple, norm_factor;
@@ -276,10 +284,10 @@ void ape_smear_field_dir(
   w_link = norm_factor;
   
   /* dest <- src w_link */ 
-  FORALLSITES(i,s)
+  FORALLSITES_OMP(i,s,)
     {
       scalar_mult_su3_matrix( &src[4*i+dir1], w_link, &dest[4*i+dir1] );
-    }
+    } END_LOOP_OMP;
   for(dir2=XUP;dir2<=(space_only==1?ZUP:TUP);dir2++)if(dir2!=dir1){
     
     /* Upper staple, and simple link */
@@ -299,14 +307,14 @@ void ape_smear_field_dir(
     wait_gather(mtag1);
     
     /* dest += w_staple * upper staple */ 
-    FORALLSITES(i,s)
+    FORALLSITES_OMP(i,s,private(tmat1,tmat2))
       {
 	mult_su3_na( (su3_matrix *)gen_pt[1][i],
 		     (su3_matrix *)gen_pt[0][i], &tmat1 );
 	mult_su3_nn( &src[4*i+dir2], &tmat1, &tmat2 );
 	scalar_mult_add_su3_matrix( &dest[4*i+dir1], &tmat2, w_staple,
 				    &dest[4*i+dir1] );
-      }
+      } END_LOOP_OMP;
     cleanup_gather(mtag0);
     cleanup_gather(mtag1);
     
@@ -318,36 +326,40 @@ void ape_smear_field_dir(
     do_gather(mtag0);
 
     wait_gather(mtag0);
-    FORALLSITES(i,s)
+    FORALLSITES_OMP(i,s,private(tmat1))
       {
 	mult_su3_nn( &src[4*i+dir1], (su3_matrix *)gen_pt[0][i], &tmat1 );
 	mult_su3_an( &src[4*i+dir2], &tmat1, &temp[i] );
-      }
+      } END_LOOP_OMP;
     cleanup_gather(mtag0);
     mtag1 = start_gather_field( temp, sizeof(su3_matrix),
 				    OPP_DIR(dir2), EVENANDODD, gen_pt[1] );
     wait_gather(mtag1);
     
     /* dest += w_staple * lower staple */ 
-    FORALLSITES(i,s){
+    FORALLSITES_OMP(i,s,){
       scalar_mult_add_su3_matrix( &dest[4*i+dir1], 
 			 (su3_matrix *)gen_pt[1][i], w_staple, 
 			 &dest[4*i+dir1] );
-    }
+    } END_LOOP_OMP;
     cleanup_gather(mtag1);
     
   } /* dir2 loop */
   
   /* project links onto SU(3) if nhits > 0 */
   if(nhits > 0){
-    FORALLSITES(i,s){
+    int status = 0;
+    FORALLSITES_OMP(i,s,private(tmat1)){
       /* Use partially reunitarized link for guess */
       tmat1 = dest[4*i+dir1];
       reunit_su3(&tmat1);
-      project_su3(&tmat1, &dest[4*i+dir1], nhits, tol);
+      status += project_su3(&tmat1, &dest[4*i+dir1], nhits, tol);
       /* Copy projected matrix to dest */
       dest[4*i+dir1] = tmat1;
-    }
+    } END_LOOP_OMP;
+    g_intsum(&status);
+    if(this_node == 0 && status > 0)
+      printf("WARNING %d sites report no convergence in project_su3\n", status);
   }
   
   free(temp);
@@ -374,7 +386,7 @@ void ape_smear_field(
 			     as a prescribed number of hits. */ 
   )
 {
-  register int dir1;
+  int dir1;
   
   for(dir1=XUP;dir1<=TUP;dir1++){
     ape_smear_field_dir(src,dir1,dest,staple_weight,
@@ -385,18 +397,19 @@ void ape_smear_field(
 /* Unit gauge field. See also io_helpers.c:coldlat() */
 static su3_matrix *create_unit_gauge_field(void){
   su3_matrix *ape_links;
-  int i,j,dir;
+  size_t i;
+  int j,dir;
 
   /* Allocate and zero the field */
   ape_links = create_G();
 
   /* Set matrices to unity */
-  FORALLFIELDSITES(i){
+  FORALLFIELDSITES_OMP(i,private(dir)){
     FORALLUPDIRBUT(TUP,dir){
       for(j = 0; j < 3; j++)
 	ape_links[4*i+dir].e[j][j].real = 1.0;
     }
-  }
+  } END_LOOP_OMP;
   return ape_links;
 }
 
@@ -497,3 +510,134 @@ void destroy_ape_links_4D(su3_matrix *ape_links){
 } /* destroy_ape_links_4D */
 
 
+#ifdef APE_LINKS_FILE
+/* find out how to get the input APE link file to use.  This routine
+   is only called by node 0. */
+int ask_starting_apelinks( FILE *fp, int prompt, int *flag, char *filename ){
+  const char *savebuf;
+  int status;
+  const char myname[] = "ask_starting_apelinks";
+  
+  if (prompt==1) printf("enter 'fresh_ape' or 'reload_serial_ape'\n");
+  
+  savebuf = get_next_tag(fp, "read APE links command", myname);
+  if (savebuf == NULL)return 1;
+  
+  printf("%s ",savebuf);
+  if(strcmp("fresh_ape",savebuf) == 0 ) {
+    *flag = FRESH;
+    printf("\n");
+  }
+  else if(strcmp("reload_serial_ape",savebuf) == 0 ) {
+    *flag = RELOAD_SERIAL;
+  }
+  else{
+    printf(" is not a valid starting lattice command. INPUT ERROR.\n"); 
+    return 1;
+  }
+  
+  /*read name of file and load it */
+  if( *flag != FRESH ){
+    if(prompt==1)printf("enter name of file containing lattice\n");
+    status=fscanf(fp," %s",filename);
+    if(status !=1) {
+      printf("\n%s(%d): ERROR IN INPUT: error reading file name\n",
+	     myname, this_node); 
+      return 1;
+    }
+    printf("%s\n",filename);
+  }
+  return 0;
+}
+
+/* find out how to save APE links.  This routine is only called by
+   node 0.
+*/
+int ask_ending_apelinks(FILE *fp, int prompt, int *flag, char *filename ){
+  const char *savebuf;
+  int status;
+  const char myname[] = "ask_ending_lattice";
+  
+  if (prompt==1) printf(
+			"'forget_ape' links at end, 'save_serial_scidac_ape', 'save_parallel_scidac_ape', 'save_partfile_scidac_ape', 'save_serial_scidac_ape_dp', 'save_parallel_scidac_ape_dp', 'save_partfile_scidac_ape_dp'\n");
+  
+  savebuf = get_next_tag(fp, "save APE file command", myname);
+  if (savebuf == NULL)return 1;
+
+  printf("%s ",savebuf);
+  if(strcmp("save_serial_ape",savebuf) == 0 ) {
+    *flag=SAVE_SERIAL;
+  }
+  else if(strcmp("save_parallel_ape",savebuf) == 0 ) {
+    *flag=SAVE_PARALLEL;
+  }
+  else if(strcmp("save_serial_scidac_ape",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_SERIAL_SCIDAC;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("save_serial_scidac_ape_dp",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_SERIAL_SCIDAC_DP;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("save_parallel_scidac_ape",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_PARALLEL_SCIDAC;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("save_parallel_scidac_ape_dp",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_PARALLEL_SCIDAC_DP;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("save_partfile_scidac_ape",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_PARTFILE_SCIDAC;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("save_partfile_scidac_dp",savebuf) == 0 ) {
+#ifdef HAVE_QIO
+    *flag=SAVE_PARTFILE_SCIDAC_DP;
+#else
+    node0_printf("requires QIO compilation!\n");
+    terminate(1);
+#endif
+  }
+  else if(strcmp("forget_ape",savebuf) == 0 ) {
+    *flag=FORGET;
+    printf("\n");
+  }
+  else {
+    printf("is not a save lattice command. INPUT ERROR\n");
+    return 1;
+  }
+  
+  if( *flag != FORGET ){
+    if(prompt==1)printf("enter filename\n");
+    status=fscanf(fp,"%s",filename);
+    if(status !=1){
+      printf("\nask_ending_apelinks: ERROR IN INPUT: error reading filename\n"); return 1;
+    }
+    printf("%s\n",filename);
+    
+  }
+  return 0;
+}
+
+#endif

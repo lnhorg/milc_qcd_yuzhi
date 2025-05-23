@@ -24,7 +24,7 @@ typedef struct {
 	/* is it even or odd? */
 	char parity;
 	/* my index in the array */
-	int index;
+	uint32_t index;
 #ifdef SITERAND
 	/* The state information for a random number generator */
 	double_prn site_prn;
@@ -56,7 +56,7 @@ typedef struct {
    u0 is tadpole improvement factor, perhaps (plaq/3)^(1/4)
 */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
-EXTERN  int volume;		/* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;		/* volume of lattice = nx*ny*nz*nt */
 EXTERN  params param;
 #ifdef FIX_NODE_GEOM
 EXTERN  int node_geometry[4];  /* Specifies fixed "nsquares" (i.e. 4D
@@ -71,7 +71,7 @@ EXTERN int ionode_geometry[4]; /* Specifies fixed "nsquares" for I/O
 			     Must be divisors of the node_geometry. */
 #endif
 #endif
-EXTERN	int iseed;		/* random number seed */
+EXTERN	uint32_t iseed;		/* random number seed */
 EXTERN  int n_dyn_masses; // number of dynamical masses
 EXTERN  Real dyn_mass[MAX_DYN_MASSES]; 
 EXTERN  int dyn_flavors[MAX_DYN_MASSES]; 
@@ -83,9 +83,9 @@ EXTERN  char stringLFN[MAXFILENAME];  /** ILDG LFN if applicable **/
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN	int sites_on_node;		/* number of sites on this node */
-EXTERN	int even_sites_on_node;	/* number of even sites on this node */
-EXTERN	int odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN	size_t sites_on_node;		/* number of sites on this node */
+EXTERN	size_t even_sites_on_node;	/* number of even sites on this node */
+EXTERN	size_t odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN	int number_of_nodes;	/* number of nodes in use */
 EXTERN  int this_node;		/* node number of this node */
 

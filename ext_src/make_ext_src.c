@@ -156,7 +156,7 @@ static void sink_smear_ks_src(su3_vector *v, complex *chi_cs,
 
 /*--------------------------------------------------------------------*/
 /* Multiply the sink Wilson vectors by the sink gamma matrix */
-static void mult_sink_gamma_wv(wilson_vector *wv, int snk_gam)
+static void mult_sink_gamma_wv(wilson_vector *wv, enum gammatype snk_gam)
 {
   site *s;
   int i;
@@ -319,8 +319,9 @@ void extract_ksprop_to_ks_source(int startflag, char startfile[], int ncolor,
   for(color = 0;color < ncolor; color++){
     
     /* Read color vector (and source as appropriate) from file */
+    /* FIX ME!!! */
     status = reload_ksprop_c_to_field(startflag, fp_in, &src_qs, 
-				      color, v, timing);
+				      color, src, v, timing);
     if(status != 0)terminate(1);
 
     /* Smear */
@@ -329,7 +330,7 @@ void extract_ksprop_to_ks_source(int startflag, char startfile[], int ncolor,
     print_timing(dtime,"sink_smear_ks_src");
 
     /* Apply sink spin-taste operation */
-    spin_taste_op_fn(NULL, snk_spin_taste, r0, w, v);
+    spin_taste_op_ape_fn(NULL, snk_spin_taste, r0, w, v);
     /* The spin_taste_op phases were designed for tying together two
        forward propagators by first converting one of them to an
        antiquark propagator.  So they include the antiquark phase
@@ -337,7 +338,7 @@ void extract_ksprop_to_ks_source(int startflag, char startfile[], int ncolor,
        antiquark phase.  The next step removes it.  That way the user
        input snk_spin_taste label describes the actual meson at the
        extended source. */
-    spin_taste_op_fn(NULL, spin_taste_index("pion05"), r0, v, w);
+    spin_taste_op_ape_fn(NULL, spin_taste_index("pion05"), r0, v, w);
 
     /* Write the extended source as a time slice of the propagator */
     for(j = 0; j < nt0; j++){
@@ -408,8 +409,9 @@ void extract_ksprop_to_w_source(int startflag, char startfile[], int ncolor,
   for(color = 0; color < ncolor; color++){
     
     /* Read color vector (and source as appropriate) from file */
+    /* FIX ME!!! */
     status = reload_ksprop_c_to_field(startflag, fp_in, &src_qs, 
-				      color, v[color], timing);
+				      color, src, v[color], timing);
     if(status != 0)terminate(1);
     
   }

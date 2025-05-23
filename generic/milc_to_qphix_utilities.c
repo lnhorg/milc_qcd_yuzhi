@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#ifdef OMP
 #include <omp.h>
+#endif
 
 #define CG_DEBUG 1
 #define UNOPTIMIZED_PACK_UNPACK 0
@@ -23,7 +25,7 @@ static int milc_node_number(const int coords[]){
   return node_number(coords[0],coords[1],coords[2],coords[3]);
 }
 
-static int milc_node_index(const int coords[]){
+static size_t milc_node_index(const int coords[]){
   return node_index(coords[0],coords[1],coords[2],coords[3]);
 }
 
@@ -67,6 +69,10 @@ initialize_qphix(int precision){
 
   static int latsize[4];
   static QPHIX_layout_t layout;
+
+#ifndef QPHIX_EXTENDED_LAYOUT
+#error Requires QPhiX version with extended layout
+#endif
   
   latsize[0] = nx;
   latsize[1] = ny;
@@ -90,10 +96,11 @@ initialize_qphix(int precision){
   layout.this_node = this_node;
   layout.even_sites_on_node = even_sites_on_node;
   layout.sites_on_node = sites_on_node;
+  layout.mpi_comm = mycomm();   /* void * pointer to the MPI communicator */
 
   node0_printf("Initializing QPhiX for precision %d\n", precision);
   node0_printf("NumCores = %d, ThreadsPerCore = %d, minCt = %d\n", numCores, threads_per_core, minCt);
-
+  fflush(stdout);
   status = QPHIX_init(&layout);
 
   if(status){

@@ -29,13 +29,13 @@ typedef struct {
 	/* is it even or odd? */
 	char parity;
 	/* my index in the array */
-	int index;
+	uint32_t index;
 	/* The state information for a random number generator */
 	double_prn site_prn;
 
     /* Now come the physical fields, program dependent */
 	/* gauge field */
-	su3_matrix link[4];
+	su3_matrix link[4] ALIGNMENT;
 
 	/* The Kogut-Susskind phases, which have been absorbed into 
 		the matrices.  Also the antiperiodic boundary conditions.  */
@@ -63,9 +63,9 @@ typedef struct {
 
 /* The following are global scalars */
 EXTERN	int nx,ny,nz,nt;	/* lattice dimensions */
-EXTERN  int iseed;
+EXTERN  uint32_t iseed;
 EXTERN  int niter, nrestart;
-EXTERN  int volume;		/* volume of lattice = nx*ny*nz*nt */
+EXTERN  size_t volume;		/* volume of lattice = nx*ny*nz*nt */
 #ifdef FIX_NODE_GEOM
 EXTERN  int node_geometry[4];  /* Specifies fixed "nsquares" (i.e. 4D
 			    hypercubes) for the compute nodes in each
@@ -93,9 +93,9 @@ EXTERN	Real rsqmin,rsqprop; /* for Asqtad, etc. fermions only! */
 
 /* Some of these global variables are node dependent */
 /* They are set in "make_lattice()" */
-EXTERN	int sites_on_node;		/* number of sites on this node */
-EXTERN	int even_sites_on_node;	/* number of even sites on this node */
-EXTERN	int odd_sites_on_node;	/* number of odd sites on this node */
+EXTERN	size_t sites_on_node;		/* number of sites on this node */
+EXTERN	size_t even_sites_on_node;	/* number of even sites on this node */
+EXTERN	size_t odd_sites_on_node;	/* number of odd sites on this node */
 EXTERN	int number_of_nodes;	/* number of nodes in use */
 EXTERN  int this_node;		/* node number of this node */
 
@@ -120,6 +120,8 @@ EXTERN Real boundary_phase[4];
 EXTERN site *lattice;
 
 EXTERN su3_matrix *ape_links;
+EXTERN int refresh_ape_links;
+EXTERN int ape_links_ks_phases;
 
 /* Vectors for addressing */
 /* Generic pointers, for gather routines */
@@ -135,5 +137,10 @@ EXTERN double eps_naik[MAX_NAIK];
 
 /* Storage for the clover term */
 EXTERN clover *gen_clov;
+
+/* For eigenpair calculation */
+EXTERN int Nvecs_tot;
+EXTERN Real *eigVal; /* eigenvalues of D^dag D */
+EXTERN su3_vector **eigVec; /* eigenvectors */
 
 #endif /* _LATTICE_H */
